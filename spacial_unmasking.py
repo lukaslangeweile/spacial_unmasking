@@ -8,8 +8,9 @@ import pathlib
 
 DIR = pathlib.Path(os.curdir)
 NORMALISATION_METHOD = None
+STIM_TYPE = None
 
-def initialize_setup(normalisation_method = "default"):
+def initialize_setup(normalisation_method = "RMS"):
     procs = [["RX8", "RX8", DIR / "data" / "rcx" / "cathedral.rcx"],
              ["RP2", "RP2", DIR / "data" / "rcx" / "button.rcx"]]
     freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
@@ -19,6 +20,11 @@ def initialize_setup(normalisation_method = "default"):
 
 
 def start_trial(sub_id, masker_type, stim_type):
+    target_speaker = freefield.pick_speakers(5)
+
+    for i in range(5):
+        reference_speaker = freefield.pick_speakers(i)
+        stairs = slab.Staircase(start_val= 50, n_reversals= 5, )
 
     # save results
     file_name = DIR / "data" / "results" / f"{sub_id}.pkl"
