@@ -108,6 +108,8 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
             else:
                 stairs.add_response(0)
 
+            freefield.flush_buffers()
+
             save_results(sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
                          distance_target=target_speaker.distance, level_masker=masker.level, level_target=target.level,
                          masker_type=masker_type, stim_type=stim_type, normalisation_method=normalisation_method)
