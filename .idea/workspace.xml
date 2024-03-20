@@ -33,6 +33,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="RunManager" selected="Python.run_experiment">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
@@ -98,6 +99,10 @@
       <option name="presentableId" value="Default" />
       <updated>1710773542175</updated>
       <workItem from="1710934992932" duration="1286000" />
+      <workItem from="1710941321634" duration="316000" />
+      <workItem from="1710941703667" duration="304000" />
+      <workItem from="1710942034963" duration="657000" />
+      <workItem from="1710942873003" duration="1604000" />
     </task>
     <servers />
   </component>
@@ -119,7 +124,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/spacial_unmasking$run_experiment.coverage" NAME="run_experiment Coverage Results" MODIFIED="1710936288867" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spacial_unmasking$run_experiment.coverage" NAME="run_experiment Coverage Results" MODIFIED="1710944123130" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$main.coverage" NAME="main Coverage Results" MODIFIED="1710935750655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

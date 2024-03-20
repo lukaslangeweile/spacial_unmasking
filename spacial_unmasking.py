@@ -35,7 +35,7 @@ def start_trial(sub_id, masker_type, stim_type, normalisation_method):
 
 def get_correct_response(file):
     for key in num_dict:
-        if key in file:
+        if key in str(file):
             return num_dict.get(key)
 
 def get_possible_files(sex=None, number=None, talker=None, exclude=False):
@@ -54,7 +54,8 @@ def get_possible_files(sex=None, number=None, talker=None, exclude=False):
                 continue
             if talker is not None and talker not in str(file):
                 continue
-            possible_files.append(file)
+            possible_files.append(os.path.abspath(file))
+            print(os.path.abspath(file))
     else:
         for file in os.listdir(stim_dir):
             if sex is not None and sex in str(file):
@@ -63,7 +64,7 @@ def get_possible_files(sex=None, number=None, talker=None, exclude=False):
                 continue
             if talker is not None and talker in str(file):
                 continue
-            possible_files.append(file)
+            possible_files.append(os.path.abspath(file))
 
     return possible_files
 
