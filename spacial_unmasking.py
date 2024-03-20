@@ -54,8 +54,8 @@ def get_possible_files(sex=None, number=None, talker=None, exclude=False):
                 continue
             if talker is not None and talker not in str(file):
                 continue
-            possible_files.append(os.path.abspath(file))
-            print(os.path.abspath(file))
+            possible_files.append(os.path.join(stim_dir, file))
+
     else:
         for file in os.listdir(stim_dir):
             if sex is not None and sex in str(file):
@@ -64,7 +64,7 @@ def get_possible_files(sex=None, number=None, talker=None, exclude=False):
                 continue
             if talker is not None and talker in str(file):
                 continue
-            possible_files.append(os.path.abspath(file))
+            possible_files.append(os.path.join(stim_dir, file))
 
     return possible_files
 
@@ -97,7 +97,7 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
             target.level += level  # TODO: think about which level needs to be adjusted
             freefield.set_signal_and_speaker(signal=target, speaker=target_speaker, equalize=False)
             freefield.set_signal_and_speaker(signal=masker, speaker=masking_speaker, equalize=False)
-            freefield.play(kind=1)
+            freefield.play(kind=1, proc="RX1")
             while not freefield.read("response", "RP2"):
                 time.sleep(0.1)
             response = freefield.read("response", "RP2")
