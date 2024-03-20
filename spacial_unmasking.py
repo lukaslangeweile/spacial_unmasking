@@ -7,8 +7,6 @@ import time
 import numpy
 
 DIR = pathlib.Path(os.curdir)
-NORMALISATION_METHOD = None
-STIM_TYPE = None
 num_dict = {"one": 1,
             "two": 2,
             "three": 3,
@@ -19,21 +17,21 @@ num_dict = {"one": 1,
             "eight": 8,
             "nine": 9}
 
-def initialize_setup(normalisation_method = "RMS"):
-    procs = [["RX8", "RX8", DIR / "data" / "rcx" / "cathedral.rcx"],
-             ["RP2", "RP2", DIR / "data" / "rcx" / "button.rcx"]]
+def initialize_setup(normalisation_method = "rms"):
+    procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
+             ["RP2", "RP2", DIR / "data" / "rcx" / "button_numpad.rcx"]]
     freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
-    normalisation_file = DIR / "data" / "calibration" / f"calibration_pinknoise_{normalisation_method}.pkl"
-    freefield.load_equalization(str(normalisation_file))
+    normalisation_file = DIR / "data" / "calibration" / f"calibration_cathedral_pinknoise_{normalisation_method}.pkl"
+    freefield.load_equalization(file=str(normalisation_file), frequency=False)
 
 def start_trial(sub_id, masker_type, stim_type, normalisation_method):
     target_speaker = freefield.pick_speakers(5)[0]
     spacial_unmask_from_peripheral_speaker(start_speaker=0, target_speaker=target_speaker, sub_id=sub_id,
                                            masker_type=masker_type, stim_type=stim_type,
-                                           normalisation_metod=normalisation_method)
+                                           normalisation_method=normalisation_method)
     spacial_unmask_from_peripheral_speaker(start_speaker=10, target_speaker=target_speaker, sub_id=sub_id,
                                           masker_type=masker_type, stim_type=stim_type,
-                                          normalisation_metod=normalisation_method)
+                                          normalisation_method=normalisation_method)
 
 def get_correct_response(file):
     for key in num_dict:
@@ -42,7 +40,7 @@ def get_correct_response(file):
 
 def get_possible_files(sex=None, number=None, talker=None, exclude=False):
     possible_files = []
-    stim_dir = DIR / "data" / "stim_files" / "tts"  #TODO: Add files and directory
+    stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_48828"  #TODO: Add files and directory
     if isinstance(number, int):
         for key, val in num_dict.items():
             if val == number:
