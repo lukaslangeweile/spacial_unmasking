@@ -17,6 +17,7 @@ num_dict = {"one": 1,
             "eight": 8,
             "nine": 9}
 
+
 def initialize_setup(normalisation_method = "rms"):
     procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
              ["RP2", "RP2", DIR / "data" / "rcx" / "button_numpad.rcx"]]
@@ -68,6 +69,16 @@ def get_possible_files(sex=None, number=None, talker=None, exclude=False):
 
     return possible_files
 
+def get_non_syllable_masker_file(masker_type):
+    if masker_type == "pinknoise":
+        masker_file = "path" #placeholder
+    elif masker_type == "babble":
+        babble_DIR = DIR / "data" / "stim_files" / "tts-numbers_reversed"
+        masker_file = get_random_file(babble_DIR.iterdir())
+    else:
+        masker_file = None
+    return masker_file
+
 def get_random_file(files):
     return numpy.random.choice(files)
 
@@ -89,7 +100,11 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
         stairs = slab.Staircase(start_val=(-20), n_reversals=5, step_sizes=[5, 3, 1])
 
         for level in stairs:
-            target_file, masker_file = get_target_and_masker_file()
+            if masker_type != "syllable":
+                masker_file = get_non_syllable_masker_file(masker_type)
+                target_file = get_target_and_masker_file()[0]
+            else:
+                target_file, masker_file = get_target_and_masker_file()
             target = slab.Sound.read(target_file)
             masker = slab.Sound.read(masker_file)
             freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
@@ -112,6 +127,7 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
             save_results(sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
                          distance_target=target_speaker.distance, level_masker=masker.level, level_target=target.level,
                          masker_type=masker_type, stim_type=stim_type, normalisation_method=normalisation_method)
+            time.sleep(2.5)
 
 def save_results(sub_id, threshold, distance_masker, distance_target,
                  level_masker, level_target, masker_type, stim_type, normalisation_method):
