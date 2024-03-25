@@ -148,5 +148,9 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
                                       "level_masker": level_masker, "level_target": level_target,
                                       "masker_type": masker_type, "stim_type": stim_type,
                                       "normalisation_method": normalisation_method}}
-    with open(file_name, 'wb') as f:  # save the newly recorded results
-        pickle.dump(results, f, pickle.HIGHEST_PROTOCOL)
+    try:
+        with open(file_name, 'ab') as f:  # Append mode
+            pickle.dump(results, f, pickle.HIGHEST_PROTOCOL)
+            print("Data appended to pickle file successfully.")
+    except Exception as e:
+        print("Error:", e)
