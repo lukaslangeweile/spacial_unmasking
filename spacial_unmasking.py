@@ -16,14 +16,16 @@ num_dict = {"one": 1,
             "seven": 7,
             "eight": 8,
             "nine": 9}
+target_dict = {}
 
 
 def initialize_setup(normalisation_method = "rms"):
     procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
              ["RP2", "RP2", DIR / "data" / "rcx" / "button_numpad.rcx"]]
     freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
-    normalisation_file = DIR / "data" / "calibration" / f"calibration_cathedral_pinknoise_{normalisation_method}.pkl"
+    normalisation_file = DIR / "data" / "calibration" / f"calibration_cathedral_syllable_{normalisation_method}.pkl"
     freefield.load_equalization(file=str(normalisation_file), frequency=False)
+    freefield.set_logger("DEBUG")
 
 def start_trial(sub_id, masker_type, stim_type, normalisation_method):
     target_speaker = freefield.pick_speakers(5)[0]
@@ -74,7 +76,8 @@ def get_non_syllable_masker_file(masker_type):
         masker_file = "path" #placeholder
     elif masker_type == "babble":
         babble_DIR = DIR / "data" / "stim_files" / "tts-numbers_reversed"
-        masker_file = get_random_file(babble_DIR.iterdir())
+        contents = [file for file in babble_DIR.iterdir()]
+        masker_file = os.path.join(DIR, get_random_file(contents))
     else:
         masker_file = None
     return masker_file
@@ -97,7 +100,7 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
 
     for i in iterator:
         masking_speaker = freefield.pick_speakers(i)[0]
-        stairs = slab.Staircase(start_val=(-20), n_reversals=5, step_sizes=[5, 3, 1])
+        stairs = slab.Staircase(start_val=3, n_reversals=5, step_sizes=[5, 3, 1])
 
         for level in stairs:
             if masker_type != "syllable":
@@ -105,24 +108,24 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
                 target_file = get_target_and_masker_file()[0]
             else:
                 target_file, masker_file = get_target_and_masker_file()
-            target = slab.Sound.read(target_file)
             masker = slab.Sound.read(masker_file)
-            freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
+            target = slab.Sound.read(target_file)
             freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
-            target.level += level  # TODO: think about which level needs to be adjusted
+            freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
+            masker.level += level  # TODO: think about which level needs to be adjusted
             freefield.set_signal_and_speaker(signal=target, speaker=target_speaker, equalize=False)
             freefield.set_signal_and_speaker(signal=masker, speaker=masking_speaker, equalize=False)
-            freefield.play(kind=1, proc="RX1")
+            freefield.play(kind=1, proc="RX81")
             while not freefield.read("response", "RP2"):
-                time.sleep(0.1)
+                time.sleep(0.05)
             response = freefield.read("response", "RP2")
 
             if response == get_correct_response(target_file):
-                stairs.add_response(1)
-            else:
                 stairs.add_response(0)
+            else:
+                stairs.add_response(1)
 
-            freefield.flush_buffers()
+            freefield.flush_buffers(processor="RX81")
 
             save_results(sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
                          distance_target=target_speaker.distance, level_masker=masker.level, level_target=target.level,
