@@ -6,6 +6,7 @@ import pathlib
 import time
 import numpy
 
+event_id = 0
 DIR = pathlib.Path(os.curdir)
 num_dict = {"one": 1,
             "two": 2,
@@ -93,6 +94,7 @@ def get_target_and_masker_file():
     return target_file, masker_file
 
 def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id, masker_type, stim_type, normalisation_method):
+    global event_id
     if start_speaker > 5:
         iterator = list(range(10, 5, -1))
     else:
@@ -109,7 +111,9 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
             else:
                 target_file, masker_file = get_target_and_masker_file()
             masker = slab.Sound.read(masker_file)
+            print(masker.samplerate)
             target = slab.Sound.read(target_file)
+            print(target.samplerate)
             freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
             freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
             masker.level += level  # TODO: think about which level needs to be adjusted
@@ -127,15 +131,18 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
 
             freefield.flush_buffers(processor="RX81")
 
-            save_results(sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
+            save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
                          distance_target=target_speaker.distance, level_masker=masker.level, level_target=target.level,
                          masker_type=masker_type, stim_type=stim_type, normalisation_method=normalisation_method)
+            print(event_id)
+            event_id += 1
             time.sleep(2.5)
 
-def save_results(sub_id, threshold, distance_masker, distance_target,
+def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
                  level_masker, level_target, masker_type, stim_type, normalisation_method):
     file_name = DIR / "data" / "results" / f"results_{sub_id}.pkl"
-    results = {f"subject: {sub_id}": {"threshold": threshold,
+    results = {f"event_id: {event_id}": {f"subject": sub_id,
+                                      "threshold": threshold,
                                       "distance_masker": distance_masker,
                                       "distance_target": distance_target,
                                       "level_masker": level_masker, "level_target": level_target,
