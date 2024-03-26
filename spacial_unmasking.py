@@ -5,6 +5,10 @@ import os
 import pathlib
 import time
 import numpy
+import pickle
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
 
 event_id = 0
 DIR = pathlib.Path(os.curdir)
@@ -131,12 +135,12 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
 
             freefield.flush_buffers(processor="RX81")
 
-            save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
-                         distance_target=target_speaker.distance, level_masker=masker.level, level_target=target.level,
-                         masker_type=masker_type, stim_type=stim_type, normalisation_method=normalisation_method)
-            print(event_id)
-            event_id += 1
-            time.sleep(2.5)
+        save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
+                     distance_target=target_speaker.distance, level_masker=masker.level, level_target=target.level,
+                     masker_type=masker_type, stim_type=stim_type, normalisation_method=normalisation_method)
+        print(event_id)
+        event_id += 1
+        time.sleep(2.5)
 
 def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
                  level_masker, level_target, masker_type, stim_type, normalisation_method):
@@ -154,3 +158,32 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
             print("Data appended to pickle file successfully.")
     except Exception as e:
         print("Error:", e)
+
+
+def plot_threshold_vs_distance(sub_id):
+    pickle_file = DIR / "data" / "results" / f"results_{sub_id}.pkl"
+    try:
+        with open(pickle_file, 'rb') as f:
+            results = pickle.load(f)
+    except Exception as e:
+        print("Error:", e)
+        return
+
+    # Extract relevant data
+    data = []
+    for result in results.values():
+        data.append({
+            "Threshold": result["threshold"],
+            "Distance_Masker": result["distance_masker"]
+        })
+
+    # Create DataFrame from the data
+    df = pd.DataFrame(data)
+
+    # Plot
+    sns.scatterplot(data=df, x="Distance_Masker", y="Threshold")
+    plt.xlabel("Distance of Masking Speaker")
+    plt.ylabel("Threshold")
+    plt.title("Threshold vs Distance of Masking Speaker")
+    plt.show()
+    plt.savefig(DIR / "data" / "results" / "figs" /f"results_{sub_id}.jpeg")
