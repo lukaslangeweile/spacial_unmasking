@@ -147,14 +147,17 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
 
 def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
                  level_masker, level_target, masker_type, stim_type, normalisation_method):
-    file_name = DIR / "data" / "results" / f"results_{sub_id}.pkl"
-    results = {f"event_id: {event_id}": {f"subject": sub_id,
-                                         "threshold": threshold,
-                                         "distance_masker": distance_masker,
-                                         "distance_target": distance_target,
-                                         "level_masker": level_masker, "level_target": level_target,
-                                         "masker_type": masker_type, "stim_type": stim_type,
-                                         "normalisation_method": normalisation_method}}
+    file_name = DIR / "data" / "results" / f"results_{sub_id}.csv"
+    results = {"event_id" : event_id,
+        "subject": sub_id,
+             "threshold": threshold,
+             "distance_masker": distance_masker,
+             "distance_target": distance_target,
+             "level_masker": level_masker, "level_target": level_target,
+             "masker_type": masker_type, "stim_type": stim_type,
+             "normalisation_method": normalisation_method}
+    df_curr_results = pd.DataFrame.from_dict(results)
+    df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))
     try:
         # Ensure the directory structure exists
         os.makedirs(os.path.dirname(file_name), exist_ok=True)
