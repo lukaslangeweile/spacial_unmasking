@@ -22,6 +22,7 @@ num_dict = {"one": 1,
             "eight": 8,
             "nine": 9}
 target_dict = {}
+talkers = ["p229", "p245", "p248", "p256", "p268", "p284", "p307", "p318"]
 
 
 def initialize_setup(normalisation_method = "rms"):
@@ -90,8 +91,8 @@ def get_non_syllable_masker_file(masker_type):
 def get_random_file(files):
     return numpy.random.choice(files)
 
-def get_target_and_masker_file():
-    stimuli = get_possible_files()
+def get_target_and_masker_file(sex=None, number=None, talker=None):
+    stimuli = get_possible_files(sex=sex, number=number, talker=talker)
     target_file = get_random_file(stimuli)
     correct_response = get_correct_response(target_file)
     masker_file = get_random_file(get_possible_files(number=correct_response, exclude=True))
@@ -107,13 +108,14 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
     for i in iterator:
         masking_speaker = freefield.pick_speakers(i)[0]
         stairs = slab.Staircase(start_val=3, n_reversals=5, step_sizes=[5, 3, 1])
+        talker = numpy.random.choice(talkers)
 
         for level in stairs:
             if masker_type != "syllable":
                 masker_file = get_non_syllable_masker_file(masker_type)
-                target_file = get_target_and_masker_file()[0]
+                target_file = get_target_and_masker_file(talker=talker)[0]
             else:
-                target_file, masker_file = get_target_and_masker_file()
+                target_file, masker_file = get_target_and_masker_file(talker=talker)
             masker = slab.Sound.read(masker_file)
             print(masker.samplerate)
             target = slab.Sound.read(target_file)
@@ -134,25 +136,29 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
                 stairs.add_response(1)
 
             freefield.flush_buffers(processor="RX81")
+            time.sleep(2.5)
 
         save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
                      distance_target=target_speaker.distance, level_masker=masker.level, level_target=target.level,
                      masker_type=masker_type, stim_type=stim_type, normalisation_method=normalisation_method)
         print(event_id)
         event_id += 1
-        time.sleep(2.5)
+
 
 def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
                  level_masker, level_target, masker_type, stim_type, normalisation_method):
     file_name = DIR / "data" / "results" / f"results_{sub_id}.pkl"
     results = {f"event_id: {event_id}": {f"subject": sub_id,
-                                      "threshold": threshold,
-                                      "distance_masker": distance_masker,
-                                      "distance_target": distance_target,
-                                      "level_masker": level_masker, "level_target": level_target,
-                                      "masker_type": masker_type, "stim_type": stim_type,
-                                      "normalisation_method": normalisation_method}}
+                                         "threshold": threshold,
+                                         "distance_masker": distance_masker,
+                                         "distance_target": distance_target,
+                                         "level_masker": level_masker, "level_target": level_target,
+                                         "masker_type": masker_type, "stim_type": stim_type,
+                                         "normalisation_method": normalisation_method}}
     try:
+        # Ensure the directory structure exists
+        os.makedirs(os.path.dirname(file_name), exist_ok=True)
+
         with open(file_name, 'ab') as f:  # Append mode
             pickle.dump(results, f, pickle.HIGHEST_PROTOCOL)
             print("Data appended to pickle file successfully.")
