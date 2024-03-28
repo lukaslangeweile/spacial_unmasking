@@ -123,8 +123,10 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
             else:
                 target_file, masker_file = get_target_and_masker_file(talker=talker)
             masker = slab.Sound.read(masker_file)
+            masker.n_channels = 1
             print(masker.samplerate)
             target = slab.Sound.read(target_file)
+            target.n_channels = 1
             print(target.samplerate)
             freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
             freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
@@ -164,17 +166,22 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
                  normalisation_level_target,):
     file_name = DIR / "data" / "results" / f"results_{sub_id}.csv"
 
+    if len(level_masker.shape) == 2:
+        level_masker = numpy.mean(level_masker, axis=1)
+    if len(level_target.shape) == 2:
+        level_target = numpy.mean(level_target,axis=1)
+
     results = {"event_id" : event_id,
-        "subject": sub_id,
-             "threshold": threshold,
-             "distance_masker": distance_masker,
-             "distance_target": distance_target,
-             "level_masker": level_masker, "level_target": level_target,
-             "masker_type": masker_type, "stim_type": stim_type,
-             "talker": talker,
-             "normalisation_method": normalisation_method,
-             "normalisation_level_masker": normalisation_level_masker,
-             "normalisation_level_target": normalisation_level_target}
+            "subject": sub_id,
+            "threshold": threshold,
+            "distance_masker": distance_masker,
+            "distance_target": distance_target,
+            "level_masker": level_masker, "level_target": level_target,
+            "masker_type": masker_type, "stim_type": stim_type,
+            "talker": talker,
+            "normalisation_method": normalisation_method,
+            "normalisation_level_masker": normalisation_level_masker,
+            "normalisation_level_target": normalisation_level_target}
 
     df_curr_results = pd.DataFrame.from_dict(results)
     df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))
