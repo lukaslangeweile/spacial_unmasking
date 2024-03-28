@@ -123,10 +123,8 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
             else:
                 target_file, masker_file = get_target_and_masker_file(talker=talker)
             masker = slab.Sound.read(masker_file)
-            masker.n_channels = 1
             print(masker.samplerate)
             target = slab.Sound.read(target_file)
-            target.n_channels = 1
             print(target.samplerate)
             freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
             freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)

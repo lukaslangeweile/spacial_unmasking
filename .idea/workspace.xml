@@ -6,18 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="87843eff-bfa5-4e8c-92c1-efd0b98aef3c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_pinknoises.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_pinknoises.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_0.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_0.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_1.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_1.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_2.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_2.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_3.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_3.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_4.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_4.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_5.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_5.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_6.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_6.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_7.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_7.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_8.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_8.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_9.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_9.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plot_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot_results.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_experiment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spacial_unmasking.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacial_unmasking.py" afterDir="false" />
     </list>
@@ -216,6 +204,8 @@
       <workItem from="1711462823937" duration="1853000" />
       <workItem from="1711620362824" duration="543000" />
       <workItem from="1711621133194" duration="3732000" />
+      <workItem from="1711634220515" duration="125000" />
+      <workItem from="1711635594529" duration="61000" />
     </task>
     <servers />
   </component>
@@ -250,7 +240,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/spacial_unmasking$plot_results.coverage" NAME="plot_results Coverage Results" MODIFIED="1711622934308" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/spacial_unmasking$run_experiment.coverage" NAME="run_experiment Coverage Results" MODIFIED="1711623912705" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spacial_unmasking$run_experiment.coverage" NAME="run_experiment Coverage Results" MODIFIED="1711635619408" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$create_pinknoises.coverage" NAME="create_pinknoises Coverage Results" MODIFIED="1711623413320" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$main.coverage" NAME="main Coverage Results" MODIFIED="1710935750655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
