@@ -79,7 +79,9 @@ def get_possible_files(sex=None, number=None, talker=None, exclude=False):
 
 def get_non_syllable_masker_file(masker_type):
     if masker_type == "pinknoise":
-        masker_file = "path" #placeholder
+        pink_noise_DIR = DIR / "data" / "stim_files" / "pinknoise" #placeholder
+        contents = [file for file in pink_noise_DIR.iterdir()]
+        masker_file = os.path.join(DIR, get_random_file(contents))
     elif masker_type == "babble":
         babble_DIR = DIR / "data" / "stim_files" / "tts-numbers_reversed"
         contents = [file for file in babble_DIR.iterdir()]
@@ -122,7 +124,7 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
             print(target.samplerate)
             freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
             freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
-            masker.level += level  # TODO: think about which level needs to be adjusted
+            target.level += level  # TODO: think about which level needs to be adjusted
             freefield.set_signal_and_speaker(signal=target, speaker=target_speaker, equalize=False)
             freefield.set_signal_and_speaker(signal=masker, speaker=masking_speaker, equalize=False)
             freefield.play(kind=1, proc="RX81")
@@ -131,33 +133,59 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
             response = freefield.read("response", "RP2")
 
             if response == get_correct_response(target_file):
-                stairs.add_response(0)
-            else:
                 stairs.add_response(1)
+            else:
+                stairs.add_response(0)
 
             freefield.flush_buffers(processor="RX81")
             time.sleep(2.5)
 
         save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
                      distance_target=target_speaker.distance, level_masker=masker.level, level_target=target.level,
-                     masker_type=masker_type, stim_type=stim_type, normalisation_method=normalisation_method)
+                     masker_type=masker_type, stim_type=stim_type, talker=talker, normalisation_method=normalisation_method,
+                     normalisation_level_masker=masking_speaker.level, normalisation_level_target=target_speaker.level)
         print(event_id)
         event_id += 1
 
+def reset_event_id():
+    global event_id
+    event_id = 0
+
+
+
 
 def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
-                 level_masker, level_target, masker_type, stim_type, normalisation_method):
+                 level_masker, level_target, masker_type, stim_type, talker,
+                 normalisation_method, normalisation_level_masker,
+                 normalisation_level_target,):
     file_name = DIR / "data" / "results" / f"results_{sub_id}.csv"
-    results = {"event_id" : event_id,
-        "subject": sub_id,
-             "threshold": threshold,
-             "distance_masker": distance_masker,
-             "distance_target": distance_target,
-             "level_masker": level_masker, "level_target": level_target,
-             "masker_type": masker_type, "stim_type": stim_type,
-             "normalisation_method": normalisation_method}
+    if stim_type == "syllable":
+        results = {"event_id" : event_id,
+            "subject": sub_id,
+                 "threshold": threshold,
+                 "distance_masker": distance_masker,
+                 "distance_target": distance_target,
+                 "level_masker": level_masker, "level_target": level_target,
+                 "masker_type": masker_type, "stim_type": stim_type,
+                 "talker": talker,
+                 "normalisation_method": normalisation_method,
+                 "normalisation_level_masker": normalisation_level_masker,
+                 "normalisation_level_target": normalisation_level_target}
+    else:
+        results = {"event_id": event_id,
+                   "subject": sub_id,
+                   "threshold": threshold,
+                   "distance_masker": distance_masker,
+                   "distance_target": distance_target,
+                   "level_masker": level_masker, "level_target": level_target,
+                   "masker_type": masker_type, "stim_type": stim_type,
+                   "talker": None,
+                   "normalisation_method": normalisation_method,
+                   "normalisation_level_masker": normalisation_level_masker,
+                   "normalisation_level_target": normalisation_level_target}
     df_curr_results = pd.DataFrame.from_dict(results)
     df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))
+    """
     try:
         # Ensure the directory structure exists
         os.makedirs(os.path.dirname(file_name), exist_ok=True)
@@ -167,32 +195,23 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
             print("Data appended to pickle file successfully.")
     except Exception as e:
         print("Error:", e)
+    """
 
-
-def plot_threshold_vs_distance(sub_id):
-    pickle_file = DIR / "data" / "results" / f"results_{sub_id}.pkl"
+def plot_target_ratio_vs_distance(sub_id, masker_type):
+    data_file = DIR / "data" / "results" / f"results_{sub_id}.csv"
     try:
-        with open(pickle_file, 'rb') as f:
-            results = pickle.load(f)
+        with open(data_file, 'rb') as f:
+            results = pd.DataFrame(f)
     except Exception as e:
         print("Error:", e)
         return
 
-    # Extract relevant data
-    data = []
-    for result in results.values():
-        data.append({
-            "Threshold": result["threshold"],
-            "Distance_Masker": result["distance_masker"]
-        })
-
-    # Create DataFrame from the data
-    df = pd.DataFrame(data)
-
+    results["Target_To_Masker_Ratio"] = results["Level_Target"] / results["Level_Masker"]
+    results["Target_Normalisation_Adapted_Ratio"] = (results["Level_Target"] / results["Normalisation_Level_Target"])
     # Plot
-    sns.scatterplot(data=df, x="Distance_Masker", y="Threshold")
+    sns.scatterplot(data=results, x="Distance_Masker", y="Target_Normalisation_Asapted_Ratio")
     plt.xlabel("Distance of Masking Speaker")
-    plt.ylabel("Threshold")
-    plt.title("Threshold vs Distance of Masking Speaker")
+    plt.ylabel("Ratio of Target Level")
+    plt.title("Ratio of Target Level vs Distance of Masking Speaker")
     plt.show()
     plt.savefig(DIR / "data" / "results" / "figs" /f"results_{sub_id}.jpeg")
