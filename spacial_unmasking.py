@@ -10,6 +10,7 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 
+normalisation_method = None
 event_id = 0
 DIR = pathlib.Path(os.curdir)
 num_dict = {"one": 1,
@@ -25,15 +26,18 @@ target_dict = {}
 talkers = ["p229", "p245", "p248", "p256", "p268", "p284", "p307", "p318"]
 
 
-def initialize_setup(normalisation_method = "rms"):
+def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="syllable"):
+    global normalisation_method
     procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
              ["RP2", "RP2", DIR / "data" / "rcx" / "button_numpad.rcx"]]
     freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
-    normalisation_file = DIR / "data" / "calibration" / f"calibration_cathedral_syllable_{normalisation_method}.pkl"
+    normalisation_file = DIR / "data" / "calibration" / f"calibration_cathedral_{normalisation_sound_type}_{normalisation_algorithm}.pkl"
     freefield.load_equalization(file=str(normalisation_file), frequency=False)
+    normalisation_method = f"{normalisation_sound_type}_{normalisation_algorithm}"
     freefield.set_logger("DEBUG")
 
-def start_trial(sub_id, masker_type, stim_type, normalisation_method):
+def start_trial(sub_id, masker_type, stim_type):
+    global normalisation_method
     target_speaker = freefield.pick_speakers(5)[0]
     spacial_unmask_from_peripheral_speaker(start_speaker=0, target_speaker=target_speaker, sub_id=sub_id,
                                            masker_type=masker_type, stim_type=stim_type,
@@ -147,9 +151,9 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
         print(event_id)
         event_id += 1
 
-def reset_event_id():
+def set_event_id(new_event_id):
     global event_id
-    event_id = 0
+    event_id = new_event_id
 
 
 
@@ -198,7 +202,7 @@ def plot_target_ratio_vs_distance(sub_id, masker_type):
     results["Target_To_Masker_Ratio"] = results["Level_Target"] / results["Level_Masker"]
     results["Target_Normalisation_Adapted_Ratio"] = (results["Level_Target"] / results["Normalisation_Level_Target"])
     # Plot
-    sns.scatterplot(data=results, x="Distance_Masker", y="Target_Normalisation_Asapted_Ratio")
+    sns.scatterplot(data=results, x="Distance_Masker", y="Target_Normalisation_Adapted_Ratio")
     plt.xlabel("Distance of Masking Speaker")
     plt.ylabel("Ratio of Target Level")
     plt.title("Ratio of Target Level vs Distance of Masking Speaker")
