@@ -159,30 +159,19 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
                  normalisation_method, normalisation_level_masker,
                  normalisation_level_target,):
     file_name = DIR / "data" / "results" / f"results_{sub_id}.csv"
-    if stim_type == "syllable":
-        results = {"event_id" : event_id,
-            "subject": sub_id,
-                 "threshold": threshold,
-                 "distance_masker": distance_masker,
-                 "distance_target": distance_target,
-                 "level_masker": level_masker, "level_target": level_target,
-                 "masker_type": masker_type, "stim_type": stim_type,
-                 "talker": talker,
-                 "normalisation_method": normalisation_method,
-                 "normalisation_level_masker": normalisation_level_masker,
-                 "normalisation_level_target": normalisation_level_target}
-    else:
-        results = {"event_id": event_id,
-                   "subject": sub_id,
-                   "threshold": threshold,
-                   "distance_masker": distance_masker,
-                   "distance_target": distance_target,
-                   "level_masker": level_masker, "level_target": level_target,
-                   "masker_type": masker_type, "stim_type": stim_type,
-                   "talker": None,
-                   "normalisation_method": normalisation_method,
-                   "normalisation_level_masker": normalisation_level_masker,
-                   "normalisation_level_target": normalisation_level_target}
+
+    results = {"event_id" : event_id,
+        "subject": sub_id,
+             "threshold": threshold,
+             "distance_masker": distance_masker,
+             "distance_target": distance_target,
+             "level_masker": level_masker, "level_target": level_target,
+             "masker_type": masker_type, "stim_type": stim_type,
+             "talker": talker,
+             "normalisation_method": normalisation_method,
+             "normalisation_level_masker": normalisation_level_masker,
+             "normalisation_level_target": normalisation_level_target}
+
     df_curr_results = pd.DataFrame.from_dict(results)
     df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))
     """
