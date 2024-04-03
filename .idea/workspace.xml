@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="87843eff-bfa5-4e8c-92c1-efd0b98aef3c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/numerosity_judgement.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/results/results_spacial_unmasking_0.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/figs/results_100.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plot_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot_results.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spacial_unmasking.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacial_unmasking.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,23 +25,33 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="ProjectId" id="2drkNGoMFAtSCgHNQLggm81C814" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "git-widget-placeholder": "main",
-    "settings.editor.selected.configurable": "terminal"
-  }
-}]]></component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings>
         <option name="useSoftWraps" value="true" />
       </console-settings>
     </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\results" />
+    </key>
   </component>
   <component name="RunManager" selected="Python.plot_results">
     <configuration name="create_pinknoises" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -95,9 +105,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\User\anaconda3\envs\cathedral2\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -210,6 +220,10 @@
       <workItem from="1711621133194" duration="3732000" />
       <workItem from="1711634220515" duration="125000" />
       <workItem from="1711635594529" duration="61000" />
+      <workItem from="1712148075091" duration="338000" />
+      <workItem from="1712148500723" duration="96000" />
+      <workItem from="1712149816338" duration="5150000" />
+      <workItem from="1712155585267" duration="219000" />
     </task>
     <servers />
   </component>
@@ -229,6 +243,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -242,8 +257,8 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/spacial_unmasking$plot_results.coverage" NAME="plot_results Coverage Results" MODIFIED="1711622934308" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/spacial_unmasking$run_experiment.coverage" NAME="run_experiment Coverage Results" MODIFIED="1711635619408" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spacial_unmasking$run_experiment.coverage" NAME="run_experiment Coverage Results" MODIFIED="1712153683002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spacial_unmasking$plot_results.coverage" NAME="plot_results Coverage Results" MODIFIED="1712155211800" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$create_pinknoises.coverage" NAME="create_pinknoises Coverage Results" MODIFIED="1711623413320" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$main.coverage" NAME="main Coverage Results" MODIFIED="1710935750655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

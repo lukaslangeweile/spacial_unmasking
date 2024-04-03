@@ -115,7 +115,7 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
 
     for i in iterator:
         masking_speaker = freefield.pick_speakers(i)[0]
-        stairs = slab.Staircase(start_val=3, n_reversals=5, step_sizes=[5, 3, 1])
+        stairs = slab.Staircase(start_val=3, n_reversals=5, step_sizes=[7, 5, 3, 1])
 
         for level in stairs:
             if masker_type != "syllable":
@@ -165,12 +165,35 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
                  normalisation_level_target,):
     file_name = DIR / "data" / "results" / f"results_spacial_unmasking_{sub_id}.csv"
 
-    if len(level_masker.shape) == 2:
-        level_masker = numpy.mean(level_masker, axis=1)
-    if len(level_target.shape) == 2:
-        level_target = numpy.mean(level_target,axis=1)
+    # Check if the file exists
+    if file_name.exists():
+        # Load existing data from CSV file into a DataFrame
+        df_curr_results = pd.read_csv(file_name)
+    else:
+        # If the file doesn't exist, create an empty DataFrame
+        df_curr_results = pd.DataFrame()
 
-    results = {"event_id" : event_id,
+    if len(level_masker.shape) == 1:
+        level_masker = numpy.mean(level_masker)
+    if len(level_target.shape) == 1:
+        level_target = numpy.mean(level_target)
+
+    # Convert necessary columns to desired data types
+    event_id = int(event_id)
+    threshold = float(threshold)
+    sub_id = int(sub_id)
+    level_masker = float(level_masker)
+    level_target = float(level_target)
+    distance_masker = float(distance_masker)
+    distance_target = float(distance_target)
+    normalisation_level_target = float(normalisation_level_target)
+    normalisation_level_masker = float(normalisation_level_masker)
+    masker_type = str(masker_type)
+    stim_type = str(stim_type)
+    talker = str(talker)
+    normalisation_method = str(normalisation_method)
+
+    new_row = {"event_id" : event_id,
             "subject": sub_id,
             "threshold": threshold,
             "distance_masker": distance_masker,
@@ -182,8 +205,8 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
             "normalisation_level_masker": normalisation_level_masker,
             "normalisation_level_target": normalisation_level_target}
 
-    df_curr_results = pd.DataFrame.from_dict(results)
-    df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))
+    df_curr_results = df_curr_results.append(new_row, ignore_index=True)
+    df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name), index=False)
     """
     try:
         # Ensure the directory structure exists
@@ -195,7 +218,7 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
     except Exception as e:
         print("Error:", e)
     """
-im
+
 def plot_target_ratio_vs_distance(sub_id, masker_type):
     data_file = DIR / "data" / "results" / f"results_spacial_unmasking_{sub_id}.csv"
     try:
