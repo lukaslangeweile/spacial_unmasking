@@ -1,11 +1,9 @@
 import freefield
 import slab
-import pickle
 import os
 import pathlib
 import time
 import numpy
-import pickle
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -39,11 +37,12 @@ def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="sy
 def start_trial(sub_id, masker_type, stim_type):
     global normalisation_method
     target_speaker = freefield.pick_speakers(5)[0]
+    talker = numpy.random.choice(talkers)
     spacial_unmask_from_peripheral_speaker(start_speaker=0, target_speaker=target_speaker, sub_id=sub_id,
-                                           masker_type=masker_type, stim_type=stim_type,
+                                           masker_type=masker_type, stim_type=stim_type, talker=talker,
                                            normalisation_method=normalisation_method)
     spacial_unmask_from_peripheral_speaker(start_speaker=10, target_speaker=target_speaker, sub_id=sub_id,
-                                          masker_type=masker_type, stim_type=stim_type,
+                                          masker_type=masker_type, stim_type=stim_type, talker=talker,
                                           normalisation_method=normalisation_method)
 
 def get_correct_response(file):
@@ -104,17 +103,19 @@ def get_target_and_masker_file(sex=None, number=None, talker=None):
     masker_file = get_random_file(get_possible_files(number=correct_response, exclude=True))
     return target_file, masker_file
 
-def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id, masker_type, stim_type, normalisation_method):
+def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id, masker_type, stim_type, talker, normalisation_method):
     global event_id
     if start_speaker > 5:
         iterator = list(range(10, 5, -1))
     else:
         iterator = list(range(5))
 
+    numpy.random.shuffle(iterator)
+    talker = talker
+
     for i in iterator:
         masking_speaker = freefield.pick_speakers(i)[0]
         stairs = slab.Staircase(start_val=3, n_reversals=5, step_sizes=[5, 3, 1])
-        talker = numpy.random.choice(talkers)
 
         for level in stairs:
             if masker_type != "syllable":
@@ -162,7 +163,7 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
                  level_masker, level_target, masker_type, stim_type, talker,
                  normalisation_method, normalisation_level_masker,
                  normalisation_level_target,):
-    file_name = DIR / "data" / "results" / f"results_{sub_id}.csv"
+    file_name = DIR / "data" / "results" / f"results_spacial_unmasking_{sub_id}.csv"
 
     if len(level_masker.shape) == 2:
         level_masker = numpy.mean(level_masker, axis=1)
@@ -194,22 +195,25 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
     except Exception as e:
         print("Error:", e)
     """
-
+im
 def plot_target_ratio_vs_distance(sub_id, masker_type):
-    data_file = DIR / "data" / "results" / f"results_{sub_id}.csv"
+    data_file = DIR / "data" / "results" / f"results_spacial_unmasking_{sub_id}.csv"
     try:
         with open(data_file, 'rb') as f:
-            results = pd.DataFrame(f)
+            results = pd.read_csv(f)
     except Exception as e:
         print("Error:", e)
         return
 
-    results["Target_To_Masker_Ratio"] = results["Level_Target"] / results["Level_Masker"]
-    results["Target_Normalisation_Adapted_Ratio"] = (results["Level_Target"] / results["Normalisation_Level_Target"])
+    results["target_to_tasker_ratio"] = results["level_target"] / results["level_masker"]
+    results["target_normalisation_adapted_ratio"] = (results["level_target"] / results["normalisation_level_target"])
     # Plot
-    sns.scatterplot(data=results, x="Distance_Masker", y="Target_Normalisation_Adapted_Ratio")
+    sns.scatterplot(data=results, x="distance_masker", y="target_normalisation_adapted_ratio")
     plt.xlabel("Distance of Masking Speaker")
     plt.ylabel("Ratio of Target Level")
     plt.title("Ratio of Target Level vs Distance of Masking Speaker")
+    fig = plt.gcf()
     plt.show()
-    plt.savefig(DIR / "data" / "results" / "figs" /f"results_{sub_id}.jpeg")
+    plt.draw()
+    fig.savefig(DIR / "data" / "results" / "figs" /f"results_{sub_id}.pdf")
+
