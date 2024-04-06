@@ -29,8 +29,10 @@ def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="sy
     procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
              ["RP2", "RP2", DIR / "data" / "rcx" / "button_numpad.rcx"]]
     freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
+    freefield.SETUP = "cathedral"
+    freefield.SPEAKERS = freefield.read_speaker_table()
     normalisation_file = DIR / "data" / "calibration" / f"calibration_cathedral_{normalisation_sound_type}_{normalisation_algorithm}.pkl"
-    freefield.load_equalization(file=str(normalisation_file), frequency=False)
+    freefield.load_equalization(file=pathlib.Path(normalisation_file), frequency=False)
     normalisation_method = f"{normalisation_sound_type}_{normalisation_algorithm}"
     freefield.set_logger("DEBUG")
 
@@ -115,7 +117,7 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
 
     for i in iterator:
         masking_speaker = freefield.pick_speakers(i)[0]
-        stairs = slab.Staircase(start_val=3, n_reversals=5, step_sizes=[7, 5, 3, 1])
+        stairs = slab.Staircase(start_val=-5, n_reversals=5, step_sizes=[7, 5, 3, 1])
 
         for level in stairs:
             if masker_type != "syllable":
@@ -127,8 +129,8 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
             print(masker.samplerate)
             target = slab.Sound.read(target_file)
             print(target.samplerate)
-            freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
-            freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
+            masker = freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
+            target = freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
             target.level += level  # TODO: think about which level needs to be adjusted
             freefield.set_signal_and_speaker(signal=target, speaker=target_speaker, equalize=False)
             freefield.set_signal_and_speaker(signal=masker, speaker=masking_speaker, equalize=False)
@@ -206,7 +208,7 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
             "normalisation_level_target": normalisation_level_target}
 
     df_curr_results = df_curr_results.append(new_row, ignore_index=True)
-    df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name), index=False)
+    df_curr_results.to_csv(file_name, mode='w', header=True, index=False)
     """
     try:
         # Ensure the directory structure exists
