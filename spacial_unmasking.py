@@ -1,4 +1,5 @@
 import freefield
+import pandas
 import slab
 import os
 import pathlib
@@ -230,7 +231,7 @@ def plot_target_ratio_vs_distance(sub_id, masker_type):
         print("Error:", e)
         return
 
-    results["target_to_tasker_ratio"] = results["level_target"] - results["level_masker"]
+    results["target_to_masker_ratio"] = results["level_target"] - results["level_masker"]
     results["target_normalisation_adapted_ratio"] = (results["level_target"] - results["normalisation_level_target"])
 
     results_first_run = results[results["event_id"] < 10]
@@ -248,3 +249,77 @@ def plot_target_ratio_vs_distance(sub_id, masker_type):
     plt.draw()
     fig.savefig(DIR / "data" / "results" / "figs" /f"results_{sub_id}.pdf")
 
+def plot_average_results(sub_ids="all"):
+    result_filepath = DIR / "data" / "results"
+    data_files = []
+    results = []
+    speaker_distances = [2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 9.0, 10.0, 11.0, 12.0]
+    masker_types = ["babble", "pinknoise"]
+
+    if sub_ids == "all":
+        data_files = [file for file in result_filepath.iterdir()]
+    elif isinstance(sub_ids, list):
+        for sub_id in sub_ids:
+            filepath = result_filepath / f"results_spacial_unmasking_{sub_id}.csv"
+            data_files.append(filepath)
+    else:
+        print("Plotting average is only possible with all subject ids or with a list of selected subject ids!")
+
+    for file in data_files:
+        try:
+            with open(file, 'rb') as f:
+                result = pd.read_csv(f)
+        except Exception as e:
+            print("Error:", e)
+            return
+        results.append(result)
+
+    averaged_data = pd.DataFrame()
+
+    for masker in masker_types:
+        for distance in speaker_distances:
+            summed_target_level = 0
+            summed_masker_level = 0
+            summed_normalisation_level_target = 0
+            for result in results:
+                summed_target_level += float(result.loc[(result["distance_masker"] == distance)
+                                                   & (result["masker_type"] == masker), "level_target"])
+                summed_masker_level += float(result.loc[(result["distance_masker"] == distance)
+                                                  & (result["masker_type"] == masker), "level_masker"])
+                summed_normalisation_level_target += float(result.loc[(result["distance_masker"] == distance)
+                                                  & (result["masker_type"] == masker), "normalisation_level_target"])
+            average_target_level = summed_target_level / len(results)
+            average_masker_level = summed_target_level / len(results)
+            average_normalisation_level_target = summed_normalisation_level_target / len(results)
+
+            distance = float(distance)
+            average_target_level = float(average_target_level)
+            average_normalisation_level_target = float(average_normalisation_level_target)
+            average_masker_level = float(average_masker_level)
+            masker = str(masker)
+
+            new_row = {"distance_masker" : distance,
+                       "level_target" : average_target_level,
+                       "level_masker" : average_masker_level,
+                       "masker_type": masker,
+                       "normalisation_level_target" : average_normalisation_level_target}
+            averaged_data = averaged_data._append(new_row, ignore_index=True)
+
+    averaged_data["target_normalisation_adapted_ratio"] = (averaged_data["level_target"] - averaged_data["normalisation_level_target"])
+
+    average_results_babble = averaged_data[averaged_data["masker_type"] == "babble"]
+    average_results_pinknoise = averaged_data[averaged_data["masker_type"] == "pinknoise"]
+
+
+    sns.scatterplot(data=average_results_babble, x="distance_masker", y="target_normalisation_adapted_ratio",
+                    color="blue")
+    sns.scatterplot(data=average_results_pinknoise, x="distance_masker", y="target_normalisation_adapted_ratio",
+                    color="red")
+
+    plt.xlabel("Distance of Masking Speaker")
+    plt.ylabel("Ratio of Target Level")
+    plt.title("Average Ratio of Target Level vs Distance of Masking Speaker")
+    fig = plt.gcf()
+    plt.show()
+    plt.draw()
+    fig.savefig(DIR / "data" / "results" / "figs" / f"average_results_.pdf")
