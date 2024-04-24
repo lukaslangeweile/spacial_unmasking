@@ -41,12 +41,10 @@ def start_trial(sub_id, masker_type, stim_type):
     global normalisation_method
     target_speaker = freefield.pick_speakers(5)[0]
     talker = numpy.random.choice(talkers)
-    spacial_unmask_from_peripheral_speaker(start_speaker=0, target_speaker=target_speaker, sub_id=sub_id,
+    train_talker(talker)
+    spacial_unmask_within_range(nearest_speaker=0, farthest_speaker=10, target_speaker=target_speaker, sub_id=sub_id,
                                            masker_type=masker_type, stim_type=stim_type, talker=talker,
                                            normalisation_method=normalisation_method)
-    spacial_unmask_from_peripheral_speaker(start_speaker=10, target_speaker=target_speaker, sub_id=sub_id,
-                                          masker_type=masker_type, stim_type=stim_type, talker=talker,
-                                          normalisation_method=normalisation_method)
 
 def get_correct_response(file):
     for key in num_dict:
@@ -106,17 +104,14 @@ def get_target_and_masker_file(sex=None, number=None, talker=None):
     masker_file = get_random_file(get_possible_files(number=correct_response, exclude=True))
     return target_file, masker_file
 
-def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id, masker_type, stim_type, talker, normalisation_method):
+def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speaker, sub_id, masker_type, stim_type, talker, normalisation_method):
     global event_id
-    if start_speaker > 5:
-        iterator = list(range(10, 5, -1))
-    else:
-        iterator = list(range(5))
-
+    iterator = list(range(nearest_speaker, farthest_speaker + 1))
     numpy.random.shuffle(iterator)
     talker = talker
 
     for i in iterator:
+
         masking_speaker = freefield.pick_speakers(i)[0]
         stairs = slab.Staircase(start_val=-5, n_reversals=5, step_sizes=[7, 5, 3, 1])
 
@@ -127,14 +122,21 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
             else:
                 target_file, masker_file = get_target_and_masker_file(talker=talker)
             masker = slab.Sound.read(masker_file)
-            print(masker.samplerate)
             target = slab.Sound.read(target_file)
+            print(masker.samplerate)
             print(target.samplerate)
-            masker = freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
-            target = freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
-            target.level += level  # TODO: think about which level needs to be adjusted
-            freefield.set_signal_and_speaker(signal=target, speaker=target_speaker, equalize=False)
-            freefield.set_signal_and_speaker(signal=masker, speaker=masking_speaker, equalize=False)
+            if i == target_speaker:
+                to_play_data = masker.data + target.data
+                to_play = slab.Sound(data=to_play_data, samplerate=48828)
+                to_play = freefield.apply_equalization(signal=to_play, speaker=target_speaker, frequency=False)
+                to_play.level += 3
+                freefield.set_signal_and_speaker(signal=to_play, speaker=target_speaker, equalize=False)
+            else:
+                masker = freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
+                target = freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
+                target.level += level  # TODO: think about which level needs to be adjusted
+                freefield.set_signal_and_speaker(signal=target, speaker=target_speaker, equalize=False)
+                freefield.set_signal_and_speaker(signal=masker, speaker=masking_speaker, equalize=False)
             freefield.play(kind=1, proc="RX81")
             while not freefield.read("response", "RP2"):
                 time.sleep(0.05)
@@ -155,12 +157,24 @@ def spacial_unmask_from_peripheral_speaker(start_speaker, target_speaker, sub_id
         print(event_id)
         event_id += 1
 
+def train_talker(talker_id):
+    numbers = [1, 2, 3, 4, 5, 6, 8, 9]
+    talker_num_dict = {}
+    for number in numbers:
+        talker_num_dict.update({number: slab.Sound.read(get_possible_files(number=number, talker=talker_id)[0])})
+
+    while not input("Press Enter to start Experiment..."):
+        while not freefield.read("response", "RP2"):
+            time.sleep(0.05)
+    button_press = freefield.read("response", "RP2")
+    signal = freefield.read(talker_num_dict.get(int(button_press)))
+    signal = freefield.apply_equalization(signal=signal, speaker=7, frequency=False)
+    freefield.set_signal_and_speaker(signal=signal, speaker=7, equalize=False)
+    freefield.play(kind=1, proc="RX81")
+
 def set_event_id(new_event_id):
     global event_id
     event_id = new_event_id
-
-
-
 
 def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
                  level_masker, level_target, masker_type, stim_type, talker,
