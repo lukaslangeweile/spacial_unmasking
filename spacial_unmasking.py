@@ -266,7 +266,7 @@ def plot_target_ratio_vs_distance(sub_id, masker_type):
 def plot_average_results(sub_ids="all"):
     result_filepath = DIR / "data" / "results"
     data_files = []
-    results = []
+    results = pandas.DataFrame()
     speaker_distances = [2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 9.0, 10.0, 11.0, 12.0]
     masker_types = ["babble", "pinknoise"]
 
@@ -286,49 +286,18 @@ def plot_average_results(sub_ids="all"):
         except Exception as e:
             print("Error:", e)
             return
-        results.append(result)
+        results = pd.concat([results, result], ignore_index=True)
 
-    averaged_data = pd.DataFrame()
+    results["target_normalisation_adapted_ratio"] = (results["level_target"] - results["normalisation_level_target"])
 
-    for masker in masker_types:
-        for distance in speaker_distances:
-            summed_target_level = 0
-            summed_masker_level = 0
-            summed_normalisation_level_target = 0
-            for result in results:
-                summed_target_level += float(result.loc[(result["distance_masker"] == distance)
-                                                   & (result["masker_type"] == masker), "level_target"])
-                summed_masker_level += float(result.loc[(result["distance_masker"] == distance)
-                                                  & (result["masker_type"] == masker), "level_masker"])
-                summed_normalisation_level_target += float(result.loc[(result["distance_masker"] == distance)
-                                                  & (result["masker_type"] == masker), "normalisation_level_target"])
-            average_target_level = summed_target_level / len(results)
-            average_masker_level = summed_target_level / len(results)
-            average_normalisation_level_target = summed_normalisation_level_target / len(results)
+    grouped = pd.DataFrame(results).groupby("masker_type")
+    grouped_babble = grouped.get_group("babble").groupby("distance_masker")
+    grouped_pinknoise = grouped.get_group("pinknoise").groupby("distance_masker")
+    average_tnr_babble = grouped_babble["target_normalisation_adapted_ratio"].mean()
+    average_tnr_pinknoise = grouped_pinknoise["target_normalisation_adapted_ratio"].mean()
 
-            distance = float(distance)
-            average_target_level = float(average_target_level)
-            average_normalisation_level_target = float(average_normalisation_level_target)
-            average_masker_level = float(average_masker_level)
-            masker = str(masker)
-
-            new_row = {"distance_masker" : distance,
-                       "level_target" : average_target_level,
-                       "level_masker" : average_masker_level,
-                       "masker_type": masker,
-                       "normalisation_level_target" : average_normalisation_level_target}
-            averaged_data = averaged_data._append(new_row, ignore_index=True)
-
-    averaged_data["target_normalisation_adapted_ratio"] = (averaged_data["level_target"] - averaged_data["normalisation_level_target"])
-
-    average_results_babble = averaged_data[averaged_data["masker_type"] == "babble"]
-    average_results_pinknoise = averaged_data[averaged_data["masker_type"] == "pinknoise"]
-
-
-    sns.scatterplot(data=average_results_babble, x="distance_masker", y="target_normalisation_adapted_ratio",
-                    color="blue")
-    sns.scatterplot(data=average_results_pinknoise, x="distance_masker", y="target_normalisation_adapted_ratio",
-                    color="red")
+    sns.scatterplot(x=average_tnr_babble.index, y=average_tnr_babble.values, color='blue', alpha=0.5, label='Group A')
+    sns.scatterplot(x=average_tnr_pinknoise.index, y=average_tnr_pinknoise.values, color='red', alpha=0.5, label='Group B')
 
     plt.xlabel("Distance of Masking Speaker")
     plt.ylabel("Ratio of Target Level")

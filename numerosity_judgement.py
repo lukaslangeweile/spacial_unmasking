@@ -7,6 +7,7 @@ import seaborn as sns
 import numpy as np
 import time
 import pandas as pd
+import statistics
 
 
 normalisation_method = None
@@ -69,17 +70,18 @@ def get_speakers(n):
         raise ValueError("n cannot be greater than the length of the input list")
     random_indices = np.random.choice(len(freefield.SPEAKERS), n, replace=False)
     speakers = [freefield.pick_speakers(i) for i in random_indices]
-    return speakers
+    return speakers, random_indices
 
 def estimate_numerosity(sub_id):
     global n_sounds
     global event_id
     n_simultaneous_sounds = np.random.choice(n_sounds)
     filenames, sounds = get_sounds_with_filenames(n_simultaneous_sounds)
-    speakers = get_speakers(n_sounds)
+    speakers, speaker_indices = get_speakers(n_sounds)
     for i in range(n_simultaneous_sounds-1):
         freefield.apply_equalization(signal=sounds[i], speaker=speakers[i], level=True, frequency=False)
         freefield.set_signal_and_speaker(signal=sounds[i], speaker=speakers[i], equalize=False)
+    freefield.play(kind=1, proc="RX81")
     while not freefield.read(tag="response", processor="RP2"):
         time.sleep(0.05)
     response = freefield.read(tag="response", processor="RP2")
@@ -87,18 +89,31 @@ def estimate_numerosity(sub_id):
         is_correct = True
     else:
         is_correct = False
-    save_results(event_id, sub_id, SOUND_TYPE, n_sounds, filenames, speakers, is_correct)
+    save_results(event_id, sub_id, SOUND_TYPE, n_sounds, filenames, speakers, speaker_indices, is_correct)
     event_id += 1
-def save_results(event_id, sub_id, sound_type, n_sounds, filenames, speakers, is_correct):
+def save_results(event_id, sub_id, sound_type, n_sounds, filenames, speakers, speaker_indices, is_correct):
     file_name = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
 
+    active_speakers = []
+    for i in range(10):
+        if i in speaker_indices:
+            active_speakers.append(str(1))
+        else:
+            active_speakers.append(str(0))
+
+    mean_speaker_distance = statistics.mean([s.distance for s in speakers])
+    speaker_dist_st_dev = statistics.stdev([s.distance for s in speakers])
+
+    active_speakers = '"' + ','.join(active_speakers) + '"'
     results = {"event_id" : event_id,
                "subject": sub_id,
                "sound_type": sound_type,
                "n_sounds" : n_sounds,
                "sound_filenames": filenames,
-               "speakers" : speakers,
-               "is_correct" : is_correct}
+               "active_speakers" : active_speakers,
+               "is_correct" : is_correct,
+               "mean_speaker_distance": mean_speaker_distance,
+               "speaker_dist_st_dev": speaker_dist_st_dev}
 
 
     df_curr_results = pd.DataFrame.from_dict(results)
