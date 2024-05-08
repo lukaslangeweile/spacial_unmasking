@@ -158,7 +158,7 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
         event_id += 1
 
 def train_talker(talker_id):
-    numbers = [1, 2, 3, 4, 5, 6, 8, 9]
+    numbers = ["one", "two", "three", "four", "five", "six", "eight", "nine"]
     talker_num_dict = {}
     for number in numbers:
         talker_num_dict.update({number: slab.Sound.read(get_possible_files(number=number, talker=talker_id)[0])})
@@ -167,7 +167,8 @@ def train_talker(talker_id):
         while not freefield.read("response", "RP2"):
             time.sleep(0.05)
     button_press = freefield.read("response", "RP2")
-    signal = freefield.read(talker_num_dict.get(int(button_press)))
+    button_press_written = num_dict.get(button_press)
+    signal = freefield.read(talker_num_dict.get(button_press_written))
     signal = freefield.apply_equalization(signal=signal, speaker=7, frequency=False)
     freefield.set_signal_and_speaker(signal=signal, speaker=7, equalize=False)
     freefield.play(kind=1, proc="RX81")
