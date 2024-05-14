@@ -126,31 +126,25 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
             target = slab.Sound.read(target_file)
             print(masker.samplerate)
             print(target.samplerate)
+            masker = freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
+            target = freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
+            target.level += level  # TODO: think about which level needs to be adjusted
+
             if masking_speaker == target_speaker:
-                print("Masking Speaker is Target Speaker")
-                print(masker.data.shape)
-                print(target.data.shape)
+
                 max_length = max(len(masker.data), len(target.data))
 
                 # Pad both arrays with zeros to make them the same length
-                masker_padded = numpy.pad(masker.data, (0, max_length - len(masker.data)), 'constant')
-                target_padded = numpy.pad(target.data, (0, max_length - len(target.data)), 'constant')
+                masker_padded = numpy.pad(masker.data, ((0, max_length - len(masker.data)), (0, 0)), 'constant')
+                target_padded = numpy.pad(target.data, ((0, max_length - len(target.data)), (0 , 0)), 'constant')
                 to_play_data = numpy.array(masker_padded) + numpy.array(target_padded)
                 to_play = slab.Sound(data=to_play_data)
-                print(masker_padded.shape)
-                print(target_padded.shape)
-                print(to_play.data)
-                print(to_play_data.shape)
-                print(to_play.level)
+                """
                 to_play = freefield.apply_equalization(signal=to_play, speaker=target_speaker, frequency=False)
-                print(to_play.level)
-                to_play.level += to_play.level + 3
-                print(to_play.level)
+                to_play.level = to_play.level + 3
+                """
                 freefield.set_signal_and_speaker(signal=to_play, speaker=target_speaker, equalize=False)
             else:
-                masker = freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
-                target = freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
-                target.level += level  # TODO: think about which level needs to be adjusted
                 freefield.set_signal_and_speaker(signal=target, speaker=target_speaker, equalize=False)
                 freefield.set_signal_and_speaker(signal=masker, speaker=masking_speaker, equalize=False)
             freefield.play(kind=1, proc="RX81")
