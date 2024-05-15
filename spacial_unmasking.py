@@ -157,11 +157,19 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
             else:
                 stairs.add_response(0)
 
+            save_per_response(event_id=event_id, step_number=stairs.this_trial_n, level_masker=masker.level,
+                              level_target=target.level,distance_masker=masking_speaker.distance,
+                              distance_target=target_speaker.distance, masker_filename=masker_file, target_filename=target_file,
+                              normalisation_method=normalisation_method, normalisation_level_masker=masking_speaker.level,
+                              normalisation_level_target=target_speaker.level, played_number=get_correct_response(target_file),
+                              response_number=response)
+
             freefield.flush_buffers(processor="RX81")
             time.sleep(2.5)
 
         save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
-                     distance_target=target_speaker.distance, level_masker=masker.level, level_target=target.level,
+                     distance_target=target_speaker.distance, level_masker=masker.level,
+                     level_target=target_speaker.level + stairs.threshold(),
                      masker_type=masker_type, stim_type=stim_type, talker=talker, normalisation_method=normalisation_method,
                      normalisation_level_masker=masking_speaker.level, normalisation_level_target=target_speaker.level)
         print(event_id)
@@ -180,7 +188,7 @@ def train_talker(talker_id):
     for i in range(30):
         while not freefield.read("response", "RP2"):
             time.sleep(0.05)
-        button_press = int(freefield.read("response", "RP2"))
+        button_press = freefield.read("response", "RP2")
         button_press_written = get_key_by_value(button_press)
         print(button_press_written)
         print(talker_num_dict.get(button_press_written))
@@ -254,6 +262,44 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
     except Exception as e:
         print("Error:", e)
     """
+
+def save_per_response(event_id, sub_id, step_number, level_masker, level_target,
+                      distance_masker, distance_target, masker_filename, target_filename,
+                      normalisation_method, normalisation_level_masker, normalisation_level_target,
+                      played_number, response_number):
+
+    is_correct = played_number == response_number
+
+    file_name = DIR / "data" / "results" / f"results_per_step_spacial_unmasking_{sub_id}.csv"
+
+    # Check if the file exists
+    if file_name.exists():
+        # Load existing data from CSV file into a DataFrame
+        df_curr_results = pd.read_csv(file_name)
+    else:
+        # If the file doesn't exist, create an empty DataFrame
+        df_curr_results = pd.DataFrame()
+
+    if len(level_masker.shape) == 1:
+        level_masker = numpy.mean(level_masker)
+    if len(level_target.shape) == 1:
+        level_target = numpy.mean(level_target)
+
+    new_row = {"event_id": event_id,
+               "subject": sub_id,
+               "step_number:": step_number,
+               "distance_masker": distance_masker,
+               "distance_target": distance_target,
+               "level_masker": level_masker, "level_target": level_target,
+               "masker_filename": masker_filename, "target_filename": target_filename,
+               "normalisation_method": normalisation_method,
+               "normalisation_level_masker": normalisation_level_masker,
+               "normalisation_level_target": normalisation_level_target,
+               "played_number": played_number, "response_number": response_number,
+               "is_correct": is_correct}
+
+    df_curr_results = df_curr_results.append(new_row, ignore_index=True)
+    df_curr_results.to_csv(file_name, mode='w', header=True, index=False)
 
 def plot_target_ratio_vs_distance(sub_id, masker_type):
     data_file = DIR / "data" / "results" / f"results_spacial_unmasking_{sub_id}.csv"
