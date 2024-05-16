@@ -42,7 +42,7 @@ def start_trial(sub_id, masker_type, stim_type):
     target_speaker = freefield.pick_speakers(5)[0]
     talker = numpy.random.choice(talkers)
     train_talker(talker)
-    spacial_unmask_within_range(nearest_speaker=5, farthest_speaker=5, target_speaker=target_speaker, sub_id=sub_id,
+    spacial_unmask_within_range(nearest_speaker=0, farthest_speaker=10, target_speaker=target_speaker, sub_id=sub_id,
                                            masker_type=masker_type, stim_type=stim_type, talker=talker,
                                            normalisation_method=normalisation_method)
 
@@ -114,7 +114,7 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
     for i in iterator:
 
         masking_speaker = freefield.pick_speakers(i)[0]
-        stairs = slab.Staircase(start_val=-5, n_reversals=5, step_sizes=[7, 5, 3, 1])
+        stairs = slab.Staircase(start_val=-5, n_reversals=10, step_sizes=[7, 5, 3, 1])
 
         for level in stairs:
             if masker_type != "syllable":
@@ -157,8 +157,8 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
             else:
                 stairs.add_response(0)
 
-            save_per_response(event_id=event_id, step_number=stairs.this_trial_n, level_masker=masker.level,
-                              level_target=target.level,distance_masker=masking_speaker.distance,
+            save_per_response(event_id=event_id, sub_id=sub_id, step_number=stairs.this_trial_n, level_masker=masker.level,
+                              level_target=target.level, distance_masker=masking_speaker.distance,
                               distance_target=target_speaker.distance, masker_filename=masker_file, target_filename=target_file,
                               normalisation_method=normalisation_method, normalisation_level_masker=masking_speaker.level,
                               normalisation_level_target=target_speaker.level, played_number=get_correct_response(target_file),
@@ -310,15 +310,15 @@ def plot_target_ratio_vs_distance(sub_id, masker_type):
         print("Error:", e)
         return
 
-    results["target_to_masker_ratio"] = results["level_target"] - results["level_masker"]
-    results["target_normalisation_adapted_ratio"] = (results["level_target"] - results["normalisation_level_target"])
+    results["target_to_masker_ratio"] = results["level_target"] - results["normalisation_level_target"]
+    results["target_normalisation_adapted_ratio"] = results["threshold"] / results["normalisation_level_target"]
 
     results_first_run = results[results["event_id"] < 10]
     results_second_run = results[results["event_id"] >= 10]
     # Plot
 
-    sns.scatterplot(data=results_first_run, x="distance_masker", y="target_normalisation_adapted_ratio", palette="blue")
-    sns.scatterplot(data=results_second_run, x="distance_masker", y="target_normalisation_adapted_ratio", color="red")
+    sns.scatterplot(data=results_first_run, x="distance_masker", y="target_to_masker_ratio", palette="blue")
+    sns.scatterplot(data=results_second_run, x="distance_masker", y="target_to_masker_ratio", color="red")
 
     plt.xlabel("Distance of Masking Speaker")
     plt.ylabel("Ratio of Target Level")

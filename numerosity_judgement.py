@@ -28,7 +28,7 @@ n_sounds = [1, 2, 3, 4, 5, 6]
 SOUND_TYPE = None
 sounds = {}
 
-def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="syllable", sound_type="pinknoise"):
+def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="syllable", sound_type="babble"):
     global normalisation_method
     global sounds
     global SOUND_TYPE
@@ -36,6 +36,9 @@ def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="sy
     procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
              ["RP2", "RP2", DIR / "data" / "rcx" / "button_numpad.rcx"]]
     freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
+    print(freefield.SPEAKERS)
+    freefield.SETUP = "cathedral"
+    freefield.SPEAKERS = freefield.read_speaker_table()
     normalisation_file = DIR / "data" / "calibration" / f"calibration_cathedral_{normalisation_sound_type}_{normalisation_algorithm}.pkl"
     freefield.load_equalization(file=str(normalisation_file), frequency=False)
     normalisation_method = f"{normalisation_sound_type}_{normalisation_algorithm}"
@@ -61,12 +64,14 @@ def get_sounds_with_filenames(n):
     random_indices = np.random.choice(len(sounds), n, replace=False)
     sounds_list = list(sounds.values())
     filenames_list = list(sounds.keys())
-    sounds = [sounds_list[i] for i in random_indices]
-    filenames = [filenames_list[i] for i in random_indices]
-    return filenames, sounds
+    sounds_list = [sounds_list[i] for i in random_indices]
+    filenames_list = [filenames_list[i] for i in random_indices]
+    return filenames_list, sounds_list
 
 def get_speakers(n):
     if n > len(freefield.SPEAKERS):
+        print(len(freefield.SPEAKERS))
+        print(n)
         raise ValueError("n cannot be greater than the length of the input list")
     random_indices = np.random.choice(len(freefield.SPEAKERS), n, replace=False)
     speakers = [freefield.pick_speakers(i) for i in random_indices]
@@ -77,20 +82,25 @@ def estimate_numerosity(sub_id):
     global event_id
     n_simultaneous_sounds = np.random.choice(n_sounds)
     filenames, sounds = get_sounds_with_filenames(n_simultaneous_sounds)
-    speakers, speaker_indices = get_speakers(n_sounds)
+    speakers, speaker_indices = get_speakers(n_simultaneous_sounds)
     for i in range(n_simultaneous_sounds-1):
         freefield.apply_equalization(signal=sounds[i], speaker=speakers[i], level=True, frequency=False)
         freefield.set_signal_and_speaker(signal=sounds[i], speaker=speakers[i], equalize=False)
     freefield.play(kind=1, proc="RX81")
-    while not freefield.read(tag="response", processor="RP2"):
+    """while not freefield.read(tag="response", processor="RP2"):
         time.sleep(0.05)
-    response = freefield.read(tag="response", processor="RP2")
+    response = freefield.read(tag="response", processor="RP2")"""
+
+    response = input()
+
     if response == n_simultaneous_sounds:
         is_correct = True
     else:
         is_correct = False
-    save_results(event_id, sub_id, SOUND_TYPE, n_sounds, filenames, speakers, speaker_indices, is_correct)
+    """save_results(event_id, sub_id, SOUND_TYPE, n_sounds, filenames, speakers, speaker_indices, is_correct)"""
     event_id += 1
+    freefield.flush_buffers(processor="RX81")
+
 def save_results(event_id, sub_id, sound_type, n_sounds, filenames, speakers, speaker_indices, is_correct):
     file_name = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
 
