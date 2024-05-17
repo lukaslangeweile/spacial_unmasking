@@ -28,7 +28,7 @@ n_sounds = [1, 2, 3, 4, 5, 6]
 SOUND_TYPE = None
 sounds = {}
 
-def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="syllable", sound_type="babble"):
+def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="syllable", sound_type="countries"):
     global normalisation_method
     global sounds
     global SOUND_TYPE
@@ -49,6 +49,8 @@ def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="sy
         stim_DIR = DIR / "data" / "stim_files" / "tts-numbers_reversed"
     elif sound_type == "pinknoise":
         stim_DIR = DIR / "data" / "stim_files" / "pinknoise"
+    elif sound_type == "countries":
+        stim_DIR = DIR / "data" / " stim_files" / "tts-countries_n13_resamp_48828"
     else:
         return
 

@@ -167,9 +167,9 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
             freefield.flush_buffers(processor="RX81")
             time.sleep(2.5)
 
-        save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(), distance_masker=masking_speaker.distance,
+        save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(n=7), distance_masker=masking_speaker.distance,
                      distance_target=target_speaker.distance, level_masker=masker.level,
-                     level_target=target_speaker.level + stairs.threshold(),
+                     level_target=target_speaker.level + stairs.threshold(n=7),
                      masker_type=masker_type, stim_type=stim_type, talker=talker, normalisation_method=normalisation_method,
                      normalisation_level_masker=masking_speaker.level, normalisation_level_target=target_speaker.level)
         print(event_id)

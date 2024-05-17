@@ -5,41 +5,112 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="87843eff-bfa5-4e8c-92c1-efd0b98aef3c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/spacial_unmasking.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/spacial_unmasking.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Belgium_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Britain_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Congo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Cuba_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Japan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Mali_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Oman_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Peru_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Sudan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Syria_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Togo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Tonga_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p229_sex-m_text-_Yemen_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Belgium_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Britain_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Congo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Cuba_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Japan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Mali_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Oman_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Peru_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Sudan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Syria_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Togo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Tonga_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p245_sex-f_text-_Yemen_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Belgium_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Britain_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Congo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Cuba_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Japan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Mali_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Oman_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Peru_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Sudan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Syria_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Togo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Tonga_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p248_sex-f_text-_Yemen_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Belgium_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Britain_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Congo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Cuba_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Japan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Mali_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Oman_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Peru_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Sudan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Syria_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Togo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Tonga_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p256_sex-m_text-_Yemen_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Belgium_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Britain_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Congo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Cuba_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Japan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Mali_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Oman_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Peru_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Sudan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Syria_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Togo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Tonga_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p268_sex-f_text-_Yemen_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Belgium_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Britain_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Congo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Cuba_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Japan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Mali_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Oman_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Peru_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Sudan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Syria_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Togo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Tonga_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p284_sex-f_text-_Yemen_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Belgium_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Britain_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Congo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Cuba_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Japan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Mali_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Oman_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Peru_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Sudan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Syria_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Togo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Tonga_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p307_sex-m_text-_Yemen_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Belgium_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Britain_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Congo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Cuba_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Japan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Mali_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Oman_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Peru_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Sudan_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Syria_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Togo_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Tonga_.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/stim_files/tts-countries_n13_resamp_48828/talker-p318_sex-m_text-_Yemen_.wav" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_pinknoises.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_pinknoises.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/figs/average_results_.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/figs/average_results_.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/figs/results_0.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/figs/results_0.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/figs/results_1.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/figs/results_1.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/figs/results_2.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/figs/results_2.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/figs/results_3.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/figs/results_3.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/figs/results_4.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/figs/results_4.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/figs/results_5.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/figs/results_5.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/figs/results_99.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/figs/results_99.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/results_1.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_100.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/results_100.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_spacial_unmasking_0.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/results_spacial_unmasking_0.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_spacial_unmasking_1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/results_spacial_unmasking_1.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_spacial_unmasking_2.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/results_spacial_unmasking_2.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_spacial_unmasking_3.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/results_spacial_unmasking_3.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_spacial_unmasking_4.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/results_spacial_unmasking_4.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_spacial_unmasking_5.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/results_spacial_unmasking_5.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_spacial_unmasking_6.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/results_spacial_unmasking_6.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_spacial_unmasking_99.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/old_results/results_spacial_unmasking_99.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_0.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_0.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_1.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_1.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_2.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_2.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_3.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_3.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_4.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_4.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_5.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_5.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_6.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_6.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_7.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_7.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_8.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_8.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_9.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/stim_files/pinknoise/pinknoise_9.wav" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/numerosity_judgement.py" beforeDir="false" afterPath="$PROJECT_DIR$/numerosity_judgement.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plot_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot_results.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_experiment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spacial_unmasking.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacial_unmasking.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -70,11 +141,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../moore_glasberg_equalization" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/lukaslange/PycharmProjects/spacial_unmasking/data/stim_files&quot;
+  }
+}</component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings>
@@ -83,6 +155,9 @@
     </option>
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data/stim_files" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\old_results" />
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data" />
@@ -337,7 +412,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
