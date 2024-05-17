@@ -50,7 +50,7 @@ def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="sy
     elif sound_type == "pinknoise":
         stim_DIR = DIR / "data" / "stim_files" / "pinknoise"
     elif sound_type == "countries":
-        stim_DIR = DIR / "data" / " stim_files" / "tts-countries_n13_resamp_48828"
+        stim_DIR = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_48828"
     else:
         return
 
