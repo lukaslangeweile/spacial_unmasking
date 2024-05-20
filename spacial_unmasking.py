@@ -42,7 +42,7 @@ def start_trial(sub_id, masker_type, stim_type):
     target_speaker = freefield.pick_speakers(5)[0]
     talker = numpy.random.choice(talkers)
     train_talker(talker)
-    spacial_unmask_within_range(nearest_speaker=0, farthest_speaker=10, target_speaker=target_speaker, sub_id=sub_id,
+    spacial_unmask_within_range(nearest_speaker=0, farthest_speaker=5, target_speaker=target_speaker, sub_id=sub_id,
                                            masker_type=masker_type, stim_type=stim_type, talker=talker,
                                            normalisation_method=normalisation_method)
 
@@ -114,7 +114,7 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
     for i in iterator:
 
         masking_speaker = freefield.pick_speakers(i)[0]
-        stairs = slab.Staircase(start_val=-5, n_reversals=10, step_sizes=[7, 5, 3, 1])
+        stairs = slab.Staircase(start_val=-5, n_reversals=16, step_sizes=[7, 5, 3, 1])
 
         for level in stairs:
             if masker_type != "syllable":
@@ -167,9 +167,9 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
             freefield.flush_buffers(processor="RX81")
             time.sleep(2.5)
 
-        save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(n=7), distance_masker=masking_speaker.distance,
+        save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(n=12), distance_masker=masking_speaker.distance,
                      distance_target=target_speaker.distance, level_masker=masker.level,
-                     level_target=target_speaker.level + stairs.threshold(n=7),
+                     level_target=target_speaker.level + stairs.threshold(n=12),
                      masker_type=masker_type, stim_type=stim_type, talker=talker, normalisation_method=normalisation_method,
                      normalisation_level_masker=masking_speaker.level, normalisation_level_target=target_speaker.level)
         print(event_id)
