@@ -82,18 +82,18 @@ def get_speakers(n):
 def estimate_numerosity(sub_id):
     global n_sounds
     global event_id
+    fluctuation = np.random.uniform(-1, 1)
     n_simultaneous_sounds = np.random.choice(n_sounds)
     filenames, sounds = get_sounds_with_filenames(n_simultaneous_sounds)
     speakers, speaker_indices = get_speakers(n_simultaneous_sounds)
     for i in range(n_simultaneous_sounds-1):
-        freefield.apply_equalization(signal=sounds[i], speaker=speakers[i], level=True, frequency=False)
+        apply_mgb_equalization(signal=sounds[i], speaker=speakers[i], fluc=fluctuation)
         freefield.set_signal_and_speaker(signal=sounds[i], speaker=speakers[i], equalize=False)
     freefield.play(kind=1, proc="RX81")
-    """while not freefield.read(tag="response", processor="RP2"):
+    while not freefield.read(tag="response", processor="RP2"):
         time.sleep(0.05)
-    response = freefield.read(tag="response", processor="RP2")"""
+    response = freefield.read(tag="response", processor="RP2")
 
-    response = input()
 
     if response == n_simultaneous_sounds:
         is_correct = True
@@ -143,5 +143,20 @@ def plot_results(sub_id, sound_type):
         print("Error:", e)
         return
 
+def quadratic_func(x, a, b, c):
+    return a * x ** 2 + b * x + c
 
+def logarithmic_func(x, a, b, c):
+    return a * np.log(b * x) + c
 
+def get_log_parameters(distance):
+    parameters_file = DIR / "data" / "mgb_equalization_parameters" / "logarithmic_function_parameters.csv"
+    parameters_df = pd.read_csv(parameters_file)
+    params = parameters_df[parameters_df['speaker_distance'] == distance]
+    a, b, c = params.iloc[0][['a', 'b', 'c']]
+    return a, b, c
+
+def apply_mgb_equalization(signal, speaker, mgb_loudness=30, fluc=0):
+    a, b, c = get_log_parameters(speaker.distance)
+    signal.level = logarithmic_func(mgb_loudness + fluc, a, b, c)
+    return signal

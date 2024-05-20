@@ -126,8 +126,8 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
             target = slab.Sound.read(target_file)
             print(masker.samplerate)
             print(target.samplerate)
-            masker = freefield.apply_equalization(signal=masker, speaker=masking_speaker, level=True, frequency=False)
-            target = freefield.apply_equalization(signal=target, speaker=target_speaker, level=True, frequency=False)
+            masker = apply_mgb_equalization(signal=masker, speaker=masking_speaker)
+            target = apply_mgb_equalization(signal=target, speaker=target_speaker)
             target.level += level  # TODO: think about which level needs to be adjusted
 
             if masking_speaker == target_speaker:
@@ -193,7 +193,7 @@ def train_talker(talker_id):
         print(button_press_written)
         print(talker_num_dict.get(button_press_written))
         signal = slab.Sound.read(talker_num_dict.get(button_press_written))
-        signal = freefield.apply_equalization(signal=signal, speaker=5, frequency=False)
+        signal = apply_mgb_equalization(signal=signal, speaker=freefield.pick_speakers(5)[0])
         freefield.set_signal_and_speaker(signal=signal, speaker=5, equalize=False)
         freefield.play(kind=1, proc="RX81")
         freefield.flush_buffers(processor="RX81")
@@ -371,3 +371,21 @@ def plot_average_results(sub_ids="all"):
     plt.show()
     plt.draw()
     fig.savefig(DIR / "data" / "results" / "figs" / f"average_results_.pdf")
+
+def quadratic_func(x, a, b, c):
+    return a * x ** 2 + b * x + c
+
+def logarithmic_func(x, a, b, c):
+    return a * np.log(b * x) + c
+
+def get_log_parameters(distance):
+    parameters_file = DIR / "data" / "mgb_equalization_parameters" / "logarithmic_function_parameters.csv"
+    parameters_df = pd.read_csv(parameters_file)
+    params = parameters_df[parameters_df['speaker_distance'] == distance]
+    a, b, c = params.iloc[0][['a', 'b', 'c']]
+    return a, b, c
+
+def apply_mgb_equalization(signal, speaker, mgb_loudness=30, fluc=0):
+    a, b, c = get_log_parameters(speaker.distance)
+    signal.level = logarithmic_func(mgb_loudness + fluc, a, b, c)
+    return signal
