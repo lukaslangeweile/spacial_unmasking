@@ -1,0 +1,16 @@
+,event_id,subject,sound_type,n_sounds,response,is_correct,mean_speaker_distance,speaker_dist_st_dev
+0,0,102,countries,5,3.0,False,6.6,4.33589667773576
+0,1,102,countries,6,2.0,False,8.0,2.8284271247461903
+0,2,102,countries,5,4.0,False,7.2,2.588435821108957
+0,3,102,countries,4,2.0,False,6.75,3.8622100754188224
+0,4,102,countries,6,3.0,False,7.5,3.6193922141707713
+0,5,102,countries,3,3.0,True,5.666666666666667,4.725815626252608
+0,6,102,countries,2,2.0,True,7.0,2.8284271247461903
+0,7,102,countries,5,4.0,False,6.8,3.271085446759225
+0,8,102,countries,1,1.0,True,5.0,0
+0,9,102,countries,1,1.0,True,2.0,0
+0,10,102,countries,5,3.0,False,6.4,3.0495901363953815
+0,11,102,countries,6,3.0,False,6.666666666666667,3.559026084010437
+0,12,102,countries,1,1.0,True,10.0,0
+0,13,102,countries,4,3.0,False,8.0,3.9157800414902435
+0,14,102,countries,6,1.0,False,5.333333333333333,2.943920288775949
