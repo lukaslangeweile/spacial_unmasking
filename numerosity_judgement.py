@@ -118,7 +118,7 @@ def save_results(event_id, sub_id, sound_type, n_sounds, filenames, speakers, sp
 
     active_speakers = '"' + ','.join(active_speakers) + '"'
     results = {"event_id" : event_id,
-               "subject": sub_id,
+               "sub_id": sub_id,
                "sound_type": sound_type,
                "n_sounds" : n_sounds,
                "sound_filenames": filenames,

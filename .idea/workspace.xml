@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="87843eff-bfa5-4e8c-92c1-efd0b98aef3c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localisation.py" beforeDir="false" afterPath="$PROJECT_DIR$/localisation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/numerosity_judgement.py" beforeDir="false" afterPath="$PROJECT_DIR$/numerosity_judgement.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plot_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot_results.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacial_unmasking.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacial_unmasking.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,10 +37,11 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../moore_glasberg_equalization" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;
+  }
+}</component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings>
@@ -215,10 +214,10 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.create_pinknoises" />
       <item itemvalue="Python.main" />
-      <item itemvalue="Python.plot_average_results" />
       <item itemvalue="Python.plot_results" />
+      <item itemvalue="Python.create_pinknoises" />
+      <item itemvalue="Python.plot_average_results" />
       <item itemvalue="Python.reverse_syllables" />
       <item itemvalue="Python.run_experiment" />
       <item itemvalue="Python.spacial_unmasking" />
@@ -309,7 +308,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
