@@ -1,0 +1,8 @@
+,event_id,subject,sound_type,n_sounds,response,is_correct,mean_speaker_distance,speaker_dist_st_dev
+0,0,101,countries,5,3.0,False,7.8,1.9235384061671346
+0,1,101,countries,2,2.0,True,7.0,7.0710678118654755
+0,2,101,countries,5,3.0,False,7.2,4.43846820423443
+0,3,101,countries,6,6.0,True,7.833333333333333,2.316606713852541
+0,4,101,countries,4,3.0,False,7.5,2.3804761428476167
+0,5,101,countries,1,1.0,True,7.0,0
+0,6,101,countries,4,3.0,False,5.0,1.8257418583505538

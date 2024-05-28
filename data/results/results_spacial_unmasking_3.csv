@@ -1,0 +1,5 @@
+event_id,subject,threshold,distance_masker,distance_target,level_masker,level_target,masker_type,stim_type,talker,normalisation_method,normalisation_level_masker,normalisation_level_target
+0,3,-12.2,5.0,7.0,89.14911522239515,78.64444444444446,babble,syllable,p248,syllable_rms,89.82222222222222,90.84444444444446
+1,3,-11.7,4.0,7.0,87.57049330475357,79.14444444444446,babble,syllable,p248,syllable_rms,88.4,90.84444444444446
+2,3,-13.5,2.0,7.0,84.40078082039426,77.34444444444446,babble,syllable,p248,syllable_rms,86.2,90.84444444444446
+3,3,-7.8,6.0,7.0,89.31368318402099,83.04444444444447,babble,syllable,p248,syllable_rms,90.06666666666666,90.84444444444446
