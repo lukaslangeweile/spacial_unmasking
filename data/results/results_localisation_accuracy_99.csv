@@ -1,0 +1,9 @@
+,event_id,sub_id,response,speaker_distance,sound_filename
+0,0,99,7,10.0,babble-reversed_n13_p307-two-p256-four-p229-six-p248-three-p245-five-p268-eight.wav
+0,1,99,1,11.0,babble-reversed_n13_p307-four-p318-three-p256-eight-p284-two-p245-nine-p248-five.wav
+0,2,99,8,12.0,babble-reversed_n13_p229-five-p256-three-p318-nine-p248-two-p284-four-p268-one.wav
+0,0,99,7,9.0,babble-reversed_n13_p256-one-p307-nine-p318-five-p245-four-p284-six-p248-three.wav
+0,0,99,8,6.0,babble-reversed_n13_p256-six-p229-three-p307-five-p268-nine-p248-two-p284-eight.wav
+0,1,99,1,11.0,babble-reversed_n13_p307-three-p229-four-p256-eight-p248-six-p245-two-p268-one.wav
+0,2,99,22,5.0,babble-reversed_n13_p229-one-p256-three-p318-five-p268-six-p245-four-p248-eight.wav
+0,0,99,7,5.0,babble-reversed_n13_p307-two-p229-one-p256-five-p248-nine-p284-three-p268-eight.wav

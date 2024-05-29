@@ -4,12 +4,13 @@ import slab
 import os
 import pathlib
 import time
-import numpy
+import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 
 sounds = {}
+DIR = pathlib.Path(os.curdir)
 
 def initialize():
     procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
@@ -25,20 +26,22 @@ def initialize():
 def start_trial(sub_id, n_reps=30):
     for i in range(n_reps):
         event_id = i
-        filename, sound = get_sounds_with_filename(1)
+        filename, sound = get_sounds_with_filenames(1)
         filename = filename[0]
         sound = sound[0]
         speaker = freefield.pick_speakers(np.random.randint(0, 11))[0]
-        apply_mgb_equalization(signal=sound, speaker=speaker)
+        sound = apply_mgb_equalization(signal=sound, speaker=speaker)
+        print(sound.data)
+        freefield.set_signal_and_speaker(signal=sound, speaker=speaker, equalize=False)
         freefield.play(kind=1, proc="RX81")
         response = input("Estimate Distance in m...")
-        freefield.flush_buffers()
+        freefield.flush_buffers(processor="RX81")
         save_results(event_id=event_id, sub_id=sub_id, response=response,
                      speaker_distance=speaker.distance, sound_filename=filename)
 
     return
 
-def get_sound_with_filenames(n):
+def get_sounds_with_filenames(n):
     global sounds
     if n > len(sounds):
         raise ValueError("n cannot be greater than the length of the input list")
@@ -77,5 +80,5 @@ def save_results(event_id, sub_id, response, speaker_distance, sound_filename):
                "speaker_distance": speaker_distance,
                "sound_filename": sound_filename}
 
-    df_curr_results = pd.DataFrame.from_dict(results)
+    df_curr_results = pd.DataFrame(results, index=[0])
     df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))

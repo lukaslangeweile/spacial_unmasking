@@ -42,6 +42,7 @@ def start_trial(sub_id, masker_type, stim_type):
     target_speaker = freefield.pick_speakers(5)[0]
     talker = np.random.choice(talkers)
     train_talker(talker)
+    input("Start Experiment by pressing Enter...")
     spacial_unmask_within_range(nearest_speaker=0, farthest_speaker=10, target_speaker=target_speaker, sub_id=sub_id,
                                            masker_type=masker_type, stim_type=stim_type, talker=talker,
                                            normalisation_method=normalisation_method)
@@ -190,7 +191,7 @@ def train_talker(talker_id):
         filepath = os.path.join(DIR, get_possible_files(number=number, talker=talker_id)[0])
         talker_num_dict.update({number: filepath})
     print(talker_num_dict)
-    for i in range(10):
+    for i in range(11):
         while not freefield.read("response", "RP2"):
             time.sleep(0.05)
         button_press = freefield.read("response", "RP2")
@@ -199,7 +200,7 @@ def train_talker(talker_id):
         print(talker_num_dict.get(button_press_written))
         signal = slab.Sound.read(talker_num_dict.get(button_press_written))
         signal = apply_mgb_equalization(signal=signal, speaker=freefield.pick_speakers(5)[0])
-        freefield.set_signal_and_speaker(signal=signal, speaker=5, equalize=False)
+        freefield.set_signal_and_speaker(signal=signal, speaker=i, equalize=False)
         freefield.play(kind=1, proc="RX81")
         time.sleep(0.5)
         """freefield.flush_buffers(processor="RX81")"""
