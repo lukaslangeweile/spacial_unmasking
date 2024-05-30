@@ -179,25 +179,36 @@ def apply_mgb_equalization(signal, speaker, mgb_loudness=25, fluc=0):
     return signal
 
 
-def plot_averaged_responses(sub_id, sound_type):
-    # Define the path to the results files
-    file_pattern = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
+def plot_averaged_responses(sub_ids, sound_type):
+    # Initialize an empty DataFrame to hold all data
+    all_data = pd.DataFrame()
 
-    # Load all relevant CSV files into a DataFrame
-    files = glob.glob(str(file_pattern))
-    df_list = [pd.read_csv(file) for file in files]
-    df = pd.concat(df_list, ignore_index=True)
+    # Loop through each subject ID and load the corresponding data
+    for sub_id in sub_ids:
+        file_pattern = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
+        files = glob.glob(str(file_pattern))
+
+        df_list = [pd.read_csv(file) for file in files if pd.read_csv(file).shape[0] > 0]  # Ensure non-empty files
+        if df_list:
+            df = pd.concat(df_list, ignore_index=True)
+            all_data = pd.concat([all_data, df], ignore_index=True)
+
+    if all_data.empty:
+        print("No valid data found for the given subject IDs.")
+        return
 
     # Calculate the mean response for each n_sounds
-    mean_responses = df.groupby('n_sounds')['response'].mean().reset_index()
+    mean_responses = all_data.groupby('n_sounds')['response'].mean().reset_index()
 
     # Plotting
     plt.figure(figsize=(10, 6))
     plt.plot(mean_responses['n_sounds'], mean_responses['response'], marker='o')
     plt.xlabel('Number of Sounds (n_sounds)')
     plt.ylabel('Average Response')
-    plt.title(f'Average Responses vs. Number of Sounds for {sound_type} (Subject: {sub_id})')
+    plt.title(f'Average Responses vs. Number of Sounds for {sound_type}')
     plt.grid(True)
     plt.show()
 
-"""plot_averaged_responses(100, "countries")"""
+plot_averaged_responses([100, 9], "countries")
+plot_averaged_responses(100, "countries")
+plot_averaged_responses(9, "countries")
