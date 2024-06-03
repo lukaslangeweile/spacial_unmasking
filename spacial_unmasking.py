@@ -399,6 +399,6 @@ def apply_mgb_equalization(signal, speaker, mgb_loudness=30, fluc=0):
     signal.level = logarithmic_func(mgb_loudness + fluc, a, b, c)
     return signal
 
-def get_speaker_normalisation_level(speaker):
+def get_speaker_normalisation_level(speaker, mgb_loudness=30):
     a, b, c = get_log_parameters(speaker.distance)
-    return logarithmic_func(x=30, a=a, b=b, c=c)
+    return logarithmic_func(x=mgb_loudness, a=a, b=b, c=c)
