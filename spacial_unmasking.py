@@ -43,7 +43,7 @@ def start_trial(sub_id, masker_type, stim_type):
     talker = np.random.choice(talkers)
     train_talker(talker)
     input("Start Experiment by pressing Enter...")
-    spacial_unmask_within_range(nearest_speaker=0, farthest_speaker=10, target_speaker=target_speaker, sub_id=sub_id,
+    spacial_unmask_within_range(nearest_speaker=0, farthest_speaker=0, target_speaker=target_speaker, sub_id=sub_id,
                                            masker_type=masker_type, stim_type=stim_type, talker=talker,
                                            normalisation_method=normalisation_method)
 

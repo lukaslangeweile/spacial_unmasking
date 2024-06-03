@@ -7,3 +7,52 @@
 0,1,99,1,11.0,babble-reversed_n13_p307-three-p229-four-p256-eight-p248-six-p245-two-p268-one.wav
 0,2,99,22,5.0,babble-reversed_n13_p229-one-p256-three-p318-five-p268-six-p245-four-p248-eight.wav
 0,0,99,7,5.0,babble-reversed_n13_p307-two-p229-one-p256-five-p248-nine-p284-three-p268-eight.wav
+0,0,99,<function get_slider_response at 0x00000166BD6C3F70>,9.0,babble-reversed_n13_p229-one-p318-eight-p256-three-p268-nine-p248-five-p284-four.wav
+0,1,99,<function get_slider_response at 0x00000166BD6C3F70>,12.0,babble-reversed_n13_p229-two-p318-eight-p256-three-p268-one-p248-nine-p284-five.wav
+0,2,99,<function get_slider_response at 0x00000166BD6C3F70>,12.0,babble-reversed_n13_p229-three-p318-six-p307-five-p245-one-p248-eight-p268-nine.wav
+0,3,99,<function get_slider_response at 0x00000166BD6C3F70>,4.0,babble-reversed_n13_p307-one-p256-six-p229-three-p245-four-p248-two-p284-eight.wav
+0,4,99,<function get_slider_response at 0x00000166BD6C3F70>,10.0,babble-reversed_n13_p256-nine-p307-eight-p229-two-p248-five-p284-three-p245-one.wav
+0,5,99,<function get_slider_response at 0x00000166BD6C3F70>,5.0,babble-reversed_n13_p229-nine-p307-six-p318-two-p284-three-p268-one-p248-five.wav
+0,6,99,<function get_slider_response at 0x00000166BD6C3F70>,9.0,babble-reversed_n13_p307-two-p229-one-p256-five-p248-nine-p284-three-p268-eight.wav
+0,7,99,<function get_slider_response at 0x00000166BD6C3F70>,8.0,babble-reversed_n13_p307-five-p229-three-p318-nine-p245-four-p268-eight-p284-two.wav
+0,8,99,<function get_slider_response at 0x00000166BD6C3F70>,2.0,babble-reversed_n13_p229-one-p256-six-p307-three-p268-eight-p248-two-p284-nine.wav
+0,9,99,<function get_slider_response at 0x00000166BD6C3F70>,7.0,babble-reversed_n13_p307-four-p229-five-p256-six-p245-nine-p268-three-p248-eight.wav
+0,10,99,<function get_slider_response at 0x00000166BD6C3F70>,12.0,babble-reversed_n13_p307-three-p256-one-p318-six-p248-four-p284-nine-p245-five.wav
+0,11,99,<function get_slider_response at 0x00000166BD6C3F70>,11.0,babble-reversed_n13_p307-three-p229-four-p256-eight-p248-six-p245-two-p268-one.wav
+0,12,99,<function get_slider_response at 0x00000166BD6C3F70>,4.0,babble-reversed_n13_p256-five-p318-nine-p229-eight-p284-two-p248-six-p245-four.wav
+0,13,99,<function get_slider_response at 0x00000166BD6C3F70>,3.0,babble-reversed_n13_p229-one-p256-three-p318-five-p268-six-p245-four-p248-eight.wav
+0,14,99,<function get_slider_response at 0x00000166BD6C3F70>,7.0,babble-reversed_n13_p307-eight-p318-nine-p229-three-p248-six-p268-two-p284-one.wav
+0,15,99,<function get_slider_response at 0x00000166BD6C3F70>,8.0,babble-reversed_n13_p256-one-p307-six-p318-four-p248-three-p284-eight-p245-nine.wav
+0,16,99,<function get_slider_response at 0x00000166BD6C3F70>,8.0,babble-reversed_n13_p318-two-p256-five-p307-one-p245-six-p268-nine-p248-eight.wav
+0,17,99,<function get_slider_response at 0x00000166BD6C3F70>,5.0,babble-reversed_n13_p318-six-p229-five-p307-four-p284-three-p248-two-p245-nine.wav
+0,18,99,<function get_slider_response at 0x00000166BD6C3F70>,4.0,babble-reversed_n13_p229-six-p318-two-p307-nine-p245-eight-p284-four-p248-five.wav
+0,19,99,<function get_slider_response at 0x00000166BD6C3F70>,8.0,babble-reversed_n13_p256-three-p318-one-p307-two-p284-nine-p268-four-p245-eight.wav
+0,20,99,<function get_slider_response at 0x00000166BD6C3F70>,9.0,babble-reversed_n13_p229-one-p318-six-p256-three-p284-two-p268-four-p248-nine.wav
+0,21,99,<function get_slider_response at 0x00000166BD6C3F70>,11.0,babble-reversed_n13_p229-five-p256-six-p307-three-p248-eight-p245-two-p284-four.wav
+0,22,99,<function get_slider_response at 0x00000166BD6C3F70>,5.0,babble-reversed_n13_p229-eight-p307-six-p318-nine-p245-two-p248-three-p268-five.wav
+0,23,99,<function get_slider_response at 0x00000166BD6C3F70>,10.0,babble-reversed_n13_p256-four-p307-two-p318-one-p248-eight-p284-six-p245-five.wav
+0,24,99,<function get_slider_response at 0x00000166BD6C3F70>,10.0,babble-reversed_n13_p307-two-p229-nine-p318-six-p245-three-p284-eight-p268-five.wav
+0,25,99,<function get_slider_response at 0x00000166BD6C3F70>,7.0,babble-reversed_n13_p307-eight-p318-nine-p256-six-p268-three-p248-two-p245-five.wav
+0,26,99,<function get_slider_response at 0x00000166BD6C3F70>,12.0,babble-reversed_n13_p256-four-p307-one-p318-nine-p284-six-p248-three-p268-five.wav
+0,27,99,<function get_slider_response at 0x00000166BD6C3F70>,9.0,babble-reversed_n13_p307-nine-p229-three-p256-two-p268-four-p248-six-p284-five.wav
+0,28,99,<function get_slider_response at 0x00000166BD6C3F70>,7.0,babble-reversed_n13_p307-five-p229-six-p256-nine-p245-four-p268-three-p284-two.wav
+0,29,99,<function get_slider_response at 0x00000166BD6C3F70>,5.0,babble-reversed_n13_p256-nine-p229-one-p307-three-p284-four-p248-six-p245-two.wav
+0,0,99,663,6.0,babble-reversed_n13_p318-three-p307-one-p256-five-p248-nine-p245-two-p284-eight.wav
+0,1,99,320,2.0,babble-reversed_n13_p229-eight-p256-nine-p318-one-p268-four-p284-six-p245-five.wav
+0,2,99,610,7.0,babble-reversed_n13_p229-five-p318-two-p307-eight-p268-three-p248-four-p245-one.wav
+0,0,99,683,7.0,babble-reversed_n13_p229-two-p318-eight-p256-three-p268-one-p248-nine-p284-five.wav
+0,0,99,676,10.0,babble-reversed_n13_p307-three-p318-two-p229-one-p248-six-p245-nine-p284-eight.wav
+0,0,99,497,3.0,babble-reversed_n13_p256-three-p318-two-p307-four-p268-six-p248-one-p245-eight.wav
+0,1,99,811,3.0,babble-reversed_n13_p256-four-p307-two-p318-one-p248-eight-p284-six-p245-five.wav
+0,2,99,8,5.0,babble-reversed_n13_p307-nine-p256-three-p318-four-p268-eight-p284-six-p245-one.wav
+0,0,99,9.222873900293255,8.0,babble-reversed_n13_p229-eight-p318-five-p256-six-p268-three-p284-one-p245-nine.wav
+0,1,99,2.80058651026393,5.0,babble-reversed_n13_p256-four-p229-eight-p307-five-p248-three-p245-one-p284-two.wav
+0,2,99,11.87683284457478,10.0,babble-reversed_n13_p229-five-p318-nine-p256-six-p248-two-p284-four-p245-one.wav
+0,0,99,6.87683284457478,6.0,pinknoise
+0,1,99,12.609970674486805,11.0,pinknoise
+0,2,99,13.10850439882698,12.0,pinknoise
+0,3,99,3.9882697947214076,11.0,pinknoise
+0,0,99,8.651026392961878,7.0,uso_300ms_46.wav
+0,1,99,5.718475073313783,2.0,uso_300ms_24.wav
+0,2,99,11.011730205278592,5.0,uso_300ms_35.wav
+0,3,99,9.340175953079179,9.0,uso_300ms_25.wav

@@ -28,7 +28,7 @@ num_dict = {"one": 1,
             "nine": 9}
 target_dict = {}
 talkers = ["p229", "p245", "p248", "p256", "p268", "p284", "p307", "p318"]
-n_sounds = [1, 2, 3, 4, 5, 6]
+n_sounds = [2, 3, 4, 5, 6]
 SOUND_TYPE = None
 sounds = {}
 maximum_n_samples = 0
@@ -209,6 +209,6 @@ def plot_averaged_responses(sub_ids, sound_type):
     plt.grid(True)
     plt.show()
 
-plot_averaged_responses([100, 9], "countries")
+"""plot_averaged_responses([100, 9], "countries")
 plot_averaged_responses(100, "countries")
-plot_averaged_responses(9, "countries")
+plot_averaged_responses(9, "countries")"""
