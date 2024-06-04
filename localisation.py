@@ -102,6 +102,17 @@ def save_results(event_id, sub_id, response, speaker_distance, sound_filename):
     df_curr_results = pd.DataFrame(results, index=[0])
     df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))
 
+def plot_results(sub_id):
+    filepath = DIR / "data" / "results" / f"results_localisation_accuracy_{sub_id}.csv"
+    df = pd.read_csv(filepath)
+    sns.pointplot(df, x="speaker_distance", y="response", hue="stim_type")
+    plt.xlabel("Speaker Distance in m")
+    plt.ylabel("Estimated Distance in m")
+    plt.title("Localisation Judgement")
+    fig = plt.gcf()
+    plt.show()
+    plt.draw()
+
 
 def get_slider_value(serial_port=slider, in_metres=True):
     serial_port.flushInput()
@@ -112,7 +123,8 @@ def get_slider_value(serial_port=slider, in_metres=True):
             lines = buffer_string.split('\n')  # Guaranteed to have at least 2 entries
             last_received = int(lines[-2].rstrip())
             if in_metres:
-                last_received = np.interp(last_received, xp=[0, 1023], fp=[0, 15])
+                last_received = np.interp(last_received, xp=[0, 1023], fp=[0, 15]) - 1.5
             return last_received
 
-
+if __name__ == "__main__":
+    plot_results(99)
