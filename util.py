@@ -8,11 +8,18 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
+import json
 
 DIR = DIR = pathlib.Path(os.curdir)
 
 def initialize_setup():
     #initialize for the whole setup, so all 3 experiments can run
+    procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
+             ["RP2", "RP2", DIR / "data" / "rcx" / "button_numpad.rcx"]]
+    freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
+    freefield.SETUP = "cathedral"
+    freefield.SPEAKERS = freefield.read_speaker_table()
+    freefield.set_logger("DEBUG")
     return
 def quadratic_func(x, a, b, c):
     return a * x ** 2 + b * x + c
@@ -38,11 +45,13 @@ def get_stim_dir(stim_type):
         stim_dir = DIR / "data" / "stim_files" / "pinknoise"
     elif stim_type == "countries":
         stim_dir = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_48828"
-    elif stim_type == "pinknoise":
+    elif stim_type == "syllable":
         stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_48828"
+    elif stim_type == "uso":
+        stim_dir = DIR / "data" / "stim_files" / "uso_300ms"
     else:
         return
-    return stim_type
+    return pathlib.Path(stim_dir)
 
 def apply_mgb_equalization(signal, speaker, mgb_loudness=30, fluc=0):
     a, b, c = get_log_parameters(speaker.distance)
@@ -67,14 +76,18 @@ def record_stimuli_and_create_csv(stim_type="countries"):
 
     return
 
-def get_sounds_with_filenames(n="all", stim_type="babble", randomize=False):
+def get_sounds_dict(stim_type="babble"):
     stim_dir = get_stim_dir(stim_type)
-    sounds_list = []
-    filenames_list = []
+    sounds_dict = {}
 
     for file in stim_dir.iterdir():
-        sounds_list.append(slab.Sound.read(file))
-        filenames_list.append(str(file))
+        sounds_dict.update({str(file): slab.Sound.read(file)})
+
+    return sounds_dict
+
+def get_sounds_with_filenames(sounds_dict, n="all", randomize=False):
+    filenames_list = sounds_dict.values
+    sounds_list = sounds_dict.keys
 
     if isinstance(n, int):
         if randomize:
@@ -87,3 +100,35 @@ def get_sounds_with_filenames(n="all", stim_type="babble", randomize=False):
 
     return sounds_list, filenames_list
 
+def create_localisation_config_file():
+    config_dir = DIR / "config"
+    filename = config_dir / "localisation_config.json"
+    config_data = {"sounds_dict_pinknoise": get_sounds_dict("pinknoise"),
+                   "sounds_dict_syllable": get_sounds_dict("syllable"),
+                   "sounds_dict_babble": get_sounds_dict("babble")}
+    with open(filename, 'w') as config_file:
+        json.dump(config_data, config_file, indent=4)
+
+
+def read_config_file(experiment):
+    if experiment == "localisation":
+        filename = DIR / "config" / "localisation_config.json"
+    elif experiment == "spacial_unmasking":
+        filename = DIR / "config" / "spacial-unmasking_config.json"
+    elif experiment == "numerosity_judgement":
+        filename = DIR / "config" / "numerosity-judgement_config.json"
+    else:
+        return
+    with open(filename, 'r') as config_file:
+        config_data = json.load(config_file)
+    return config_data
+
+def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc=0):
+    for i in range(len(signals)):
+        if equalize:
+            signals[i] = apply_mgb_equalization(signals[i], speakers[i], mgb_loudness, fluc)
+        freefield.set_signal_and_speaker(signals[i], speakers[i], equalize=False)
+
+    for i in range(len(signals)+1, 8):
+        freefield.write(tag=f"chan{i}", value=99, processors="RX81")
+"""if __name__ == "__main__":"""

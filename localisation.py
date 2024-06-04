@@ -9,10 +9,10 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 import serial
+import util
 
 port = "COM5"
 slider = serial.Serial(port, baudrate=9600, timeout=0, rtscts=False)
-sounds = {}
 DIR = pathlib.Path(os.curdir)
 
 
@@ -32,23 +32,29 @@ def initialize(sound_type="syllable"):
         sounds.update({os.path.basename(file): slab.Sound.read(str(file))})
 
 
-def start_trial(sub_id, sound_type="pinknoise", n_reps=30):
-    for i in range(n_reps):
+def start_trial(sub_id, stim_type="pinknoise", n_reps=3):
+    sounds_dict = util.get_sounds_dict(stim_type=stim_type)
+    conditions = list(range(10)) * n_reps
+    while True:
+        np.random.shuffle(conditions)
+        valid = True
+        for i in range(1, len(conditions)):
+            if conditions[i] == conditions[i - 1]:
+                valid = False
+                break
+        if valid:
+            break
+
+    for i in range(n_reps * 11):
         event_id = i
-        if sound_type == "pinknoise":
-            sound = slab.Sound.pinknoise(duration=0.3)
-            filename = "pinknoise"
-        else:
-            filename, sound = get_sounds_with_filenames(1)
-            filename = filename[0]
-            sound = sound[0]
-        speaker = freefield.pick_speakers(np.random.randint(0, 11))[0]
-        sound = apply_mgb_equalization(signal=sound, speaker=speaker)
-        freefield.set_signal_and_speaker(signal=sound, speaker=speaker, equalize=False)
+        filename, sound = util.get_sounds_with_filenames(sounds_dict=sounds_dict, n=1, randomize=True)
+        filename = filename[0]
+        sound = sound[0]
+        speaker = freefield.pick_speakers(conditions[i])[0]
+        util.set_multiple_signals(signals=[sound], speakers=[speaker], equalize=True)
         freefield.play(kind=1, proc="RX81")
         response = get_slider_value()
         print(response)
-        freefield.flush_buffers(processor="RX81")
         save_results(event_id=event_id, sub_id=sub_id, response=response,
                      speaker_distance=speaker.distance, sound_filename=filename)
 
@@ -108,4 +114,5 @@ def get_slider_value(serial_port=slider, in_metres=True):
             if in_metres:
                 last_received = np.interp(last_received, xp=[0, 1023], fp=[0, 15])
             return last_received
+
 
