@@ -12,6 +12,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import glob
 from pathlib import Path
+import util
 
 
 normalisation_method = None
@@ -92,19 +93,20 @@ def estimate_numerosity(sub_id):
     n_simultaneous_sounds = np.random.choice(n_sounds)
     filenames, sounds = get_sounds_with_filenames(n_simultaneous_sounds)
     speakers, speaker_indices = get_speakers(n_simultaneous_sounds)
-    for i in range(n_simultaneous_sounds):
+    util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, fluc=fluctuation)
+    """for i in range(n_simultaneous_sounds):
         apply_mgb_equalization(signal=sounds[i], speaker=speakers[i], fluc=fluctuation)
         freefield.set_signal_and_speaker(signal=sounds[i], speaker=speakers[i], equalize=False)
         print(sounds[i].n_samples)
-        time.sleep(0.1)
+        time.sleep(0.1)"""
     time.sleep(0.3)
     freefield.play(kind=1, proc="RX81")
     print(f"simulatneous_sounds = {n_simultaneous_sounds}")
     while not freefield.read(tag="response", processor="RP2"):
         time.sleep(0.05)
     response = freefield.read(tag="response", processor="RP2")
-    freefield.flush_buffers(processor="RX81", maximum_n_samples=maximum_n_samples)
-    freefield.write(tag="playbuflen", value=30000, processors="RX81")
+    """freefield.flush_buffers(processor="RX81", maximum_n_samples=maximum_n_samples)
+    freefield.write(tag="playbuflen", value=30000, processors="RX81")"""
 
 
     if response == n_simultaneous_sounds:
@@ -114,7 +116,7 @@ def estimate_numerosity(sub_id):
     save_results(event_id, sub_id, SOUND_TYPE, n_simultaneous_sounds, response, is_correct, speakers)
     event_id += 1
     print(f"simulatneous_sounds = {n_simultaneous_sounds}")
-    time.sleep(1.0)
+    # time.sleep(1.0)
 
 
 def save_results(event_id, sub_id, sound_type, n_sounds, response, is_correct, speakers):
