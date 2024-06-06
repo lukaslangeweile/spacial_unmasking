@@ -96,8 +96,8 @@ def get_sounds_dict(stim_type="babble"):
     return sounds_dict
 
 def get_sounds_with_filenames(sounds_dict, n="all", randomize=False):
-    filenames_list = sounds_dict.values
-    sounds_list = sounds_dict.keys
+    filenames_list = list(sounds_dict.values())
+    sounds_list = list(sounds_dict.keys())
 
     if isinstance(n, int):
         if randomize:
@@ -158,8 +158,24 @@ def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc
     for i in range(len(signals)):
         if equalize:
             signals[i] = apply_mgb_equalization(signals[i], speakers[i], mgb_loudness, fluc)
-        freefield.set_signal_and_speaker(signals[i], speakers[i], equalize=False)
-
-    for i in range(len(signals)+1, 8):
+        speaker_index = speakers[i].index + 1
+        freefield.write(tag=f"data{i}", value=signals[i].data, processors="RX81")
+        freefield.write(tag=f"chan{i}", value=speaker_index, processors="RX81")
+    time.sleep(0.2)
+    for i in range(len(signals), 8):
         freefield.write(tag=f"chan{i}", value=99, processors="RX81")
-"""if __name__ == "__main__":"""
+        time.sleep(0.1)
+
+def test_speakers():
+    sound = slab.Sound.pinknoise(0.50)
+    for speaker in freefield.SPEAKERS:
+        set_multiple_signals([sound], [speaker], equalize=True)
+        time.sleep(0.1)
+        freefield.play(kind=1, proc="RX81")
+        time.sleep(1.0)
+
+if __name__ == "__main__":
+
+    initialize_setup()
+    time.sleep(2.0)
+    test_speakers()

@@ -6,9 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="87843eff-bfa5-4e8c-92c1-efd0b98aef3c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_numerosity_judgement_countries_101.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_numerosity_judgement_countries_102.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/results_localisation_accuracy_99.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/results_localisation_accuracy_99.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/results_numerosity_judgement_countries_99.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/results_numerosity_judgement_countries_99.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localisation.py" beforeDir="false" afterPath="$PROJECT_DIR$/localisation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/numerosity_judgement.py" beforeDir="false" afterPath="$PROJECT_DIR$/numerosity_judgement.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plot_average_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot_average_results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plot_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot_results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_experiment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacial_unmasking.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacial_unmasking.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,11 +44,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;
-  }
-}</component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+  </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings>
@@ -60,29 +69,7 @@
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.numerosity_judgement">
-    <configuration name="create_pinknoises" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="spacial_unmasking" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="C:\Users\User\anaconda3\envs\cathedral2\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/create_pinknoises.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.plot_average_results">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="spacial_unmasking" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -113,7 +100,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/anaconda3/env/cathedral" />
-      <option name="SDK_NAME" value="freefield (2)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -216,22 +202,44 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="util" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="spacial_unmasking" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/util.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.main" />
       <item itemvalue="Python.plot_results" />
-      <item itemvalue="Python.create_pinknoises" />
       <item itemvalue="Python.plot_average_results" />
       <item itemvalue="Python.run_experiment" />
       <item itemvalue="Python.spacial_unmasking" />
       <item itemvalue="Python.numerosity_judgement" />
+      <item itemvalue="Python.util" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.numerosity_judgement" />
         <item itemvalue="Python.plot_average_results" />
         <item itemvalue="Python.run_experiment" />
+        <item itemvalue="Python.util" />
+        <item itemvalue="Python.numerosity_judgement" />
         <item itemvalue="Python.spacial_unmasking" />
-        <item itemvalue="Python.create_pinknoises" />
       </list>
     </recent_temporary>
   </component>
@@ -301,6 +309,15 @@
       <workItem from="1716451421597" duration="6722000" />
       <workItem from="1716551120769" duration="1671000" />
       <workItem from="1716795314170" duration="1915000" />
+      <workItem from="1717156741910" duration="1829000" />
+      <workItem from="1717158724554" duration="180000" />
+      <workItem from="1717159530824" duration="355000" />
+      <workItem from="1717405053703" duration="338000" />
+      <workItem from="1717405600434" duration="3498000" />
+      <workItem from="1717485637999" duration="6518000" />
+      <workItem from="1717494523333" duration="1448000" />
+      <workItem from="1717502858373" duration="244000" />
+      <workItem from="1717503229349" duration="6065000" />
     </task>
     <servers />
   </component>
@@ -320,6 +337,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -333,12 +351,13 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/spacial_unmasking$run_experiment.coverage" NAME="run_experiment Coverage Results" MODIFIED="1716798713897" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/spacial_unmasking$plot_results.coverage" NAME="plot_results Coverage Results" MODIFIED="1716798730260" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/spacial_unmasking$plot_average_results.coverage" NAME="plot_average_results Coverage Results" MODIFIED="1716798793718" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spacial_unmasking$run_experiment.coverage" NAME="run_experiment Coverage Results" MODIFIED="1717512200317" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spacial_unmasking$plot_results.coverage" NAME="plot_results Coverage Results" MODIFIED="1717515174698" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spacial_unmasking$plot_average_results.coverage" NAME="plot_average_results Coverage Results" MODIFIED="1717515186963" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$numerosity_judgement.coverage" NAME="numerosity_judgement Coverage Results" MODIFIED="1716455146417" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$create_pinknoises.coverage" NAME="create_pinknoises Coverage Results" MODIFIED="1715694807197" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$main.coverage" NAME="main Coverage Results" MODIFIED="1710935750655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$spacial_unmasking.coverage" NAME="spacial_unmasking Coverage Results" MODIFIED="1715694837382" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spacial_unmasking$util.coverage" NAME="util Coverage Results" MODIFIED="1717509566206" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

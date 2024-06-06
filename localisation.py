@@ -17,7 +17,8 @@ DIR = pathlib.Path(os.curdir)
 
 def start_trial(sub_id, stim_type="pinknoise", n_reps=3):
     sounds_dict = util.get_sounds_dict(stim_type=stim_type)
-    conditions = list(range(10)) * n_reps
+    seq = slab.Trialsequence(conditions=list(range(11)), n_reps=3)
+    """conditions = list(range(10)) * n_reps
     while True:
         np.random.shuffle(conditions)
         valid = True
@@ -27,29 +28,32 @@ def start_trial(sub_id, stim_type="pinknoise", n_reps=3):
                 break
         if valid:
             break
-
-    for i in range(n_reps * 11):
-        event_id = i
+    print(conditions)"""
+    for trial in seq:
+        event_id = seq.this_n
         filename, sound = util.get_sounds_with_filenames(sounds_dict=sounds_dict, n=1, randomize=True)
         filename = filename[0]
         sound = sound[0]
-        speaker = freefield.pick_speakers(conditions[i])[0]
+        print(trial)
+        speaker = freefield.pick_speakers(trial)[0]
+        print(speaker)
         util.set_multiple_signals(signals=[sound], speakers=[speaker], equalize=True)
         freefield.play(kind=1, proc="RX81")
         response = get_slider_value()
         print(response)
-        save_results(event_id=event_id, sub_id=sub_id, response=response,
+        save_results(event_id=event_id, sub_id=sub_id, stim_type=stim_type, response=response,
                      speaker_distance=speaker.distance, sound_filename=filename)
 
     return
 
 
-def save_results(event_id, sub_id, response, speaker_distance, sound_filename):
+def save_results(event_id, sub_id, stim_type, response, speaker_distance, sound_filename):
     file_name = DIR / "data" / "results" / f"results_localisation_accuracy_{sub_id}.csv"
 
 
     results = {"event_id": event_id,
                "sub_id": sub_id,
+               "stim_type": stim_type,
                "response": response,
                "speaker_distance": speaker_distance,
                "sound_filename": sound_filename}
@@ -76,10 +80,13 @@ def get_slider_value(serial_port=slider, in_metres=True):
         buffer_string = buffer_string + serial_port.read(serial_port.inWaiting()).decode("ascii")
         if '\n' in buffer_string:
             lines = buffer_string.split('\n')  # Guaranteed to have at least 2 entries
-            last_received = int(lines[-2].rstrip())
-            if in_metres:
-                last_received = np.interp(last_received, xp=[0, 1023], fp=[0, 15]) - 1.5
-            return last_received
+            last_received = lines[-2].rstrip()
+            if last_received:
+                last_received = int(last_received)
+                if in_metres:
+                    last_received = np.interp(last_received, xp=[0, 1023], fp=[0, 15]) - 1.5
+                return last_received
+
 
 if __name__ == "__main__":
     plot_results(99)
