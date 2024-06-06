@@ -12,6 +12,16 @@ import json
 
 DIR = DIR = pathlib.Path(os.curdir)
 
+num_dict = {"one": 1,
+            "two": 2,
+            "three": 3,
+            "four": 4,
+            "five": 5,
+            "six":  6,
+            "seven": 7,
+            "eight": 8,
+            "nine": 9}
+
 def initialize_setup():
     #initialize for the whole setup, so all 3 experiments can run
     procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
@@ -100,6 +110,19 @@ def get_sounds_with_filenames(sounds_dict, n="all", randomize=False):
 
     return sounds_list, filenames_list
 
+def get_n_random_speakers(n):
+    if n > len(freefield.SPEAKERS):
+        print(len(freefield.SPEAKERS))
+        print(n)
+        raise ValueError("n cannot be greater than the length of the input list")
+    random_indices = np.random.choice(len(freefield.SPEAKERS), n, replace=False)
+    speakers = [freefield.pick_speakers(i)[0] for i in random_indices]
+    return speakers, random_indices
+
+def get_correct_response_number(file):
+    for key in num_dict:
+        if key in str(file):
+            return num_dict.get(key)
 def create_localisation_config_file():
     config_dir = DIR / "config"
     filename = config_dir / "localisation_config.json"
@@ -109,6 +132,14 @@ def create_localisation_config_file():
     with open(filename, 'w') as config_file:
         json.dump(config_data, config_file, indent=4)
 
+def create_numerosity_judgement_config_file():
+    config_dir = DIR / "config"
+    filename = config_dir / "localisation_config.json"
+    config_data = {"num_dict": {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six":  6, "seven": 7,
+                    "eight": 8, "nine": 9},
+                   "talkers": ["p229", "p245", "p248", "p256", "p268", "p284", "p307", "p318"],
+                   "n_sounds": [2, 3, 4, 5, 6]
+    }
 
 def read_config_file(experiment):
     if experiment == "localisation":
