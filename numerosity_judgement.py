@@ -27,107 +27,38 @@ num_dict = {"one": 1,
             "seven": 7,
             "eight": 8,
             "nine": 9}
-target_dict = {}
-talkers = ["p229", "p245", "p248", "p256", "p268", "p284", "p307", "p318"]
+
 n_sounds = [2, 3, 4, 5, 6]
-SOUND_TYPE = None
-sounds = {}
 maximum_n_samples = 0
 
-def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="syllable", sound_type="countries"):
-    global normalisation_method
-    global sounds
-    global SOUND_TYPE
-    global maximum_n_samples
-    SOUND_TYPE = sound_type
-    procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
-             ["RP2", "RP2", DIR / "data" / "rcx" / "button_numpad.rcx"]]
-    freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
-    print(freefield.SPEAKERS)
-    freefield.SETUP = "cathedral"
-    freefield.SPEAKERS = freefield.read_speaker_table()
-    normalisation_file = DIR / "data" / "calibration" / f"calibration_cathedral_{normalisation_sound_type}_{normalisation_algorithm}.pkl"
-    freefield.load_equalization(file=str(normalisation_file), frequency=False)
-    normalisation_method = f"{normalisation_sound_type}_{normalisation_algorithm}"
-    freefield.set_logger("DEBUG")
-    if sound_type == "syllable":
-        stim_DIR = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_48828"
-    elif sound_type == "babble":
-        stim_DIR = DIR / "data" / "stim_files" / "tts-numbers_reversed"
-    elif sound_type == "pinknoise":
-        stim_DIR = DIR / "data" / "stim_files" / "pinknoise"
-    elif sound_type == "countries":
-        stim_DIR = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_48828"
-    else:
-        return
-
-    sound_files = [file for file in stim_DIR.iterdir()]
-    for file in sound_files:
-        sounds.update({os.path.basename(file): slab.Sound.read(str(file))})
-    maximum_n_samples = max([slab.Sound.read(str(file)).n_samples for file in sound_files])
-
-def get_sounds_with_filenames(n):
-    global sounds
-    if n > len(sounds):
-        raise ValueError("n cannot be greater than the length of the input list")
-    random_indices = np.random.choice(len(sounds), n, replace=False)
-    sounds_list = list(sounds.values())
-    filenames_list = list(sounds.keys())
-    sounds_list = [sounds_list[i] for i in random_indices]
-    filenames_list = [filenames_list[i] for i in random_indices]
-    return filenames_list, sounds_list
-
-def get_speakers(n):
-    if n > len(freefield.SPEAKERS):
-        print(len(freefield.SPEAKERS))
-        print(n)
-        raise ValueError("n cannot be greater than the length of the input list")
-    random_indices = np.random.choice(len(freefield.SPEAKERS), n, replace=False)
-    speakers = [freefield.pick_speakers(i)[0] for i in random_indices]
-    return speakers, random_indices
-
-def estimate_numerosity(sub_id):
+def estimate_numerosity(sub_id, block_id, trial_index, stim_type="countries_forward"):
     global n_sounds
     global event_id
+    sounds = util.get_sounds_dict(stim_type)
     fluctuation = np.random.uniform(-1, 1)
     n_simultaneous_sounds = np.random.choice(n_sounds)
-    filenames, sounds = get_sounds_with_filenames(n_simultaneous_sounds)
-    speakers, speaker_indices = get_speakers(n_simultaneous_sounds)
+    filenames, sounds = util.get_sounds_with_filenames(sounds_dict=sounds, n=n_simultaneous_sounds, randomize=True)
+    speakers, speaker_indices = util.get_n_random_speakers(n_simultaneous_sounds)
     util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, fluc=fluctuation)
-    """for i in range(n_simultaneous_sounds):
-        apply_mgb_equalization(signal=sounds[i], speaker=speakers[i], fluc=fluctuation)
-        freefield.set_signal_and_speaker(signal=sounds[i], speaker=speakers[i], equalize=False)
-        print(sounds[i].n_samples)
-        time.sleep(0.1)"""
-    time.sleep(0.3)
     freefield.play(kind=1, proc="RX81")
+    util.start_timer()
     print(f"simulatneous_sounds = {n_simultaneous_sounds}")
     while not freefield.read(tag="response", processor="RP2"):
         time.sleep(0.05)
     response = freefield.read(tag="response", processor="RP2")
-    """freefield.flush_buffers(processor="RX81", maximum_n_samples=maximum_n_samples)
-    freefield.write(tag="playbuflen", value=30000, processors="RX81")"""
-
-
+    reaction_time = util.get_elapsed_time()
     if response == n_simultaneous_sounds:
         is_correct = True
     else:
         is_correct = False
-    save_results(event_id, sub_id, SOUND_TYPE, n_simultaneous_sounds, response, is_correct, speakers)
+    save_results(event_id=event_id, sub_id=sub_id, trial_index=trial_index, block_id=block_id, stim_type=stim_type, filenames=filenames,
+                 speaker_ids=speaker_indices, n_sounds=n_sounds, response=response, is_correct=is_correct, speakers=speakers, reaction_time=reaction_time)
     event_id += 1
     print(f"simulatneous_sounds = {n_simultaneous_sounds}")
-    # time.sleep(1.0)
 
 
-def save_results(event_id, sub_id, sound_type, n_sounds, response, is_correct, speakers):
-    file_name = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
-
-    """active_speakers = []
-    for i in range(10):
-        if i in speaker_indices:
-            active_speakers.append(str(1))
-        else:
-            active_speakers.append(str(0))"""
+def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, speaker_ids, n_sounds, response, is_correct, speakers, reaction_time):
+    file_name = DIR / "data" / "results" / f"results_numerosity_judgement_{stim_type}_{sub_id}.csv"
 
     mean_speaker_distance = statistics.mean([s.distance for s in speakers])
     if n_sounds == 1:
@@ -135,23 +66,47 @@ def save_results(event_id, sub_id, sound_type, n_sounds, response, is_correct, s
     else:
         speaker_dist_st_dev = statistics.stdev([s.distance for s in speakers])
 
-    """active_speakers = '"' + ','.join(active_speakers) + '"'"""
-    results = {"event_id": event_id,
-               "subject": sub_id,
-               "sound_type": sound_type,
-               "n_sounds": n_sounds,
-               "response": response,
+    stim_levels = []
+    for id in speaker_ids:
+        stim_levels.append(util.get_speaker_normalisation_level(freefield.pick_speakers(id)[0]))
+
+    stim_country_ids = []
+    stim_talker_ids = []
+    for filename in filenames:
+        talker, sex, text = util.parse_country_or_number_filename(filename)
+        stim_country_ids.append(text)
+        stim_talker_ids.append(talker)
+
+    results = {"event_id": None,
+               "subject_id": sub_id,
+               "timestamp": util.get_timestamp(),
+               "session_index": 3,
+               "plane": "distance",
+               "setup": "cathedral",
+               "task": "numerosity_judgement",
+               "block": block_id,
+               "trial_index": trial_index,
+               "stim_number": n_sounds,
+               "stim_type": stim_type,
+               "stim_country_ids": str(stim_country_ids),
+               "stim_talker_ids": str(stim_talker_ids),
+               "speaker_ids": str(speaker_ids),
+               "stim_level": str(stim_levels), #TODO: ask about this
+               "resp_number": response,
                "is_correct": is_correct,
-               "mean_speaker_distance": mean_speaker_distance,
-               "speaker_dist_st_dev": speaker_dist_st_dev}
+               "speaker_distance_mean": mean_speaker_distance,
+               "speaker_distance_st_dev": speaker_dist_st_dev,
+               "reaction_time": reaction_time}
 
 
     df_curr_results = pd.DataFrame(results, index=[0])
     df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))
 
-def start_trial(sub_id, n_reps):
+def start_experiment(sub_id, block_id, stim_type, n_reps):
+    trial_index = 0
     for i in range(n_reps):
-        estimate_numerosity(sub_id)
+        estimate_numerosity(sub_id, block_id, trial_index, stim_type)
+        trial_index += 1
 
 def plot_results(sub_id, sound_type):
     data_file = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
@@ -161,24 +116,6 @@ def plot_results(sub_id, sound_type):
     except Exception as e:
         print("Error:", e)
         return
-
-def quadratic_func(x, a, b, c):
-    return a * x ** 2 + b * x + c
-
-def logarithmic_func(x, a, b, c):
-    return a * np.log(b * x) + c
-
-def get_log_parameters(distance):
-    parameters_file = DIR / "data" / "mgb_equalization_parameters" / "logarithmic_function_parameters.csv"
-    parameters_df = pd.read_csv(parameters_file)
-    params = parameters_df[parameters_df['speaker_distance'] == distance]
-    a, b, c = params.iloc[0][['a', 'b', 'c']]
-    return a, b, c
-
-def apply_mgb_equalization(signal, speaker, mgb_loudness=25, fluc=0):
-    a, b, c = get_log_parameters(speaker.distance)
-    signal.level = logarithmic_func(mgb_loudness + fluc, a, b, c)
-    return signal
 
 
 def plot_averaged_responses(sub_ids, sound_type):

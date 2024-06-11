@@ -15,24 +15,8 @@ port = "COM5"
 slider = serial.Serial(port, baudrate=9600, timeout=0, rtscts=False)
 DIR = pathlib.Path(os.curdir)
 
-
-def initialize(sound_type="syllable"):
-    procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
-             ["RP2", "RP2", DIR / "data" / "rcx" / "button_numpad.rcx"]]
-    freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
-    freefield.SETUP = "cathedral"
-    freefield.SPEAKERS = freefield.read_speaker_table()
-    freefield.set_logger("DEBUG")
-    if sound_type == "syllable":
-        stim_DIR = DIR / "data" / "stim_files" / "tts-numbers_reversed"
-    elif sound_type == "USO":
-        stim_DIR = DIR / "data" / "stim_files" / "uso_300ms"
-    sound_files = [file for file in stim_DIR.iterdir()]
-    for file in sound_files:
-        sounds.update({os.path.basename(file): slab.Sound.read(str(file))})
-
-
-def start_trial(sub_id, stim_type="pinknoise", n_reps=3):
+def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=3):
+    trial_index = 0
     sounds_dict = util.get_sounds_dict(stim_type=stim_type)
     seq = slab.Trialsequence(conditions=list(range(11)), n_reps=2)
     """conditions = list(range(10)) * n_reps
@@ -56,52 +40,45 @@ def start_trial(sub_id, stim_type="pinknoise", n_reps=3):
         print(speaker)
         util.set_multiple_signals(signals=[sound], speakers=[speaker], equalize=True)
         freefield.play(kind=1, proc="RX81")
+        util.start_timer()
         response = get_slider_value()
+        reaction_time =util.get_elapsed_time()
         print(response)
-        save_results(event_id=event_id, sub_id=sub_id, stim_type=stim_type, response=response,
-                     speaker_distance=speaker.distance, sound_filename=filename)
+        save_results(event_id=event_id, sub_id=sub_id, block_id=block_id, trial_index=trial_index, sound=sound, stim_type=stim_type, response=response,
+                     speaker=speaker, sound_filename=filename, reaction_time=reaction_time)
+        trial_index += 1
 
     return
 
-def get_sounds_with_filenames(n):
-    global sounds
-    if n > len(sounds):
-        raise ValueError("n cannot be greater than the length of the input list")
-    random_indices = np.random.choice(len(sounds), n, replace=False)
-    sounds_list = list(sounds.values())
-    filenames_list = list(sounds.keys())
-    sounds_list = [sounds_list[i] for i in random_indices]
-    filenames_list = [filenames_list[i] for i in random_indices]
-    return filenames_list, sounds_list
 
-def quadratic_func(x, a, b, c):
-    return a * x ** 2 + b * x + c
-
-def logarithmic_func(x, a, b, c):
-    return a * np.log(b * x) + c
-
-def get_log_parameters(distance):
-    parameters_file = DIR / "data" / "mgb_equalization_parameters" / "logarithmic_function_parameters.csv"
-    parameters_df = pd.read_csv(parameters_file)
-    params = parameters_df[parameters_df['speaker_distance'] == distance]
-    a, b, c = params.iloc[0][['a', 'b', 'c']]
-    return a, b, c
-
-def apply_mgb_equalization(signal, speaker, mgb_loudness=30, fluc=0):
-    a, b, c = get_log_parameters(speaker.distance)
-    signal.level = logarithmic_func(mgb_loudness + fluc, a, b, c)
-    return signal
-
-def save_results(event_id, sub_id, stim_type, response, speaker_distance, sound_filename):
+def save_results(event_id, sub_id, trial_index, block_id, stim_type, sound, response, speaker, sound_filename, reaction_time):
     file_name = DIR / "data" / "results" / f"results_localisation_accuracy_{sub_id}.csv"
 
 
-    results = {"event_id": event_id,
-               "sub_id": sub_id,
+    results = {"event_id": None,
+               "timestamp": util.get_timestamp(),
+               "subject_id": sub_id,
+               "session_index": 3,
+               "plane": "distance",
+               "setup": "cathedral",
+               "task": "localisation_accuracy",
+               "block": block_id,
+               "trial_index": trial_index,
                "stim_type": stim_type,
-               "response": response,
-               "speaker_distance": speaker_distance,
-               "sound_filename": sound_filename}
+               "headpose_offset_azi": None,
+               "headpose_offset_ele": None,
+               "stim_filename": sound_filename,
+               "stim_level": sound.level, #TODO: mgb or level?
+               "speaker_id": speaker.id,
+               "speaker_proc": speaker.analog_proc,
+               "speaker_chan": speaker.analog_channel,
+               "stim_azi": speaker.azimuth,
+               "stim_ele": speaker.elevation,
+               "stim_dist": speaker.distance,
+               "resp_azi": 0,
+               "resp_ele": 0,
+               "resp_dist": response,
+               "reaction_time": reaction_time}
 
     df_curr_results = pd.DataFrame(results, index=[0])
     df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))

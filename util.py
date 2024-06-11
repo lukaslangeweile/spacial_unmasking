@@ -1,16 +1,29 @@
 import freefield
-import pandas
 import slab
 import os
 import pathlib
-import time
 import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 import json
+import time
+import datetime
+import re
 
 DIR = DIR = pathlib.Path(os.curdir)
+
+num_dict = {"one": 1,
+            "two": 2,
+            "three": 3,
+            "four": 4,
+            "five": 5,
+            "six":  6,
+            "seven": 7,
+            "eight": 8,
+            "nine": 9}
+
+start_time = None
 
 def initialize_setup():
     #initialize for the whole setup, so all 3 experiments can run
@@ -43,8 +56,10 @@ def get_stim_dir(stim_type):
         stim_dir =  DIR / "data" / "stim_files" / "babble-numbers-reversed-n13-shifted_resamp_48828"
     elif stim_type == "pinknoise":
         stim_dir = DIR / "data" / "stim_files" / "pinknoise"
-    elif stim_type == "countries":
+    elif stim_type == "countries_forward" or stim_type == "countries":
         stim_dir = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_48828"
+    elif stim_type == "countries_reversed":
+        stim_dir = DIR / "data" / "stim_files" / "tts-countries-reversed_n13_resamp_48828"
     elif stim_type == "syllable":
         stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_48828"
     elif stim_type == "uso":
@@ -100,6 +115,19 @@ def get_sounds_with_filenames(sounds_dict, n="all", randomize=False):
 
     return sounds_list, filenames_list
 
+def get_n_random_speakers(n):
+    if n > len(freefield.SPEAKERS):
+        print(len(freefield.SPEAKERS))
+        print(n)
+        raise ValueError("n cannot be greater than the length of the input list")
+    random_indices = np.random.choice(len(freefield.SPEAKERS), n, replace=False)
+    speakers = [freefield.pick_speakers(i)[0] for i in random_indices]
+    return speakers, random_indices
+
+def get_correct_response_number(file):
+    for key in num_dict:
+        if key in str(file):
+            return num_dict.get(key)
 def create_localisation_config_file():
     config_dir = DIR / "config"
     filename = config_dir / "localisation_config.json"
@@ -109,6 +137,14 @@ def create_localisation_config_file():
     with open(filename, 'w') as config_file:
         json.dump(config_data, config_file, indent=4)
 
+def create_numerosity_judgement_config_file():
+    config_dir = DIR / "config"
+    filename = config_dir / "localisation_config.json"
+    config_data = {"num_dict": {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six":  6, "seven": 7,
+                    "eight": 8, "nine": 9},
+                   "talkers": ["p229", "p245", "p248", "p256", "p268", "p284", "p307", "p318"],
+                   "n_sounds": [2, 3, 4, 5, 6]
+    }
 
 def read_config_file(experiment):
     if experiment == "localisation":
@@ -123,12 +159,13 @@ def read_config_file(experiment):
         config_data = json.load(config_file)
     return config_data
 
-def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc=0):
+def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc=0, max_n_samples=24414):
     for i in range(len(signals)):
         if equalize:
             signals[i] = apply_mgb_equalization(signals[i], speakers[i], mgb_loudness, fluc)
         speaker_index = speakers[i].index + 1
-        freefield.write(tag=f"data{i}", value=signals[i].data, processors="RX81")
+        data = np.pad(signals[i].data, ((0, max_n_samples - len(signals[i].data)), (0, 0)), 'constant')
+        freefield.write(tag=f"data{i}", value=data, processors="RX81")
         freefield.write(tag=f"chan{i}", value=speaker_index, processors="RX81")
     time.sleep(0.2)
     for i in range(len(signals), 8):
@@ -143,8 +180,70 @@ def test_speakers():
         freefield.play(kind=1, proc="RX81")
         time.sleep(1.0)
 
+
+def start_timer():
+    global start_time
+    start_time = time.time()
+
+
+def get_elapsed_time(reset=True):
+    global start_time
+    if start_time is None:
+        raise ValueError("Timer has not been started.")
+
+    elapsed_time = time.time() - start_time
+
+    if reset:
+        start_time = None
+
+    return elapsed_time
+
+def get_timestamp():
+    return datetime.now()
+
+def parse_country_or_number_filename(filepath):
+    # Define the pattern to match the filename structure
+    pattern = r"talker-(?P<talker>.+?)_sex-(?P<sex>[.\w]+)_text-(?P<text>[.\w]+)\.wav"
+    filename = str(os.path.basename(filepath))
+    match = re.match(pattern, filename)
+    if match:
+        talker = match.group("talker")
+        sex = match.group("sex")
+        text = match.group("text")
+        return talker, sex, text
+    else:
+        print(f"Filename {filename} does not match the filepattern")
+        return None
+
+def create_resampled_stim_dirs(samplerate=24414):
+    stim_files_dir = DIR / "data" / "stim_files"
+
+    for stim_dir in stim_files_dir.iterdir():
+        pattern = r"(?P<stim_type>.+?)_n13_resamp_(?P<samplerate>.+?)"
+        match = re.match(pattern, str(os.path.basename(stim_dir)))
+        if match:
+            stim_type = match.group("stim_type")
+            if not match.group("samplerate") == samplerate:
+                new_dir_path = stim_files_dir / f"{stim_type}_n13_resamp_{samplerate}"
+                if not os.path.exists(new_dir_path):
+                    os.makedirs(new_dir_path)
+                for file in stim_dir.iterdir():
+                    sound = slab.Sound.read(str(file))
+                    sound.resample(samplerate=samplerate)
+                    new_filepath = new_dir_path / os.path.basename(file)
+                    sound.write(new_filepath)
+        elif stim_dir.is_dir():
+            new_dir_name = str(os.path.basename(stim_dir)) + f"_resamp_{samplerate}"
+            new_dir_path = stim_files_dir / new_dir_name
+            if not os.path.exists(new_dir_path):
+                os.makedirs(new_dir_path)
+            for file in stim_dir.iterdir():
+                sound = slab.Sound.read(str(file))
+                new_filepath = new_dir_path / os.path.basename(file)
+                sound.write(new_filepath)
+
+
+
 if __name__ == "__main__":
 
-    initialize_setup()
-    time.sleep(2.0)
-    test_speakers()
+    create_resampled_stim_dirs()

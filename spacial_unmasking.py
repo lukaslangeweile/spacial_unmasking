@@ -9,7 +9,8 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 
-normalisation_method = None
+import util
+
 event_id = 0
 DIR = pathlib.Path(os.curdir)
 num_dict = {"one": 1,
@@ -22,35 +23,26 @@ num_dict = {"one": 1,
             "eight": 8,
             "nine": 9}
 target_dict = {}
-talkers = ["p229", "p245", "p248", "p256", "p268", "p284", "p307", "p318"]
+talkers = ["p245", "p248", "p256", "p268", "p284", "p307", "p318"]
 
 
-def initialize_setup(normalisation_algorithm="rms", normalisation_sound_type="syllable"):
-    global normalisation_method
-    procs = [["RX81", "RX8", DIR / "data" / "rcx" / "cathedral_play_buf.rcx"],
-             ["RP2", "RP2", DIR / "data" / "rcx" / "button_numpad.rcx"]]
-    freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
-    freefield.SETUP = "cathedral"
-    freefield.SPEAKERS = freefield.read_speaker_table()
-    normalisation_file = DIR / "data" / "calibration" / f"calibration_cathedral_{normalisation_sound_type}_{normalisation_algorithm}.pkl"
-    freefield.load_equalization(file=pathlib.Path(normalisation_file), frequency=False)
-    normalisation_method = "mgb_normalisation"
-    freefield.set_logger("DEBUG")
-
-def start_trial(sub_id, masker_type, stim_type):
-    global normalisation_method
+def start_experiment(sub_id, block_id, masker_type, stim_type):
     target_speaker = freefield.pick_speakers(5)[0]
     talker = np.random.choice(talkers)
     train_talker(talker)
     input("Start Experiment by pressing Enter...")
-    spacial_unmask_within_range(nearest_speaker=0, farthest_speaker=0, target_speaker=target_speaker, sub_id=sub_id,
-                                           masker_type=masker_type, stim_type=stim_type, talker=talker,
-                                           normalisation_method=normalisation_method)
+
+    spacial_unmask_within_range(speaker_indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], target_speaker=target_speaker,
+                                sub_id=sub_id,
+                                block_id=block_id, masker_type=masker_type, stim_type=stim_type, talker=talker,
+                                normalisation_method="mgb_normalisation")
+
 
 def get_correct_response(file):
     for key in num_dict:
         if key in str(file):
             return num_dict.get(key)
+
 
 def get_possible_files(sex=None, number=None, talker=None, exclude=False):
     possible_files = []
@@ -98,19 +90,18 @@ def get_non_syllable_masker_file(masker_type):
 def get_random_file(files):
     return np.random.choice(files)
 
-def get_target_and_masker_file(sex=None, number=None, talker=None):
+def get_target_number_file(sex=None, number=None, talker=None):
     stimuli = get_possible_files(sex=sex, number=number, talker=talker)
     target_file = get_random_file(stimuli)
-    correct_response = get_correct_response(target_file)
-    masker_file = get_random_file(get_possible_files(number=correct_response, exclude=True))
-    return target_file, masker_file
+    return target_file
 
-def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speaker, sub_id, masker_type, stim_type, talker, normalisation_method):
+def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_id, masker_type, stim_type, talker, normalisation_method):
     global event_id
     print("Beginning spacial unmasking")
-    iterator = list(range(nearest_speaker, farthest_speaker+1))
+    iterator = speaker_indices
     np.random.shuffle(iterator)
     talker = talker
+    trial_index = 0
 
     for i in iterator:
 
@@ -118,18 +109,15 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
         stairs = slab.Staircase(start_val=-5, n_reversals=16, step_sizes=[7, 5, 3, 1])
 
         for level in stairs:
-            if masker_type != "syllable":
-                masker_file = get_non_syllable_masker_file(masker_type)
-                target_file = get_target_and_masker_file(talker=talker)[0]
-            else:
-                target_file, masker_file = get_target_and_masker_file(talker=talker)
+            masker_file = get_non_syllable_masker_file(masker_type)
+            target_file = get_target_number_file(talker=talker)
             masker = slab.Sound.read(masker_file)
             masker = slab.Sound(masker.data[:, 0])
             target = slab.Sound.read(target_file)
             print(masker.samplerate)
             print(target.samplerate)
-            masker = apply_mgb_equalization(signal=masker, speaker=masking_speaker)
-            target = apply_mgb_equalization(signal=target, speaker=target_speaker)
+            masker = util.apply_mgb_equalization(signal=masker, speaker=masking_speaker)
+            target = util.apply_mgb_equalization(signal=target, speaker=target_speaker)
             target.level += level  # TODO: think about which level needs to be adjusted
 
             if masking_speaker == target_speaker:
@@ -150,23 +138,25 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
                 freefield.set_signal_and_speaker(signal=target, speaker=target_speaker, equalize=False)
                 freefield.set_signal_and_speaker(signal=masker, speaker=masking_speaker, equalize=False)
             freefield.play(kind=1, proc="RX81")
+            util.start_timer()
+
             while not freefield.read("response", "RP2"):
                 time.sleep(0.05)
             response = freefield.read("response", "RP2")
+            reaction_time = util.get_elapsed_time()
 
-            if response == get_correct_response(target_file):
+            if response == util.get_correct_response_number(target_file):
                 stairs.add_response(1)
             else:
                 stairs.add_response(0)
 
-            save_per_response(event_id=event_id, sub_id=sub_id, step_number=stairs.this_trial_n, level_masker=masker.level,
-                              level_target=target.level, distance_masker=masking_speaker.distance,
-                              distance_target=target_speaker.distance, masker_filename=masker_file, target_filename=target_file,
+            save_per_response(event_id=event_id, sub_id=sub_id, block_id=block_id, trial_index=trial_index, step_number=stairs.this_trial_n, level_masker=masker.level,
+                              level_target=target.level, target_speaker=target_speaker, masking_speaker=masking_speaker, masker_filename=masker_file, target_filename=target_file,
                               normalisation_method=normalisation_method, normalisation_level_masker=get_speaker_normalisation_level(masking_speaker),
                               normalisation_level_target=get_speaker_normalisation_level(target_speaker),
-                              played_number=get_correct_response(target_file),
-                              response_number=response)
-
+                              played_number=util.get_correct_response_number(target_file),
+                              response_number=response, reaction_time=reaction_time)
+            trial_index += 1
             """freefield.flush_buffers(processor="RX81")"""
             freefield.write(tag="data0", value=0, processors="RX81")
             freefield.write(tag="data1", value=0, processors="RX81")
@@ -178,8 +168,7 @@ def spacial_unmask_within_range(nearest_speaker, farthest_speaker, target_speake
                      masker_type=masker_type, stim_type=stim_type, talker=talker, normalisation_method=normalisation_method,
                      normalisation_level_masker=get_speaker_normalisation_level(masking_speaker),
                      normalisation_level_target=get_speaker_normalisation_level(target_speaker))
-        print(event_id)
-        event_id += 1
+
 
 def get_key_by_value(value):
     return next((key for key, val in num_dict.items() if val == value), None)
@@ -199,7 +188,7 @@ def train_talker(talker_id):
         print(button_press_written)
         print(talker_num_dict.get(button_press_written))
         signal = slab.Sound.read(talker_num_dict.get(button_press_written))
-        signal = apply_mgb_equalization(signal=signal, speaker=freefield.pick_speakers(5)[0])
+        signal = util.apply_mgb_equalization(signal=signal, speaker=freefield.pick_speakers(5)[0])
         freefield.set_signal_and_speaker(signal=signal, speaker=freefield.pick_speakers(5)[0], equalize=False)
         freefield.play(kind=1, proc="RX81")
         time.sleep(0.5)
@@ -247,35 +236,24 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
     normalisation_method = str(normalisation_method)
 
     new_row = {"event_id" : event_id,
-            "subject": sub_id,
-            "threshold": threshold,
-            "distance_masker": distance_masker,
-            "distance_target": distance_target,
-            "level_masker": level_masker, "level_target": level_target,
-            "masker_type": masker_type, "stim_type": stim_type,
-            "talker": talker,
-            "normalisation_method": normalisation_method,
-            "normalisation_level_masker": normalisation_level_masker,
-            "normalisation_level_target": normalisation_level_target}
+               "subject": sub_id,
+               "threshold": threshold,
+               "distance_masker": distance_masker,
+               "distance_target": distance_target,
+               "level_masker": level_masker, "level_target": level_target,
+               "masker_type": masker_type, "stim_type": stim_type,
+               "talker": talker,
+               "normalisation_method": normalisation_method,
+               "normalisation_level_masker": normalisation_level_masker,
+               "normalisation_level_target": normalisation_level_target}
 
     df_curr_results = df_curr_results.append(new_row, ignore_index=True)
     df_curr_results.to_csv(file_name, mode='w', header=True, index=False)
-    """
-    try:
-        # Ensure the directory structure exists
-        os.makedirs(os.path.dirname(file_name), exist_ok=True)
 
-        with open(file_name, 'ab') as f:  # Append mode
-            pickle.dump(results, f, pickle.HIGHEST_PROTOCOL)
-            print("Data appended to pickle file successfully.")
-    except Exception as e:
-        print("Error:", e)
-    """
-
-def save_per_response(event_id, sub_id, step_number, level_masker, level_target,
-                      distance_masker, distance_target, masker_filename, target_filename,
-                      normalisation_method, normalisation_level_masker, normalisation_level_target,
-                      played_number, response_number):
+def save_per_response(event_id, sub_id, block_id, trial_index, step_number, level_masker, level_target,
+                      target_speaker, masking_speaker, masker_filename, target_filename,
+                      normalisation_method, normalisation_level_masker, normalisation_level_target, played_number,
+                      response_number, reaction_time):
 
     is_correct = played_number == response_number
 
@@ -294,18 +272,48 @@ def save_per_response(event_id, sub_id, step_number, level_masker, level_target,
     if len(level_target.shape) == 1:
         level_target = np.mean(level_target)
 
-    new_row = {"event_id": event_id,
-               "subject": sub_id,
+    target_talker, target_sex, target_number = util.parse_country_or_number_filename(target_filename)
+
+    new_row = {"event_id": None,
+               "timestamp": util.get_timestamp(),
+               "subject_id": sub_id,
+               "session_index": 3,
+               "plane": "distance",
+               "setup": "cathedral",
+               "task": "spatial_unmasking",
+               "block": block_id,
+               "trial_index": trial_index,
+               "headpose_offset_azi": 0,
+               "headpose_offset_ele": 0,
+               "target_number": target_number,
+               "target_filename": target_filename,
+               "target_talker": target_talker,
+               "target_sex": target_sex,
+               "target_speaker_id": target_speaker.index,
                "step_number:": step_number,
-               "distance_masker": distance_masker,
-               "distance_target": distance_target,
-               "level_masker": level_masker, "level_target": level_target,
-               "masker_filename": masker_filename, "target_filename": target_filename,
+               "distance_masker": masking_speaker.distance,
+               "distance_target": target_speaker.distance,
+               "target_speaker_proc": target_speaker.analog_proc,
+               "target_speaker_chan": target_speaker.analog_channel, #TODO: have a look into this
+               "target_speaker_azi": target_speaker.azimuth,
+               "target_speaker_ele": target_speaker.elevation,
+               "target_speaker_dist": target_speaker.distance,
+               "target_stim_level": level_target,
+               "masker_filename": masker_filename,
+               "masker_speaker_id": masking_speaker.index,
+               "masker_speaker_proc": masking_speaker.analog_proc,
+               "masker_speaker_chan": masking_speaker.analog_chan,
+               "masker_speaker_azi": masking_speaker.azimuth,
+               "masker_speaker_ele": masking_speaker.elevation,
+               "masker_speaker_dist": masking_speaker.distance,
+               "masker_stim_level": level_masker,
                "normalisation_method": normalisation_method,
                "normalisation_level_masker": normalisation_level_masker,
                "normalisation_level_target": normalisation_level_target,
-               "played_number": played_number, "response_number": response_number,
-               "is_correct": is_correct}
+               "played_number": played_number,
+               "resp_number": response_number,
+               "is_correct": is_correct,
+               "reaction_time": reaction_time}
 
     df_curr_results = df_curr_results.append(new_row, ignore_index=True)
     df_curr_results.to_csv(file_name, mode='w', header=True, index=False)
@@ -382,24 +390,6 @@ def plot_average_results(sub_ids="all"):
     plt.draw()
     fig.savefig(DIR / "data" / "results" / "figs" / f"average_results_.pdf")
 
-def quadratic_func(x, a, b, c):
-    return a * x ** 2 + b * x + c
-
-def logarithmic_func(x, a, b, c):
-    return a * np.log(b * x) + c
-
-def get_log_parameters(distance):
-    parameters_file = DIR / "data" / "mgb_equalization_parameters" / "logarithmic_function_parameters.csv"
-    parameters_df = pd.read_csv(parameters_file)
-    params = parameters_df[parameters_df['speaker_distance'] == distance]
-    a, b, c = params.iloc[0][['a', 'b', 'c']]
-    return a, b, c
-
-def apply_mgb_equalization(signal, speaker, mgb_loudness=30, fluc=0):
-    a, b, c = get_log_parameters(speaker.distance)
-    signal.level = logarithmic_func(mgb_loudness + fluc, a, b, c)
-    return signal
-
 def get_speaker_normalisation_level(speaker, mgb_loudness=30):
-    a, b, c = get_log_parameters(speaker.distance)
-    return logarithmic_func(x=mgb_loudness, a=a, b=b, c=c)
+    a, b, c = util.get_log_parameters(speaker.distance)
+    return util.logarithmic_func(x=mgb_loudness, a=a, b=b, c=c)
