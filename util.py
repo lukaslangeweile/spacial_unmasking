@@ -56,8 +56,10 @@ def get_stim_dir(stim_type):
         stim_dir =  DIR / "data" / "stim_files" / "babble-numbers-reversed-n13-shifted_resamp_48828"
     elif stim_type == "pinknoise":
         stim_dir = DIR / "data" / "stim_files" / "pinknoise"
-    elif stim_type == "countries":
+    elif stim_type == "countries_forward" or stim_type == "countries":
         stim_dir = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_48828"
+    elif stim_type == "countries_reversed":
+        stim_dir = DIR / "data" / "stim_files" / "tts-countries-reversed_n13_resamp_48828"
     elif stim_type == "syllable":
         stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_48828"
     elif stim_type == "uso":
@@ -213,9 +215,35 @@ def parse_country_or_number_filename(filepath):
         print(f"Filename {filename} does not match the filepattern")
         return None
 
+def create_resampled_stim_dirs(samplerate=24414):
+    stim_files_dir = DIR / "data" / "stim_files"
+
+    for stim_dir in stim_files_dir.iterdir():
+        pattern = r"(?P<stim_type>.+?)_n13_resamp_(?P<samplerate>.+?)"
+        match = re.match(pattern, str(os.path.basename(stim_dir)))
+        if match:
+            stim_type = match.group("stim_type")
+            if not match.group("samplerate") == samplerate:
+                new_dir_path = stim_files_dir / f"{stim_type}_n13_resamp_{samplerate}"
+                if not os.path.exists(new_dir_path):
+                    os.makedirs(new_dir_path)
+                for file in stim_dir.iterdir():
+                    sound = slab.Sound.read(str(file))
+                    sound.resample(samplerate=samplerate)
+                    new_filepath = new_dir_path / os.path.basename(file)
+                    sound.write(new_filepath)
+        elif stim_dir.is_dir():
+            new_dir_name = str(os.path.basename(stim_dir)) + f"_resamp_{samplerate}"
+            new_dir_path = stim_files_dir / new_dir_name
+            if not os.path.exists(new_dir_path):
+                os.makedirs(new_dir_path)
+            for file in stim_dir.iterdir():
+                sound = slab.Sound.read(str(file))
+                new_filepath = new_dir_path / os.path.basename(file)
+                sound.write(new_filepath)
+
+
 
 if __name__ == "__main__":
 
-    initialize_setup()
-    time.sleep(2.0)
-    test_speakers()
+    create_resampled_stim_dirs()

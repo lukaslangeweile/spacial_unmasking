@@ -31,7 +31,7 @@ num_dict = {"one": 1,
 n_sounds = [2, 3, 4, 5, 6]
 maximum_n_samples = 0
 
-def estimate_numerosity(sub_id, block_id, trial_index, stim_type="countries"):
+def estimate_numerosity(sub_id, block_id, trial_index, stim_type="countries_forward"):
     global n_sounds
     global event_id
     sounds = util.get_sounds_dict(stim_type)
@@ -94,8 +94,8 @@ def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, 
                "stim_level": str(stim_levels), #TODO: ask about this
                "resp_number": response,
                "is_correct": is_correct,
-               "mean_speaker_distance": mean_speaker_distance,
-               "speaker_dist_st_dev": speaker_dist_st_dev,
+               "speaker_distance_mean": mean_speaker_distance,
+               "speaker_distance_st_dev": speaker_dist_st_dev,
                "reaction_time": reaction_time}
 
 
