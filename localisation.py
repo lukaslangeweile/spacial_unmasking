@@ -15,7 +15,8 @@ port = "COM5"
 slider = serial.Serial(port, baudrate=9600, timeout=0, rtscts=False)
 DIR = pathlib.Path(os.curdir)
 
-def start_trial(sub_id, stim_type="pinknoise", n_reps=3):
+def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=3):
+    trial_index = 0
     sounds_dict = util.get_sounds_dict(stim_type=stim_type)
     seq = slab.Trialsequence(conditions=list(range(11)), n_reps=3)
     """conditions = list(range(10)) * n_reps
@@ -39,24 +40,45 @@ def start_trial(sub_id, stim_type="pinknoise", n_reps=3):
         print(speaker)
         util.set_multiple_signals(signals=[sound], speakers=[speaker], equalize=True)
         freefield.play(kind=1, proc="RX81")
+        util.start_timer()
         response = get_slider_value()
+        reaction_time =util.get_elapsed_time()
         print(response)
-        save_results(event_id=event_id, sub_id=sub_id, stim_type=stim_type, response=response,
-                     speaker_distance=speaker.distance, sound_filename=filename)
+        save_results(event_id=event_id, sub_id=sub_id, block_id=block_id, trial_index=trial_index, sound=sound, stim_type=stim_type, response=response,
+                     speaker=speaker, sound_filename=filename, reaction_time=reaction_time)
+        trial_index += 1
 
     return
 
 
-def save_results(event_id, sub_id, stim_type, response, speaker_distance, sound_filename):
+def save_results(event_id, sub_id, trial_index, block_id, stim_type, sound, response, speaker, sound_filename, reaction_time):
     file_name = DIR / "data" / "results" / f"results_localisation_accuracy_{sub_id}.csv"
 
 
-    results = {"event_id": event_id,
-               "sub_id": sub_id,
+    results = {"event_id": None,
+               "timestamp": util.get_timestamp(),
+               "subject_id": sub_id,
+               "session_index": 3,
+               "plane": "distance",
+               "setup": "cathedral",
+               "task": "localisation_accuracy",
+               "block": block_id,
+               "trial_index": trial_index,
                "stim_type": stim_type,
-               "response": response,
-               "speaker_distance": speaker_distance,
-               "sound_filename": sound_filename}
+               "headpose_offset_azi": None,
+               "headpose_offset_ele": None,
+               "stim_filename": sound_filename,
+               "stim_level": sound.level, #TODO: mgb or level?
+               "speaker_id": speaker.id,
+               "speaker_proc": speaker.analog_proc,
+               "speaker_chan": speaker.analog_channel,
+               "stim_azi": speaker.azimuth,
+               "stim_ele": speaker.elevation,
+               "stim_dist": speaker.distance,
+               "resp_azi": 0,
+               "resp_ele": 0,
+               "resp_dist": response,
+               "reaction_time": reaction_time}
 
     df_curr_results = pd.DataFrame(results, index=[0])
     df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))

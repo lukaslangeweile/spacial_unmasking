@@ -1,14 +1,15 @@
 import freefield
-import pandas
 import slab
 import os
 import pathlib
-import time
 import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 import json
+import time
+import datetime
+import re
 
 DIR = DIR = pathlib.Path(os.curdir)
 
@@ -21,6 +22,8 @@ num_dict = {"one": 1,
             "seven": 7,
             "eight": 8,
             "nine": 9}
+
+start_time = None
 
 def initialize_setup():
     #initialize for the whole setup, so all 3 experiments can run
@@ -154,12 +157,13 @@ def read_config_file(experiment):
         config_data = json.load(config_file)
     return config_data
 
-def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc=0):
+def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc=0, max_n_samples=24414):
     for i in range(len(signals)):
         if equalize:
             signals[i] = apply_mgb_equalization(signals[i], speakers[i], mgb_loudness, fluc)
         speaker_index = speakers[i].index + 1
-        freefield.write(tag=f"data{i}", value=signals[i].data, processors="RX81")
+        data = np.pad(signals[i].data, ((0, max_n_samples - len(signals[i].data)), (0, 0)), 'constant')
+        freefield.write(tag=f"data{i}", value=data, processors="RX81")
         freefield.write(tag=f"chan{i}", value=speaker_index, processors="RX81")
     time.sleep(0.2)
     for i in range(len(signals), 8):
@@ -173,6 +177,42 @@ def test_speakers():
         time.sleep(0.1)
         freefield.play(kind=1, proc="RX81")
         time.sleep(1.0)
+
+
+def start_timer():
+    global start_time
+    start_time = time.time()
+
+
+def get_elapsed_time(reset=True):
+    global start_time
+    if start_time is None:
+        raise ValueError("Timer has not been started.")
+
+    elapsed_time = time.time() - start_time
+
+    if reset:
+        start_time = None
+
+    return elapsed_time
+
+def get_timestamp():
+    return datetime.now()
+
+def parse_country_or_number_filename(filepath):
+    # Define the pattern to match the filename structure
+    pattern = r"talker-(?P<talker>.+?)_sex-(?P<sex>[.\w]+)_text-(?P<text>[.\w]+)\.wav"
+    filename = str(os.path.basename(filepath))
+    match = re.match(pattern, filename)
+    if match:
+        talker = match.group("talker")
+        sex = match.group("sex")
+        text = match.group("text")
+        return talker, sex, text
+    else:
+        print(f"Filename {filename} does not match the filepattern")
+        return None
+
 
 if __name__ == "__main__":
 

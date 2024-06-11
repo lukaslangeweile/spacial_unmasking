@@ -31,7 +31,7 @@ num_dict = {"one": 1,
 n_sounds = [2, 3, 4, 5, 6]
 maximum_n_samples = 0
 
-def estimate_numerosity(sub_id, stim_type="countries"):
+def estimate_numerosity(sub_id, block_id, trial_index, stim_type="countries"):
     global n_sounds
     global event_id
     sounds = util.get_sounds_dict(stim_type)
@@ -41,29 +41,24 @@ def estimate_numerosity(sub_id, stim_type="countries"):
     speakers, speaker_indices = util.get_n_random_speakers(n_simultaneous_sounds)
     util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, fluc=fluctuation)
     freefield.play(kind=1, proc="RX81")
+    util.start_timer()
     print(f"simulatneous_sounds = {n_simultaneous_sounds}")
     while not freefield.read(tag="response", processor="RP2"):
         time.sleep(0.05)
     response = freefield.read(tag="response", processor="RP2")
-
+    reaction_time = util.get_elapsed_time()
     if response == n_simultaneous_sounds:
         is_correct = True
     else:
         is_correct = False
-    save_results(event_id, sub_id, stim_type, n_simultaneous_sounds, response, is_correct, speakers)
+    save_results(event_id=event_id, sub_id=sub_id, trial_index=trial_index, block_id=block_id, stim_type=stim_type, filenames=filenames,
+                 speaker_ids=speaker_indices, n_sounds=n_sounds, response=response, is_correct=is_correct, speakers=speakers, reaction_time=reaction_time)
     event_id += 1
     print(f"simulatneous_sounds = {n_simultaneous_sounds}")
 
 
-def save_results(event_id, sub_id, sound_type, n_sounds, response, is_correct, speakers):
-    file_name = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
-
-    """active_speakers = []
-    for i in range(10):
-        if i in speaker_indices:
-            active_speakers.append(str(1))
-        else:
-            active_speakers.append(str(0))"""
+def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, speaker_ids, n_sounds, response, is_correct, speakers, reaction_time):
+    file_name = DIR / "data" / "results" / f"results_numerosity_judgement_{stim_type}_{sub_id}.csv"
 
     mean_speaker_distance = statistics.mean([s.distance for s in speakers])
     if n_sounds == 1:
@@ -71,23 +66,47 @@ def save_results(event_id, sub_id, sound_type, n_sounds, response, is_correct, s
     else:
         speaker_dist_st_dev = statistics.stdev([s.distance for s in speakers])
 
-    """active_speakers = '"' + ','.join(active_speakers) + '"'"""
-    results = {"event_id": event_id,
-               "subject": sub_id,
-               "sound_type": sound_type,
-               "n_sounds": n_sounds,
-               "response": response,
+    stim_levels = []
+    for id in speaker_ids:
+        stim_levels.append(util.get_speaker_normalisation_level(freefield.pick_speakers(id)[0]))
+
+    stim_country_ids = []
+    stim_talker_ids = []
+    for filename in filenames:
+        talker, sex, text = util.parse_country_or_number_filename(filename)
+        stim_country_ids.append(text)
+        stim_talker_ids.append(talker)
+
+    results = {"event_id": None,
+               "subject_id": sub_id,
+               "timestamp": util.get_timestamp(),
+               "session_index": 3,
+               "plane": "distance",
+               "setup": "cathedral",
+               "task": "numerosity_judgement",
+               "block": block_id,
+               "trial_index": trial_index,
+               "stim_number": n_sounds,
+               "stim_type": stim_type,
+               "stim_country_ids": str(stim_country_ids),
+               "stim_talker_ids": str(stim_talker_ids),
+               "speaker_ids": str(speaker_ids),
+               "stim_level": str(stim_levels), #TODO: ask about this
+               "resp_number": response,
                "is_correct": is_correct,
                "mean_speaker_distance": mean_speaker_distance,
-               "speaker_dist_st_dev": speaker_dist_st_dev}
+               "speaker_dist_st_dev": speaker_dist_st_dev,
+               "reaction_time": reaction_time}
 
 
     df_curr_results = pd.DataFrame(results, index=[0])
     df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))
 
-def start_trial(sub_id, n_reps):
+def start_experiment(sub_id, block_id, stim_type, n_reps):
+    trial_index = 0
     for i in range(n_reps):
-        estimate_numerosity(sub_id)
+        estimate_numerosity(sub_id, block_id, trial_index, stim_type)
+        trial_index += 1
 
 def plot_results(sub_id, sound_type):
     data_file = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
