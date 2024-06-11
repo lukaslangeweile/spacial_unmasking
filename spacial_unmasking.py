@@ -43,7 +43,7 @@ def start_trial(sub_id, masker_type, stim_type):
     talker = np.random.choice(talkers)
     train_talker(talker)
     input("Start Experiment by pressing Enter...")
-    spacial_unmask_within_range(nearest_speaker=0, farthest_speaker=10, target_speaker=target_speaker, sub_id=sub_id,
+    spacial_unmask_within_range(nearest_speaker=0, farthest_speaker=0, target_speaker=target_speaker, sub_id=sub_id,
                                            masker_type=masker_type, stim_type=stim_type, talker=talker,
                                            normalisation_method=normalisation_method)
 
@@ -191,7 +191,7 @@ def train_talker(talker_id):
         filepath = os.path.join(DIR, get_possible_files(number=number, talker=talker_id)[0])
         talker_num_dict.update({number: filepath})
     print(talker_num_dict)
-    for i in range(30):
+    for i in range(15):
         while not freefield.read("response", "RP2"):
             time.sleep(0.05)
         button_press = freefield.read("response", "RP2")
@@ -370,7 +370,8 @@ def plot_average_results(sub_ids="all"):
     average_tnr_babble = grouped_babble["target_normalisation_adapted_ratio"].mean()
     """average_tnr_pinknoise = grouped_pinknoise["target_normalisation_adapted_ratio"].mean()"""
 
-    sns.scatterplot(x=average_tnr_babble.index, y=average_tnr_babble.values, color='blue', alpha=0.5, label='Group A')
+    """sns.scatterplot(x=average_tnr_babble.index, y=average_tnr_babble.values, color='blue', alpha=0.5, label='Group A')"""
+    sns.pointplot(results, x="distance_masker", y="target_normalisation_adapted_ratio", errorbar="se")
     """sns.scatterplot(x=average_tnr_pinknoise.index, y=average_tnr_pinknoise.values, color='red', alpha=0.5, label='Group B')"""
 
     plt.xlabel("Distance of Masking Speaker")

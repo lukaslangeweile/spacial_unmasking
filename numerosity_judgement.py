@@ -211,6 +211,5 @@ def plot_averaged_responses(sub_ids, sound_type):
     plt.grid(True)
     plt.show()
 
-"""plot_averaged_responses([100, 9], "countries")
-plot_averaged_responses(100, "countries")
-plot_averaged_responses(9, "countries")"""
+if __name__ == "__main__":
+    plot_averaged_responses([100, 9], "countries")

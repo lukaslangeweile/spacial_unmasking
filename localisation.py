@@ -34,7 +34,7 @@ def initialize(sound_type="syllable"):
 
 def start_trial(sub_id, stim_type="pinknoise", n_reps=3):
     sounds_dict = util.get_sounds_dict(stim_type=stim_type)
-    seq = slab.Trialsequence(conditions=list(range(11)), n_reps=3)
+    seq = slab.Trialsequence(conditions=list(range(11)), n_reps=2)
     """conditions = list(range(10)) * n_reps
     while True:
         np.random.shuffle(conditions)
@@ -134,4 +134,4 @@ def get_slider_value(serial_port=slider, in_metres=True):
 
 
 if __name__ == "__main__":
-    plot_results(99)
+    plot_results(101)
