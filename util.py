@@ -53,17 +53,17 @@ def get_speaker_normalisation_level(speaker, mgb_loudness=30):
 
 def get_stim_dir(stim_type):
     if stim_type == "babble":
-        stim_dir =  DIR / "data" / "stim_files" / "babble-numbers-reversed-n13-shifted_resamp_48828"
+        stim_dir =  DIR / "data" / "stim_files" / "babble-numbers-reversed-n13-shifted_resamp_48828_resamp_24414"
     elif stim_type == "pinknoise":
-        stim_dir = DIR / "data" / "stim_files" / "pinknoise"
+        stim_dir = DIR / "data" / "stim_files" / "pinknoise_resamp_24414"
     elif stim_type == "countries_forward" or stim_type == "countries":
-        stim_dir = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_48828"
+        stim_dir = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_24414"
     elif stim_type == "countries_reversed":
-        stim_dir = DIR / "data" / "stim_files" / "tts-countries-reversed_n13_resamp_48828"
+        stim_dir = DIR / "data" / "stim_files" / "tts-countries-reversed_n13_resamp_24414"
     elif stim_type == "syllable":
-        stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_48828"
+        stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_24414"
     elif stim_type == "uso":
-        stim_dir = DIR / "data" / "stim_files" / "uso_300ms"
+        stim_dir = DIR / "data" / "stim_files" / "uso_300ms_resamp_24414"
     else:
         return
     return pathlib.Path(stim_dir)
