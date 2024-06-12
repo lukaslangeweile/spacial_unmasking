@@ -65,3 +65,12 @@
 0,19,101,syllable,11.00733137829912,5.0,data\stim_files\tts-numbers_n13_resamp_48828\talker-p268_sex-f_text-_eight_.wav
 0,20,101,syllable,4.7756598240469215,4.0,data\stim_files\tts-numbers_n13_resamp_48828\talker-p318_sex-m_text-_six_.wav
 0,21,101,syllable,11.90175953079179,12.0,data\stim_files\tts-numbers_n13_resamp_48828\talker-p307_sex-m_text-_six_.wav
+0,,2024-06-12 11:02:14,101,3,distance,cathedral,localisation_accuracy,99,0,pinknoise,,,data\stim_files\pinknoise_resamp_24414\pinknoise_1.wav,92.0152836843556,8,RX81,9,0.0,0.0,10.0,0,0,6.31524926686217,6.780751705169678
+0,,2024-06-12 11:02:16,101,3,distance,cathedral,localisation_accuracy,99,1,pinknoise,,,data\stim_files\pinknoise_resamp_24414\pinknoise_1.wav,91.58892582949888,6,RX81,7,0.0,0.0,8.0,0,0,5.7434017595307925,1.218599557876587
+0,,2024-06-12 11:02:21,101,3,distance,cathedral,localisation_accuracy,99,2,pinknoise,,,data\stim_files\pinknoise_resamp_24414\pinknoise_6.wav,92.00610777531934,9,RX81,10,0.0,0.0,11.0,0,0,6.080645161290323,3.1715855598449707
+0,,2024-06-12 11:02:24,101,3,distance,cathedral,localisation_accuracy,99,3,pinknoise,,,data\stim_files\pinknoise_resamp_24414\pinknoise_1.wav,87.57049330475355,2,RX81,3,0.0,0.0,4.0,0,0,5.391495601173021,1.5467655658721924
+0,,2024-06-12 11:02:31,101,3,distance,cathedral,localisation_accuracy,99,4,pinknoise,,,data\stim_files\pinknoise_resamp_24414\pinknoise_1.wav,90.34149293193903,5,RX81,6,0.0,0.0,7.0,0,0,5.010263929618769,5.749598503112793
+0,,2024-06-12 11:02:36,101,3,distance,cathedral,localisation_accuracy,99,5,pinknoise,,,data\stim_files\pinknoise_resamp_24414\pinknoise_8.wav,86.2038576498559,1,RX81,2,0.0,0.0,3.0,0,0,2.8401759530791795,2.843482494354248
+0,,2024-06-12 11:02:39,101,3,distance,cathedral,localisation_accuracy,99,6,pinknoise,,,data\stim_files\pinknoise_resamp_24414\pinknoise_5.wav,89.14911522239515,3,RX81,4,0.0,0.0,5.0,0,0,3.9692082111436955,1.9061319828033447
+0,,2024-06-12 11:02:44,101,3,distance,cathedral,localisation_accuracy,99,7,pinknoise,,,data\stim_files\pinknoise_resamp_24414\pinknoise_1.wav,89.31368318402096,4,RX81,5,0.0,0.0,6.0,0,0,3.983870967741936,3.468439817428589
+0,,2024-06-12 11:02:47,101,3,distance,cathedral,localisation_accuracy,99,8,pinknoise,,,data\stim_files\pinknoise_resamp_24414\pinknoise_1.wav,84.40078082039427,0,RX81,1,0.0,0.0,2.0,0,0,2.1070381231671558,1.8123066425323486

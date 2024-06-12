@@ -69,7 +69,7 @@ def save_results(event_id, sub_id, trial_index, block_id, stim_type, sound, resp
                "headpose_offset_ele": None,
                "stim_filename": sound_filename,
                "stim_level": sound.level, #TODO: mgb or level?
-               "speaker_id": speaker.id,
+               "speaker_id": speaker.index,
                "speaker_proc": speaker.analog_proc,
                "speaker_chan": speaker.analog_channel,
                "stim_azi": speaker.azimuth,
