@@ -102,6 +102,9 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_i
     np.random.shuffle(iterator)
     talker = talker
     trial_index = 0
+    valid_responses = [1, 2, 3, 4, 5]
+    stim_dir_list = [util.get_stim_dir(masker_type), util.get_stim_dir(stim_type)]
+    max_n_samples = util.get_max_n_samples(stim_dir_list)
 
     for i in iterator:
 
@@ -133,16 +136,27 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_i
                 to_play = freefield.apply_equalization(signal=to_play, speaker=target_speaker, frequency=False)
                 to_play.level = to_play.level + 3
                 """
-                freefield.set_signal_and_speaker(signal=to_play, speaker=target_speaker, equalize=False)
+                """freefield.set_signal_and_speaker(signal=to_play, speaker=target_speaker, equalize=False)"""
+                util.set_multiple_signals(signals=[to_play], speakers=[target_speaker], equalize=False,
+                                          max_n_samples=max_n_samples)
             else:
-                freefield.set_signal_and_speaker(signal=target, speaker=target_speaker, equalize=False)
-                freefield.set_signal_and_speaker(signal=masker, speaker=masking_speaker, equalize=False)
+                """freefield.set_signal_and_speaker(signal=target, speaker=target_speaker, equalize=False)
+                freefield.set_signal_and_speaker(signal=masker, speaker=masking_speaker, equalize=False)"""
+                util.set_multiple_signals(signals=[target, masker], speakers=[target_speaker, masking_speaker],
+                                          equalize=False, max_n_samples=max_n_samples)
             freefield.play(kind=1, proc="RX81")
             util.start_timer()
 
-            while not freefield.read("response", "RP2"):
+            response = None
+            while True:
+                response = freefield.read("respone", "RP")
                 time.sleep(0.05)
-            response = freefield.read("response", "RP2")
+                if response in valid_responses:
+                    break
+
+            """while not freefield.read("response", "RP2"):
+                time.sleep(0.05)
+            response = freefield.read("response", "RP2")"""
             reaction_time = util.get_elapsed_time()
 
             if response == util.get_correct_response_number(target_file):
@@ -158,8 +172,8 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_i
                               response_number=response, reaction_time=reaction_time)
             trial_index += 1
             """freefield.flush_buffers(processor="RX81")"""
-            freefield.write(tag="data0", value=0, processors="RX81")
-            freefield.write(tag="data1", value=0, processors="RX81")
+            """freefield.write(tag="data0", value=0, processors="RX81")
+            freefield.write(tag="data1", value=0, processors="RX81")"""
             time.sleep(2.5)
 
         save_results(event_id=event_id ,sub_id=sub_id, threshold=stairs.threshold(n=10), distance_masker=masking_speaker.distance,

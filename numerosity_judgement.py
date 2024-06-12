@@ -29,7 +29,7 @@ num_dict = {"one": 1,
             "nine": 9}
 
 n_sounds = [2, 3, 4, 5, 6]
-maximum_n_samples = 0
+
 
 def estimate_numerosity(sub_id, block_id, trial_index, stim_type="countries_forward"):
     global n_sounds
@@ -37,9 +37,10 @@ def estimate_numerosity(sub_id, block_id, trial_index, stim_type="countries_forw
     sounds = util.get_sounds_dict(stim_type)
     fluctuation = np.random.uniform(-1, 1)
     n_simultaneous_sounds = np.random.choice(n_sounds)
+    max_n_samples = util.get_max_n_samples(util.get_stim_dir(stim_type))
     filenames, sounds = util.get_sounds_with_filenames(sounds_dict=sounds, n=n_simultaneous_sounds, randomize=True)
     speakers, speaker_indices = util.get_n_random_speakers(n_simultaneous_sounds)
-    util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, fluc=fluctuation)
+    util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, fluc=fluctuation, max_n_samples=max_n_samples)
     freefield.play(kind=1, proc="RX81")
     util.start_timer()
     print(f"simulatneous_sounds = {n_simultaneous_sounds}")

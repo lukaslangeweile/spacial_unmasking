@@ -18,7 +18,8 @@ DIR = pathlib.Path(os.curdir)
 def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=3):
     trial_index = 0
     sounds_dict = util.get_sounds_dict(stim_type=stim_type)
-    seq = slab.Trialsequence(conditions=list(range(11)), n_reps=2)
+    seq = slab.Trialsequence(conditions=list(range(11)), n_reps=n_reps)
+    max_n_samples = util.get_max_n_samples(util.get_stim_dir(stim_type))
     """conditions = list(range(10)) * n_reps
     while True:
         np.random.shuffle(conditions)
@@ -38,7 +39,7 @@ def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=3):
         print(trial)
         speaker = freefield.pick_speakers(trial)[0]
         print(speaker)
-        util.set_multiple_signals(signals=[sound], speakers=[speaker], equalize=True)
+        util.set_multiple_signals(signals=[sound], speakers=[speaker], equalize=True, max_n_samples=max_n_samples)
         freefield.play(kind=1, proc="RX81")
         util.start_timer()
         response = get_slider_value()

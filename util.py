@@ -243,6 +243,34 @@ def create_resampled_stim_dirs(samplerate=24414):
                 sound = sound.resample(24414)
                 new_filepath = new_dir_path / os.path.basename(file)
                 sound.write(new_filepath)
+def initialize_stim_recording():
+    freefield.set_logger("DEBUG")
+    freefield.SETUP = "cathedral"
+    freefield.initialize(setup="cathedral", default="play_birec", connection="USB", zbus=False)
+    freefield.SETUP = "cathedral"
+    freefield.SPEAKERS = freefield.read_speaker_table()
+
+def get_max_n_samples(stim_dirs):
+    sounds_list = []
+
+
+    if isinstance(stim_dirs, str):
+        stim_dirs = [stim_dirs]
+
+    for directory in stim_dirs:
+        directory_path = pathlib.Path(directory)
+        if directory_path.is_dir():
+            for file in directory_path.iterdir():
+                if file.is_file() and file.suffix in ['.wav']:
+                    try:
+                        sounds_list.append(slab.Sound.read(file))
+                    except Exception as e:
+                        print(f"Error reading file {file}: {e}")
+        else:
+            print(f"{directory} is not a directory")
+
+    max_n_samples = max(sound.n_samples for sound in sounds_list)
+    return max_n_samples
 
 def record_stimuli(stim_type, mgb_loudness=30):
     stim_dir = get_stim_dir(stim_type)
@@ -251,7 +279,7 @@ def record_stimuli(stim_type, mgb_loudness=30):
         os.makedirs(recording_dir)
     for file in stim_dir.iterdir():
         sound = slab.Sound.read(file)
-        basename = str(os.path.splitext(os.path.basename(file)))
+        basename = str(os.path.splitext(os.path.basename(file))[0])
         for speaker in freefield.SPEAKERS:
             sound = apply_mgb_equalization(sound, speaker, 30, 0)
             recording = freefield.play_and_record(speaker=speaker, sound=sound, equalize=False)
@@ -261,6 +289,6 @@ def record_stimuli(stim_type, mgb_loudness=30):
             recording.write(recording_filepath)
 if __name__ == "__main__":
 
-    initialize_setup()
+    initialize_stim_recording()
     record_stimuli("countries_forward")
     record_stimuli("counreis_reversed")
