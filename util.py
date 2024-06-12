@@ -8,7 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import json
 import time
-import datetime
+from datetime import datetime
 import re
 
 DIR = DIR = pathlib.Path(os.curdir)
@@ -103,8 +103,7 @@ def get_sounds_dict(stim_type="babble"):
 def get_sounds_with_filenames(sounds_dict, n="all", randomize=False):
     filenames_list = list(sounds_dict.values())
     sounds_list = list(sounds_dict.keys())
-
-    if isinstance(n, int):
+    if isinstance(n, int) or isinstance(n, np.int32):
         if randomize:
             random_indices = np.random.choice(len(sounds_list), n, replace=False)
             sounds_list = [sounds_list[i] for i in random_indices]
@@ -159,12 +158,14 @@ def read_config_file(experiment):
         config_data = json.load(config_file)
     return config_data
 
-def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc=0, max_n_samples=24414):
+def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc=0, max_n_samples=80000):
     for i in range(len(signals)):
         if equalize:
             signals[i] = apply_mgb_equalization(signals[i], speakers[i], mgb_loudness, fluc)
         speaker_index = speakers[i].index + 1
         data = np.pad(signals[i].data, ((0, max_n_samples - len(signals[i].data)), (0, 0)), 'constant')
+        if len(data.shape) == 2 and data.shape[1] == 2:
+            data = np.mean(data, axis=1)
         freefield.write(tag=f"data{i}", value=data, processors="RX81")
         freefield.write(tag=f"chan{i}", value=speaker_index, processors="RX81")
     time.sleep(0.2)
@@ -199,7 +200,7 @@ def get_elapsed_time(reset=True):
     return elapsed_time
 
 def get_timestamp():
-    return datetime.now()
+    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 def parse_country_or_number_filename(filepath):
     # Define the pattern to match the filename structure
@@ -229,7 +230,7 @@ def create_resampled_stim_dirs(samplerate=24414):
                     os.makedirs(new_dir_path)
                 for file in stim_dir.iterdir():
                     sound = slab.Sound.read(str(file))
-                    sound.resample(samplerate=samplerate)
+                    sound = sound.resample(samplerate=samplerate)
                     new_filepath = new_dir_path / os.path.basename(file)
                     sound.write(new_filepath)
         elif stim_dir.is_dir():
@@ -239,6 +240,7 @@ def create_resampled_stim_dirs(samplerate=24414):
                 os.makedirs(new_dir_path)
             for file in stim_dir.iterdir():
                 sound = slab.Sound.read(str(file))
+                sound = sound.resample(24414)
                 new_filepath = new_dir_path / os.path.basename(file)
                 sound.write(new_filepath)
 

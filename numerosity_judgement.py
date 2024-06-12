@@ -52,7 +52,7 @@ def estimate_numerosity(sub_id, block_id, trial_index, stim_type="countries_forw
     else:
         is_correct = False
     save_results(event_id=event_id, sub_id=sub_id, trial_index=trial_index, block_id=block_id, stim_type=stim_type, filenames=filenames,
-                 speaker_ids=speaker_indices, n_sounds=n_sounds, response=response, is_correct=is_correct, speakers=speakers, reaction_time=reaction_time)
+                 speaker_ids=speaker_indices, n_sounds=n_simultaneous_sounds, response=response, is_correct=is_correct, speakers=speakers, reaction_time=reaction_time)
     event_id += 1
     print(f"simulatneous_sounds = {n_simultaneous_sounds}")
 
@@ -98,6 +98,9 @@ def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, 
                "speaker_distance_st_dev": speaker_dist_st_dev,
                "reaction_time": reaction_time}
 
+    # Debug: Print key, value, and type of each entry in the results dictionary
+    for key, value in results.items():
+        print(f"Key: {key}, Value: {value}, Type: {type(value)}")
 
     df_curr_results = pd.DataFrame(results, index=[0])
     df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))

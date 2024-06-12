@@ -46,7 +46,7 @@ def get_correct_response(file):
 
 def get_possible_files(sex=None, number=None, talker=None, exclude=False):
     possible_files = []
-    stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_48828"  #TODO: Add files and directory
+    stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_24414"  #TODO: Add files and directory
     if isinstance(number, int):
         for key, val in num_dict.items():
             if val == number:
@@ -76,11 +76,11 @@ def get_possible_files(sex=None, number=None, talker=None, exclude=False):
 
 def get_non_syllable_masker_file(masker_type):
     if masker_type == "pinknoise":
-        pink_noise_DIR = DIR / "data" / "stim_files" / "pinknoise" #placeholder
+        pink_noise_DIR = DIR / "data" / "stim_files" / "pinknoise_resamp_24414" #placeholder
         contents = [file for file in pink_noise_DIR.iterdir()]
         masker_file = os.path.join(DIR, get_random_file(contents))
     elif masker_type == "babble":
-        babble_DIR = DIR / "data" / "stim_files" / "babble-numbers-reversed-n13-shifted_resamp_48828"
+        babble_DIR = DIR / "data" / "stim_files" / "babble-numbers-reversed-n13-shifted_resamp_48828_resamp_24414"
         contents = [file for file in babble_DIR.iterdir()]
         masker_file = os.path.join(DIR, get_random_file(contents))
     else:
@@ -302,7 +302,7 @@ def save_per_response(event_id, sub_id, block_id, trial_index, step_number, leve
                "masker_filename": masker_filename,
                "masker_speaker_id": masking_speaker.index,
                "masker_speaker_proc": masking_speaker.analog_proc,
-               "masker_speaker_chan": masking_speaker.analog_chan,
+               "masker_speaker_chan": masking_speaker.analog_channel,
                "masker_speaker_azi": masking_speaker.azimuth,
                "masker_speaker_ele": masking_speaker.elevation,
                "masker_speaker_dist": masking_speaker.distance,
