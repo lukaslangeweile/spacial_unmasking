@@ -47,7 +47,7 @@ def get_correct_response(file):
 def get_possible_files(sex=None, number=None, talker=None, exclude=False):
     possible_files = []
     stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_48828"  #TODO: Add files and directory
-    if isinstance(number, int):
+    if isinstance(number, int) or isinstance(number, np.int34):
         for key, val in num_dict.items():
             if val == number:
                 number = key
@@ -110,7 +110,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_i
 
         for level in stairs:
             masker_file = get_non_syllable_masker_file(masker_type)
-            target_file = get_target_number_file(talker=talker)
+            target_file = get_target_number_file(sex="sex-f",talker=talker, number=np.random.randint(1, 6))
             masker = slab.Sound.read(masker_file)
             masker = slab.Sound(masker.data[:, 0])
             target = slab.Sound.read(target_file)

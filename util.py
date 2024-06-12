@@ -56,10 +56,10 @@ def get_stim_dir(stim_type):
         stim_dir =  DIR / "data" / "stim_files" / "babble-numbers-reversed-n13-shifted_resamp_48828_resamp_24414"
     elif stim_type == "pinknoise":
         stim_dir = DIR / "data" / "stim_files" / "pinknoise_resamp_24414"
-    elif stim_type == "countries_forward" or stim_type == "countries":
+    elif stim_type == "countries_forward" or stim_type == "countries_forward":
         stim_dir = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_24414"
     elif stim_type == "countries_reversed":
-        stim_dir = DIR / "data" / "stim_files" / "tts-countries-reversed_n13_resamp_24414"
+        stim_dir = DIR / "data" / "stim_files" / "tts-countries_forward-reversed_n13_resamp_24414"
     elif stim_type == "syllable":
         stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_24414"
     elif stim_type == "uso":
@@ -73,7 +73,7 @@ def apply_mgb_equalization(signal, speaker, mgb_loudness=30, fluc=0):
     signal.level = logarithmic_func(mgb_loudness + fluc, a, b, c)
     return signal
 
-def record_stimuli_and_create_csv(stim_type="countries"):
+def record_stimuli_and_create_csv(stim_type="countries_forward"):
     sounds_list, filenames_list = get_sounds_with_filenames(n="all", stim_type="stim_type")
     for i in range(len(sounds_list)):
         for speaker in freefield.SPEAKERS:
@@ -82,7 +82,7 @@ def record_stimuli_and_create_csv(stim_type="countries"):
             rec_sound = freefield.play_and_record(speaker=speaker, sound=sound, compensate_delay=True,
                                                   equalize=False)
             sound_name = os.path.splitext(filenames_list[i])[0]
-            filepath = DIR / "data" / "recordings" / " countries" / f"sound-{sound_name}_distance-{speaker.distance}.wav"
+            filepath = DIR / "data" / "recordings" / " countries_forward" / f"sound-{sound_name}_distance-{speaker.distance}.wav"
             filepath = pathlib.Path(filepath)
             rec_sound.write(filename=filepath, normalise=False)
             time.sleep(2.7)
@@ -242,8 +242,23 @@ def create_resampled_stim_dirs(samplerate=24414):
                 new_filepath = new_dir_path / os.path.basename(file)
                 sound.write(new_filepath)
 
+def record_stimuli(stim_type, mgb_loudness=30):
+    stim_dir = get_stim_dir(stim_type)
+    recording_dir = DIR / "data" / "recordings" / stim_type
+    if not os.path.exists(recording_dir):
+        os.makedirs(recording_dir)
+    for file in stim_dir.iterdir():
+        sound = slab.Sound.read(file)
+        basename = str(os.path.splitext(os.path.basename(file)))
+        for speaker in freefield.SPEAKERS:
+            sound = apply_mgb_equalization(sound, speaker, 30, 0)
+            recording = freefield.play_and_record(speaker=speaker, sound=sound, equalize=False)
 
-
+            recording_filename = f"sound-{basename}_mgb-level-{mgb_loudness}_distance-{speaker.distance}.wav"
+            recording_filepath = recording_dir / recording_filename
+            recording.write(recording_filepath)
 if __name__ == "__main__":
 
-    create_resampled_stim_dirs()
+    initialize_setup()
+    record_stimuli("countries_forward")
+    record_stimuli("counreis_reversed")
