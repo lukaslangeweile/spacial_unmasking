@@ -149,7 +149,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_i
 
             response = None
             while True:
-                response = freefield.read("respone", "RP")
+                response = freefield.read("respone", "RP2")
                 time.sleep(0.05)
                 if response in valid_responses:
                     break

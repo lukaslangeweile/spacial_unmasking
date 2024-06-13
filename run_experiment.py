@@ -8,16 +8,15 @@ import util
 sub_id = 101
 block_id = 99
 
-util.initialize_setup()
+"""util.initialize_setup()
 localisation.start_experiment(sub_id, block_id, stim_type="pinknoise")
 freefield.flush_buffers(processor="RX81")
 localisation.start_experiment(sub_id, block_id, stim_type="uso")
 freefield.flush_buffers(processor="RX81")
-localisation.start_experiment(sub_id, block_id, stim_type="syllable")
+localisation.start_experiment(sub_id, block_id, stim_type="syllable")"""
 
-"""util.initialize_setup()
-spacial_unmasking.start_experiment(sub_id=sub_id, block_id=block_id, masker_type="pinknoise", stim_type="syllable")"""
-
+util.initialize_setup()
+spacial_unmasking.start_experiment(sub_id=sub_id, block_id=block_id, masker_type="pinknoise", stim_type="syllable")
 
 """util.initialize_setup()
 input("Start")
