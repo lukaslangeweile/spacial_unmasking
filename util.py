@@ -59,7 +59,7 @@ def get_stim_dir(stim_type):
     elif stim_type == "countries_forward" or stim_type == "countries_forward":
         stim_dir = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_24414"
     elif stim_type == "countries_reversed":
-        stim_dir = DIR / "data" / "stim_files" / "tts-countries_forward-reversed_n13_resamp_24414"
+        stim_dir = DIR / "data" / "stim_files" / "tts-countries-reversed_n13_resamp_24414"
     elif stim_type == "syllable":
         stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_24414"
     elif stim_type == "uso":
@@ -279,6 +279,10 @@ def record_stimuli(stim_type, mgb_loudness=30):
         os.makedirs(recording_dir)
     for file in stim_dir.iterdir():
         sound = slab.Sound.read(file)
+        if len(sound.data.shape) == 2 and sound.data.shape[1] == 2:
+            data = np.mean(sound.data, axis=1)
+            sound = slab.Sound(data)
+        print(sound.samplerate)
         basename = str(os.path.splitext(os.path.basename(file))[0])
         for speaker in freefield.SPEAKERS:
             sound = apply_mgb_equalization(sound, speaker, 30, 0)
@@ -291,4 +295,4 @@ def record_stimuli(stim_type, mgb_loudness=30):
 if __name__ == "__main__":
 
     initialize_stim_recording()
-    record_stimuli("countries_forward")
+    record_stimuli("countries_reversed")
