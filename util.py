@@ -254,7 +254,7 @@ def get_max_n_samples(stim_dirs):
     sounds_list = []
 
 
-    if isinstance(stim_dirs, str):
+    if not isinstance(stim_dirs, list):
         stim_dirs = [stim_dirs]
 
     for directory in stim_dirs:
@@ -287,8 +287,8 @@ def record_stimuli(stim_type, mgb_loudness=30):
             recording_filename = f"sound-{basename}_mgb-level-{mgb_loudness}_distance-{speaker.distance}.wav"
             recording_filepath = recording_dir / recording_filename
             recording.write(recording_filepath)
+
 if __name__ == "__main__":
 
     initialize_stim_recording()
     record_stimuli("countries_forward")
-    record_stimuli("counreis_reversed")
