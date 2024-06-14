@@ -23,7 +23,7 @@ num_dict = {"one": 1,
             "eight": 8,
             "nine": 9}
 target_dict = {}
-talkers = ["p245", "p248", "p256", "p268", "p284", "p307", "p318"]
+talkers = ["p245", "p248", "p268", "p284"]
 
 
 def start_experiment(sub_id, block_id, masker_type, stim_type):
@@ -113,7 +113,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_i
 
         for level in stairs:
             masker_file = get_non_syllable_masker_file(masker_type)
-            target_file = get_target_number_file(sex="sex-f",talker=talker, number=np.random.randint(1, 6))
+            target_file = get_target_number_file(talker=talker, number=np.random.randint(1, 6))
             masker = slab.Sound.read(masker_file)
             masker = slab.Sound(masker.data[:, 0])
             target = slab.Sound.read(target_file)
@@ -149,7 +149,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_i
 
             response = None
             while True:
-                response = freefield.read("respone", "RP")
+                response = freefield.read("response", "RP2")
                 time.sleep(0.05)
                 if response in valid_responses:
                     break
