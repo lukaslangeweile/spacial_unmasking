@@ -56,10 +56,10 @@ def get_stim_dir(stim_type):
         stim_dir =  DIR / "data" / "stim_files" / "babble-numbers-reversed-n13-shifted_resamp_48828_resamp_24414"
     elif stim_type == "pinknoise":
         stim_dir = DIR / "data" / "stim_files" / "pinknoise_resamp_24414"
-    elif stim_type == "countries_forward" or stim_type == "countries_forward":
+    elif stim_type == "countries" or stim_type == "countries_forward":
         stim_dir = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_24414"
     elif stim_type == "countries_reversed":
-        stim_dir = DIR / "data" / "stim_files" / "tts-countries_forward-reversed_n13_resamp_24414"
+        stim_dir = DIR / "data" / "stim_files" / "tts-countries_reversed_n13_resamp_24414"
     elif stim_type == "syllable":
         stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_24414"
     elif stim_type == "uso":
@@ -243,6 +243,7 @@ def create_resampled_stim_dirs(samplerate=24414):
                 sound = sound.resample(24414)
                 new_filepath = new_dir_path / os.path.basename(file)
                 sound.write(new_filepath)
+
 def initialize_stim_recording():
     freefield.set_logger("DEBUG")
     freefield.SETUP = "cathedral"
@@ -288,7 +289,28 @@ def record_stimuli(stim_type, mgb_loudness=30):
             recording_filepath = recording_dir / recording_filename
             recording.write(recording_filepath)
 
+def reverse_stimuli(stim_type):
+    stim_dir = get_stim_dir(stim_type)
+    pattern = r"(?P<stim_type>.+?)_n13_resamp_(?P<samplerate>.+)"
+    match = re.match(pattern, str(os.path.basename(stim_dir)))
+    if match:
+        samplerate = match.group("samplerate")
+        print(samplerate)
+        target_dir_name = f"{stim_type}_reversed_n13_resamp_{samplerate}"
+    else:
+        target_dir_name = str(os.path.basename(stim_dir)) + "_reversed"
+
+    target_dir = DIR / "data" / "stim_files" / target_dir_name
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+
+    for file in stim_dir.iterdir():
+        basename = os.path.splitext(os.path.basename(file))[0]
+        sound = slab.Sound.read(file)
+        new_data = sound.data[::-1]
+        sound.data = new_data
+        filename = target_dir / f"{basename}_reversed.wav"
+        sound.write(filename=filename)
 if __name__ == "__main__":
 
-    initialize_stim_recording()
-    record_stimuli("countries_forward")
+    reverse_stimuli("countries")
