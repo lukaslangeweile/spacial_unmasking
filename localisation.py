@@ -14,8 +14,7 @@ import logging
 
 DIR = pathlib.Path(os.curdir)
 
-logging_path = DIR / "data" / "logging" / "localisation.log"
-logging.basicConfig(filename=logging_path, level=logging.ERROR)
+logging.basicConfig(filename="localisation.log", level=logging.ERROR)
 
 port = "COM5"
 try:

@@ -20,8 +20,7 @@ normalisation_method = None
 event_id = 0
 DIR = pathlib.Path(os.curdir)
 
-logging_path = DIR / "data" / "logging" / "localisation.log"
-logging.basicConfig(filename=logging_path, level=logging.ERROR)
+logging.basicConfig(filename="numerosity_judgement.log", level=logging.ERROR)
 
 num_dict = {"one": 1,
             "two": 2,

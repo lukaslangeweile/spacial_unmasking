@@ -11,7 +11,7 @@ import util
 import logging
 
 # Configure logging
-logging.basicConfig(filename='auditory_experiment.log', level=logging.ERROR)
+logging.basicConfig(filename='spatial_unmasking.log', level=logging.ERROR)
 
 event_id = 0
 DIR = pathlib.Path(os.curdir)
