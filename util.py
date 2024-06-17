@@ -280,6 +280,10 @@ def record_stimuli(stim_type, mgb_loudness=30):
         os.makedirs(recording_dir)
     for file in stim_dir.iterdir():
         sound = slab.Sound.read(file)
+        if len(sound.data.shape) == 2 and sound.data.shape[1] == 2:
+            data = np.mean(sound.data, axis=1)
+            sound = slab.Sound(data)
+        print(sound.samplerate)
         basename = str(os.path.splitext(os.path.basename(file))[0])
         for speaker in freefield.SPEAKERS:
             sound = apply_mgb_equalization(sound, speaker, 30, 0)
@@ -313,4 +317,7 @@ def reverse_stimuli(stim_type):
         sound.write(filename=filename)
 if __name__ == "__main__":
 
-    reverse_stimuli("countries")
+
+    initialize_stim_recording()
+    record_stimuli("countries_reversed")
+
