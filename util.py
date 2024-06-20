@@ -11,6 +11,9 @@ import time
 from datetime import datetime
 import re
 import logging
+import ast
+
+import localisation
 
 # Configure logging
 logging.basicConfig(filename='auditory_experiment.log', level=logging.ERROR)
@@ -386,9 +389,52 @@ def reverse_stimuli(stim_type):
         logging.error(f"An error occurred in reverse_stimuli: {e}")
         print(f"An error occurred: {e}")
 
+def add_dynamic_range_to_num_judge(stim_type, sub_id):
+    filepath = DIR / "data" / "results" / f"results_numerosity_judgement_{stim_type}_{sub_id}.csv"
+    df = pd.read_csv(filepath)
+    dynamic_range_df = 0000
+    p_ref = 2e-5
+    upper_freq = 11000
+
+    for trial in df["trial_index"]:
+        row = df[df["trial_index"] == trial]
+        if not row.empty:
+            stim_number = row["stim_number"].values[0]
+            speaker_ids = ast.literal_eval(row["speaker_ids"].values[0])
+            stim_country_ids = ast.literal_eval(row["stim_country_ids"].values[0])
+            stim_talker_ids = ast.literal_eval(row["stim_country_ids"].values[0])
+            stim_sexes = ast.literal_eval(row["stim_sexes"].values[0])
+            rec_list = list()
+            for i in range(stim_number):
+                speaker_distance = freefield.pick_speakers(speaker_ids[i])[0].distance
+                recording_filename = f"sound-talker-{stim_talker_ids[i]}_sex-{stim_sexes[i]}_text-" \
+                                     f"{stim_country_ids[i]}_mgb-level-30_distance-{speaker_distance}.wav"
+                recording_path = DIR / "data" / "recordings" / f"{stim_type}" / recording_filename
+                rec = slab.Sound.read(str(recording_path))
+                rec_list.append(rec)
+
+            summed_data = None
+            for rec in rec_list:
+                summed_data += rec.data
+
+            summed_sound = slab.Sound(summed_data)
+            freqs, times, power = summed_sound.spectrogram(show=False)
+
+            power = power[freqs < upper_freq, :]
+            power = 10 * np.log10(power / (p_ref ** 2))  # logarithmic power for plotting
+            dB_max = power.max()
+            dB_min = dB_max - 65 # value with the highest variance according to max
+            interval = power[np.where((power > dB_min) & (power < dB_max))]
+            percentage_filled = interval.shape[0] / power.flatten().shape[0]
+            df.loc[df["trial_index"] == trial, "dyn_range_percentage_filled"] = percentage_filled
+
+
+
+
 if __name__ == "__main__":
 
 
     initialize_stim_recording()
     record_stimuli("countries_reversed")
+
 

@@ -130,10 +130,13 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_i
         max_n_samples = util.get_max_n_samples(stim_dir_list)
 
         for i in iterator:
+
+            logging.info(f"Beginnign spatial unmasking at speaker with index {i}.")
             masking_speaker = freefield.pick_speakers(i)[0]
             stairs = slab.Staircase(start_val=-5, n_reversals=16, step_sizes=[7, 5, 3, 1])
 
             for level in stairs:
+                logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")
                 masker_file = get_non_syllable_masker_file(masker_type)
                 target_file = get_target_number_file(talker=talker, number=np.random.randint(1, 6))
                 masker = slab.Sound.read(masker_file)
@@ -444,5 +447,4 @@ def get_speaker_normalisation_level(speaker, mgb_loudness=30):
     except Exception as e:
         logging.error(f"An error occurred in get_speaker_normalisation_level: {e}")
         print(f"An error occurred: {e}")
-
 

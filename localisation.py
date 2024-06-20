@@ -31,7 +31,10 @@ def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=3):
         seq = slab.Trialsequence(conditions=list(range(11)), n_reps=n_reps)
         max_n_samples = util.get_max_n_samples(util.get_stim_dir(stim_type))
 
+        logging.info("Beginning localisation experiment.")
+
         for trial in seq:
+            logging.info(f"Presenting stimuli of stim_type = {stim_type} at speaker with index = {trial}")
             event_id = seq.this_n
             filename, sound = util.get_sounds_with_filenames(sounds_dict=sounds_dict, n=1, randomize=True)
             filename = filename[0]
@@ -43,8 +46,9 @@ def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=3):
             freefield.play(kind=1, proc="RX81")
             util.start_timer()
             response = get_slider_value()
-            reaction_time =util.get_elapsed_time()
+            reaction_time = util.get_elapsed_time()
             print(response)
+            logging.info(f"Got response = {response}. Actual distance = {speaker.distance}")
             save_results(event_id=event_id, sub_id=sub_id, block_id=block_id, trial_index=trial_index, sound=sound, stim_type=stim_type, response=response,
                          speaker=speaker, sound_filename=filename, reaction_time=reaction_time)
             trial_index += 1
