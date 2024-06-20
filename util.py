@@ -71,7 +71,7 @@ def get_stim_dir(stim_type):
         elif stim_type == "countries" or stim_type == "countries_forward":
             stim_dir = DIR / "data" / "stim_files" / "tts-countries_n13_resamp_24414"
         elif stim_type == "countries_reversed":
-            stim_dir = DIR / "data" / "stim_files" / "tts-countries_reversed_n13_resamp_24414"
+            stim_dir = DIR / "data" / "stim_files" / "tts-countries-reversed_n13_resamp_24414"
         elif stim_type == "syllable":
             stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_24414"
         elif stim_type == "uso":
