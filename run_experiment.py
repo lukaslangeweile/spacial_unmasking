@@ -15,9 +15,9 @@ localisation.start_experiment(sub_id, block_id, stim_type="uso")
 freefield.flush_buffers(processor="RX81")
 localisation.start_experiment(sub_id, block_id, stim_type="syllable")"""
 
-util.initialize_setup()
-spacial_unmasking.start_experiment(sub_id=sub_id, block_id=block_id, masker_type="pinknoise", stim_type="syllable")
-
 """util.initialize_setup()
+spacial_unmasking.start_experiment(sub_id=sub_id, block_id=block_id, masker_type="pinknoise", stim_type="syllable")"""
+
+util.initialize_setup()
 input("Start")
-numerosity_judgement.start_experiment(sub_id, block_id, "countries_reversed", 30)"""
+numerosity_judgement.start_experiment(sub_id, block_id, "countries_forward", 30)

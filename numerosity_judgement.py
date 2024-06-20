@@ -44,51 +44,52 @@ num_dict = {"one": 1,
 n_sounds = [2, 3, 4, 5, 6]
 
 
-def estimate_numerosity(sub_id, block_id, trial_index, stim_type, n_reps):
+def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
     valid_responses = [2, 3, 4, 5, 6]
     df = pd.read_csv(DIR / "data" / "spectral_coverage_data" / "tts_spectral_coverage.csv")
     condition_dict = create_condition_bin_dict(df=df, stim_type=stim_type, reps=n_reps)
-    try:
-        global n_sounds
-        global event_id
-        seq = slab.Trialsequence(conditions=[2, 3, 4, 5, 6], n_reps=n_reps)
-        for trial in seq:
-            stim_dir = util.get_stim_dir(stim_type=stim_type)
-            fluctuation = np.random.uniform(-1, 1)
-            n_simultaneous_sounds = trial # TODO: is this correct?
-            max_n_samples = util.get_max_n_samples(stim_dir)
-            """filenames, sounds = util.get_sounds_with_filenames(sounds_dict=sounds, n=n_simultaneous_sounds, randomize=True)
-            speakers, speaker_indices = util.get_n_random_speakers(n_simultaneous_sounds)"""
-            sounds, filenames, speaker_indices, spectral_coverage = get_pseudo_randomized_stimuli(trial, condition_dict, n_reps, stim_dir)
-            speakers = freefield.pick_speakers(speaker_indices)
-            logging.info(f"Presenting {n_simultaneous_sounds} sounds at speakers with indices {speaker_indices}. "
-                         f"Trial index = {trial_index}")
 
-            util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, fluc=fluctuation, max_n_samples=max_n_samples)
-            freefield.play(kind=1, proc="RX81")
-            util.start_timer()
-            response = None
-            while True:
-                response = freefield.read("response", "RP2")
-                time.sleep(0.05)
-                if response in valid_responses:
-                    break
-            reaction_time = util.get_elapsed_time()
-            if response == n_simultaneous_sounds:
-                is_correct = True
-            else:
-                is_correct = False
+    global event_id
+    seq = slab.Trialsequence(conditions=[2, 3, 4, 5, 6], n_reps=n_reps)
+    for trial in seq:
+        trial_index = seq.this_n
+        stim_dir = util.get_stim_dir(stim_type=stim_type)
+        fluctuation = np.random.uniform(-1, 1)
+        n_simultaneous_sounds = trial # TODO: is this correct?
+        max_n_samples = util.get_max_n_samples(stim_dir)
+        """filenames, sounds = util.get_sounds_with_filenames(sounds_dict=sounds, n=n_simultaneous_sounds, randomize=True)
+        speakers, speaker_indices = util.get_n_random_speakers(n_simultaneous_sounds)"""
+        sounds, filenames, speaker_indices, spectral_coverage = get_pseudo_randomized_stimuli(trial, condition_dict, n_reps, stim_dir)
+        speakers = freefield.pick_speakers(speaker_indices)
+        logging.info(f"Presenting {n_simultaneous_sounds} sounds at speakers with indices {speaker_indices}. "
+                     f"Trial index = {trial_index}")
 
-            logging.info(f"Got response = {response}. Number of played sounds = {n_simultaneous_sounds}. is_correct = {is_correct}")
-            save_results(event_id=event_id, sub_id=sub_id, trial_index=trial_index, block_id=block_id, stim_type=stim_type, filenames=filenames,
-                         speaker_ids=speaker_indices, n_sounds=n_simultaneous_sounds, response=response, is_correct=is_correct, speakers=speakers, reaction_time=reaction_time)
-            event_id += 1
-            print(f"simulatneous_sounds = {n_simultaneous_sounds}")
-    except Exception as e:
-        logging.error(f"An error occured in estimate_numerosity: {e}")
-        print(f"An error occurred: {e}")
+        util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, fluc=fluctuation, max_n_samples=max_n_samples)
+        time.sleep(0.2)
+        freefield.play(kind=1, proc="RX81")
+        util.start_timer()
+        response = input("Enter number between 2 and 6")
+        """response = None
+        while True:
+            response = freefield.read("response", "RP2")
+            time.sleep(0.05)
+            if response in valid_responses:
+                break"""
+        reaction_time = util.get_elapsed_time()
+        if int(response) == int(n_simultaneous_sounds):
+            is_correct = True
+        else:
+            is_correct = False
 
-def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, speaker_ids, n_sounds, response, is_correct, speakers, reaction_time):
+        logging.info(f"Got response = {response}. Number of played sounds = {n_simultaneous_sounds}. is_correct = {is_correct}")
+        save_results(event_id=event_id, sub_id=sub_id, trial_index=trial_index, block_id=block_id, stim_type=stim_type, filenames=filenames,
+                     speaker_ids=speaker_indices, n_sounds=n_simultaneous_sounds, response=response, is_correct=is_correct, speakers=speakers,
+                     reaction_time=reaction_time, spectral_coverage=spectral_coverage)
+        event_id += 1
+        print(f"simulatneous_sounds = {n_simultaneous_sounds}")
+
+
+def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, speaker_ids, n_sounds, response, is_correct, speakers, reaction_time, spectral_coverage):
     try:
         file_name = DIR / "data" / "results" / f"results_numerosity_judgement_{stim_type}_{sub_id}.csv"
 
@@ -131,11 +132,9 @@ def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, 
                    "is_correct": is_correct,
                    "speaker_distance_mean": mean_speaker_distance,
                    "speaker_distance_st_dev": speaker_dist_st_dev,
-                   "reaction_time": reaction_time}
+                   "reaction_time": reaction_time,
+                   "spectral_coverage": spectral_coverage}
 
-        # Debug: Print key, value, and type of each entry in the results dictionary
-        for key, value in results.items():
-            print(f"Key: {key}, Value: {value}, Type: {type(value)}")
 
         df_curr_results = pd.DataFrame(results, index=[0])
         df_curr_results.to_csv(file_name, mode='a', header=not os.path.exists(file_name))
@@ -147,12 +146,9 @@ def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, 
         print(f"An error occurred: {e}")
 
 def start_experiment(sub_id, block_id, stim_type, n_reps=10):
-    try:
-        logging.info("Starting numerosity judgement experiment.")
-        estimate_numerosity(sub_id, block_id, trial_index, stim_type, n_reps)
-    except Exception as e:
-        logging.error(f"An error occurred in start_experiment: {e}")
-        print(f"An error occurred: {e}")
+    logging.info("Starting numerosity judgement experiment.")
+    estimate_numerosity(sub_id, block_id, stim_type, n_reps)
+
 
 def plot_results(sub_id, sound_type):
     data_file = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
@@ -209,32 +205,34 @@ def count_condition_rep(condition):
             new_value = current_count + 1
             condition_counter.update({con: new_value})
             return current_count
+
 def create_condition_bin_dict(df, stim_type, reps):
     condition_dict = {}
-    df_filtered = pd.DataFrame((df["setup"] == "cathedral") & (df["stim_type"] == stim_type))
+    df_filtered = df[(df["setup"] == "cathedral") & (df["stim_type"] == stim_type)]
     for i in range(2, 7):
-        con_df = df_filtered[df_filtered["n_sounds"] == i]
+        con_df = df_filtered[(df_filtered["n_presented"] == i)]
         con_df = con_df.sort_values(by="spectral_coverage", ascending=True)
         start_value = con_df.iloc[1]["spectral_coverage"]
         end_value = con_df.iloc[-1]["spectral_coverage"]
         con_bin_list = list()
         bin_size = (end_value - start_value) / reps
-        for i in range(reps):
-            lower_bound = start_value + i * bin_size
-            upper_bound = start_value + (i + 1) * bin_size
+        for j in range(reps):
+            lower_bound = start_value + j * bin_size
+            upper_bound = start_value + (j + 1) * bin_size
 
             bin_df = con_df[(con_df["spectral_coverage"] >= lower_bound) & (con_df["spectral_coverage"] < upper_bound)]
             con_bin_list.append(bin_df)
         np.random.shuffle(con_bin_list)
-        condition_dict.update({i: con_bin_list})
+        key = i
+        condition_dict.update({key: con_bin_list})
     return condition_dict
 
 def get_pseudo_randomized_stimuli(condition, condition_dict, n_reps, stim_dir):
     current_count = count_condition_rep(condition)
     con_bin_list = condition_dict.get(condition)
     bin = con_bin_list[current_count]
-    random_row = bin.sample()
-    recording_filenames = ast.literal_eval(random_row["filenames"])
+    random_row = bin.sample().iloc[0]
+    recording_filenames = ast.literal_eval(random_row["file_names"])
     filenames_list = [parse_recording_filename(rec, only_filename=True) for rec in recording_filenames]
     sounds_list = [slab.Sound.read(os.path.join(stim_dir, filename)) for filename in filenames_list]
     speaker_distances = ast.literal_eval(random_row["distances"])
@@ -247,13 +245,13 @@ def get_pseudo_randomized_stimuli(condition, condition_dict, n_reps, stim_dir):
 
 def parse_recording_filename(rec_filename, only_filename=True):
     # Define the regex pattern
-    pattern = r"^([^_]+_text-[^_]+)_mgb-level-(\d+)_distance-([\d.]+)\.wav$"
+    pattern = r"^sound-(.*?)__mgb-level-(\d+)_distance-([\d.]+)\.wav$"
 
     # Match the pattern with the filename
     match = re.match(pattern, rec_filename)
 
     if match:
-        filename = match.group(1) + ".wav"
+        filename = match.group(1) + "_.wav"
         mgb_level = int(match.group(2))
         distance = float(match.group(3))
         if only_filename:
