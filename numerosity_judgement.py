@@ -220,7 +220,7 @@ def create_condition_bin_dict(df, stim_type, reps):
             lower_bound = start_value + j * bin_size
             upper_bound = start_value + (j + 1) * bin_size
 
-            bin_df = con_df[(con_df["spectral_coverage"] >= lower_bound) & (con_df["spectral_coverage"] < upper_bound)]
+            bin_df = con_df[(con_df["spectral_coverage"] >= lower_bound) & (con_df["spectral_coverage"] <= upper_bound)]
             con_bin_list.append(bin_df)
         np.random.shuffle(con_bin_list)
         key = i
