@@ -20,15 +20,15 @@ target_dict = {}
 talkers = ["p245", "p248", "p268", "p284"]
 
 
-def start_experiment(sub_id, block_id, masker_type, stim_type):
+def start_experiment(sub_id, masker_type, stim_type):
     try:
         target_speaker = freefield.pick_speakers(5)[0]
         talker = np.random.choice(talkers)
         train_talker(talker)
         input("Start Experiment by pressing Enter...")
 
-        spacial_unmask_within_range(speaker_indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], target_speaker=target_speaker,
-                                    sub_id=sub_id, block_id=block_id, masker_type=masker_type, stim_type=stim_type,
+        spacial_unmask_within_range(speaker_indices=[0, 3, 5, 7, 10], target_speaker=target_speaker,
+                                    sub_id=sub_id, masker_type=masker_type, stim_type=stim_type,
                                     talker=talker,
                                     normalisation_method="mgb_normalisation")
     except Exception as e:
@@ -116,9 +116,10 @@ def get_target_number_file(sex=None, number=None, talker=None):
         print(f"An error occurred: {e}")
 
 
-def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_id, masker_type, stim_type, talker,
+def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_type, stim_type, talker,
                                 normalisation_method):
     global event_id
+    block_id = 0
     try:
         print("Beginning spacial unmasking")
         iterator = speaker_indices
@@ -200,6 +201,9 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, block_i
                          normalisation_method=normalisation_method,
                          normalisation_level_masker=get_speaker_normalisation_level(masking_speaker),
                          normalisation_level_target=get_speaker_normalisation_level(target_speaker))
+            block_id += 1
+            logging.info(f"Block {block_id} completed. Ask questionnaire questions.")
+            input("Press Enter to continue with next experiment block")
     except Exception as e:
         logging.error(f"An error occurred in spacial_unmask_within_range: {e}")
         print(f"An error occurred: {e}")
