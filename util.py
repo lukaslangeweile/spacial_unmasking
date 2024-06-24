@@ -441,7 +441,7 @@ def add_dynamic_range_to_num_judge(stim_type, sub_id):
 
 
 if __name__ == "__main__":
-    initialize_setup()
-    test_speakers()
+    initialize_stim_recording()
+    record_stimuli(stim_type="countries_reversed")
 
 
