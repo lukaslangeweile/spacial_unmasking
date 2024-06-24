@@ -33,7 +33,7 @@ def initialize_setup():
         freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
         freefield.SETUP = "cathedral"
         freefield.SPEAKERS = freefield.read_speaker_table()
-        freefield.set_logger("DEBUG")
+        freefield.set_logger("INFO")
     except Exception as e:
         logging.error(f"An error occurred during setup initialization: {e}")
         print(f"An error occurred: {e}")
