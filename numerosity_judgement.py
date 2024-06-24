@@ -58,10 +58,10 @@ def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
         fluctuation = np.random.uniform(-1, 1)
         n_simultaneous_sounds = trial # TODO: is this correct?
         max_n_samples = util.get_max_n_samples(stim_dir)
-        """filenames, sounds = util.get_sounds_with_filenames(sounds_dict=sounds_dict, n=n_simultaneous_sounds, randomize=True)
-        speakers, speaker_indices = util.get_n_random_speakers(n_simultaneous_sounds)
-        spectral_coverage = None"""
-        sounds, filenames, speaker_indices, spectral_coverage = get_pseudo_randomized_stimuli(trial, condition_dict, n_reps, stim_dir)
+        """filenames, sounds = util.get_sounds_with_filenames(sounds_dict=sounds, n=n_simultaneous_sounds, randomize=True)
+        speakers, speaker_indices = util.get_n_random_speakers(n_simultaneous_sounds)"""
+        sounds, filenames, speaker_indices, spectral_coverage = get_pseudo_randomized_stimuli(trial, condition_dict, n_reps, stim_type)
+
         speakers = freefield.pick_speakers(speaker_indices)
         logging.info(f"Presenting {n_simultaneous_sounds} sounds at speakers with indices {speaker_indices}. "
                      f"Trial index = {trial_index}")
@@ -231,26 +231,30 @@ def create_condition_bin_dict(df, stim_type, reps):
         condition_dict.update({key: con_bin_list})
     return condition_dict
 
-def get_pseudo_randomized_stimuli(condition, condition_dict, n_reps, stim_dir):
+def get_pseudo_randomized_stimuli(condition, condition_dict, n_reps, stim_type):
     current_count = count_condition_rep(condition)
     con_bin_list = condition_dict.get(condition)
     bin = con_bin_list[current_count]
-    random_row = bin.sample().iloc[0]
-    recording_filenames = ast.literal_eval(random_row["file_names"])
-    filenames_list = [parse_recording_filename(rec, only_filename=True) for rec in recording_filenames]
-    sounds_list = [slab.Sound.read(os.path.join(stim_dir, filename)) for filename in filenames_list]
-    speaker_distances = ast.literal_eval(random_row["distances"])
-    speaker_ids = [int(distance-2) for distance in speaker_distances]
-    spectral_coverage = random_row["spectral_coverage"]
-    logging.info(f"Got pseudo-randomized stimuli for condition n_sounds = {condition}.")
-    logging.info(f"Length of rows in bin = {len(bin)}.")
-    logging.info(f"Spectral coverage = {spectral_coverage}.")
-    sound_data_list = [sound.data for sound in sounds_list]
-    logging.info(f"Sound Data = {sound_data_list}")
-    print(filenames_list)
+    stim_dir = util.get_stim_dir(stim_type=stim_type)
+    if len(bin) > 0:
+        random_row = bin.sample().iloc[0]
+        recording_filenames = ast.literal_eval(random_row["file_names"])
+        filenames_list = [parse_recording_filename(rec, only_filename=True) for rec in recording_filenames]
+        sounds_list = [slab.Sound.read(os.path.join(stim_dir, filename)) for filename in filenames_list]
+        speaker_distances = ast.literal_eval(random_row["distances"])
+        speaker_ids = [int(distance-2) for distance in speaker_distances]
+        spectral_coverage = random_row["spectral_coverage"]
+        logging.info(f"Got pseudo-randomized stimuli for condition n_sounds = {condition}.")
+        logging.info(f"Length of rows in bin = {len(bin)}.")
+        logging.info(f"Spectral coverage = {spectral_coverage}.")
+    else:
+        sounds_dict = util.get_sounds_dict(stim_type=stim_type)
+        sounds_list, filenames_list = util.get_sounds_with_filenames(sounds_dict=sounds_dict, n=condition, randomize=True)
+        speakers, speaker_ids = util.get_n_random_speakers(n=condition)
+        spectral_coverage = util.get_spectral_coverage(filenames_list, speaker_ids, stim_type)
     return sounds_list, filenames_list, speaker_ids, spectral_coverage
 
-def parse_recording_filename(rec_filename, only_filename=True):
+def parse_recording_filename(rec_filename, only_filename=True): #TODO: revisit pattern and filename if not working
     # Define the regex pattern
     pattern = r"^sound-(.*?)_mgb-level-(\d+)_distance-([\d.]+)\.wav$"
 

@@ -203,7 +203,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
                          normalisation_level_target=get_speaker_normalisation_level(target_speaker))
             block_id += 1
             logging.info(f"Block {block_id} completed. Ask questionnaire questions.")
-            input("Press Enter to continue with next experiment block")
+            input("Press 'Enter' to continue with next experiment block.")
     except Exception as e:
         logging.error(f"An error occurred in spacial_unmask_within_range: {e}")
         print(f"An error occurred: {e}")
