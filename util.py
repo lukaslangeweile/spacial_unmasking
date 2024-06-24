@@ -430,7 +430,33 @@ def add_dynamic_range_to_num_judge(stim_type, sub_id):
             df.loc[df["trial_index"] == trial, "dyn_range_percentage_filled"] = percentage_filled
 
 
-
+def get_spectral_coverage(filenames, speaker_ids, stim_type, trial_dur=0.6):
+    trial_composition = list()
+    p_ref = 2e-5  # 20 μPa, the standard reference pressure for sound in air
+    upper_freq = 11000  # upper frequency limit that carries information for speech
+    dyn_range = 65
+    for i in len(filenames):
+        talker, sex, text = parse_country_or_number_filename(filenames[i])
+        speaker = freefield.pick_speakers(speaker_ids[i])[0]
+        rec_name = f"sound-talker-{talker}_sex-{sex}_text-{text}_mgb-level-30_distance-{speaker.distance}.wav"
+        rec_dir = None
+        if stim_type == "countries_forward":
+            rec_dir = DIR / "data" / "recordings" / "countries_forward"
+        elif stim_type == "countries_reversed":
+            rec_dir = DIR / "data" / "recordings" / "countries_reversed"
+        stim = slab.Sound.read(os.path.join(rec_dir, rec_name))
+        trial_composition.append(stim)
+    sound = sum(trial_composition)
+    sound = slab.Sound(sound.data.mean(axis=1), samplerate=sound.samplerate)
+    sound = sound.resample(24414)
+    freqs, times, power = sound.spectrogram(show=False)
+    power = 10 * np.log10(power / (p_ref ** 2))  # logarithmic power for plotting
+    power = power[freqs < upper_freq, :]
+    dB_max = power.max()
+    dB_min = dB_max - dyn_range
+    interval = power[np.where((power > dB_min) & (power < dB_max))]
+    percentage_filled = interval.shape[0] / power.flatten().shape[0]
+    return percentage_filled
 
 if __name__ == "__main__":
 
