@@ -54,12 +54,14 @@ def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
     for trial in seq:
         trial_index = seq.this_n
         stim_dir = util.get_stim_dir(stim_type=stim_type)
+        sounds_dict = util.get_sounds_dict(stim_type=stim_type)
         fluctuation = np.random.uniform(-1, 1)
         n_simultaneous_sounds = trial # TODO: is this correct?
         max_n_samples = util.get_max_n_samples(stim_dir)
         """filenames, sounds = util.get_sounds_with_filenames(sounds_dict=sounds, n=n_simultaneous_sounds, randomize=True)
         speakers, speaker_indices = util.get_n_random_speakers(n_simultaneous_sounds)"""
         sounds, filenames, speaker_indices, spectral_coverage = get_pseudo_randomized_stimuli(trial, condition_dict, n_reps, stim_type)
+
         speakers = freefield.pick_speakers(speaker_indices)
         logging.info(f"Presenting {n_simultaneous_sounds} sounds at speakers with indices {speaker_indices}. "
                      f"Trial index = {trial_index}")
@@ -68,13 +70,14 @@ def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
         time.sleep(0.2)
         freefield.play(kind=1, proc="RX81")
         util.start_timer()
-        response = input("Enter number between 2 and 6")
-        """response = None
+        time.sleep(max_n_samples / 24414)
+        """response = input("Enter number between 2 and 6")"""
+        response = None
         while True:
             response = freefield.read("response", "RP2")
             time.sleep(0.05)
             if response in valid_responses:
-                break"""
+                break
         reaction_time = util.get_elapsed_time()
         if int(response) == int(n_simultaneous_sounds):
             is_correct = True
@@ -215,13 +218,14 @@ def create_condition_bin_dict(df, stim_type, reps):
         start_value = con_df.iloc[1]["spectral_coverage"]
         end_value = con_df.iloc[-1]["spectral_coverage"]
         con_bin_list = list()
-        bin_size = (end_value - start_value) / reps
+        bin_size = (end_value - start_value) / float(reps)
         for j in range(reps):
             lower_bound = start_value + j * bin_size
             upper_bound = start_value + (j + 1) * bin_size
 
             bin_df = con_df[(con_df["spectral_coverage"] >= lower_bound) & (con_df["spectral_coverage"] <= upper_bound)]
             con_bin_list.append(bin_df)
+            print(f"bin_length = {len(bin_df)}")
         np.random.shuffle(con_bin_list)
         key = i
         condition_dict.update({key: con_bin_list})
@@ -248,7 +252,6 @@ def get_pseudo_randomized_stimuli(condition, condition_dict, n_reps, stim_type):
         sounds_list, filenames_list = util.get_sounds_with_filenames(sounds_dict=sounds_dict, n=condition, randomize=True)
         speakers, speaker_ids = util.get_n_random_speakers(n=condition)
         spectral_coverage = util.get_spectral_coverage(filenames_list, speaker_ids, stim_type)
-
     return sounds_list, filenames_list, speaker_ids, spectral_coverage
 
 def parse_recording_filename(rec_filename, only_filename=True): #TODO: revisit pattern and filename if not working

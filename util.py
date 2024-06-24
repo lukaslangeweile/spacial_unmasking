@@ -16,6 +16,8 @@ import ast
 import localisation
 
 # Configure logging
+import util
+
 logging.basicConfig(filename='auditory_experiment.log', level=logging.ERROR)
 
 DIR = pathlib.Path(os.curdir)
@@ -31,7 +33,7 @@ def initialize_setup():
         freefield.initialize("cathedral", device=procs, zbus=False, connection="USB")
         freefield.SETUP = "cathedral"
         freefield.SPEAKERS = freefield.read_speaker_table()
-        freefield.set_logger("WARNING")
+        freefield.set_logger("INFO")
     except Exception as e:
         logging.error(f"An error occurred during setup initialization: {e}")
         print(f"An error occurred: {e}")
@@ -220,19 +222,25 @@ def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc
         time.sleep(0.2)
         for i in range(len(signals), 8):
             freefield.write(tag=f"chan{i}", value=99, processors="RX81")
-            time.sleep(0.1)
+            time.sleep(0.2)
+        time.sleep(0.2)
     except Exception as e:
         logging.error(f"An error occurred in set_multiple_signals: {e}")
         print(f"An error occurred: {e}")
 
 def test_speakers():
     try:
-        sound = slab.Sound.pinknoise(0.50)
-        for speaker in freefield.SPEAKERS:
-            set_multiple_signals([sound], [speaker], equalize=True)
-            time.sleep(0.1)
+        sound = slab.Sound.pinknoise(duration=0.5, samplerate=24414)
+        print(sound.samplerate)
+        sound.level = 100
+        for i in range(11):
+            speaker = freefield.pick_speakers(i)[0]
+            freefield.write(tag="playbuflen", value=len(sound), processors="RX81")
+            freefield.write(tag="data0", value=sound.data, processors="RX81")
+            freefield.write(tag="chan0", value=i+1, processors="RX81")
+            time.sleep(2.0)
             freefield.play(kind=1, proc="RX81")
-            time.sleep(1.0)
+            time.sleep(2.0)
     except Exception as e:
         logging.error(f"An error occurred in test_speakers: {e}")
         print(f"An error occurred: {e}")
@@ -459,9 +467,7 @@ def get_spectral_coverage(filenames, speaker_ids, stim_type, trial_dur=0.6):
     return percentage_filled
 
 if __name__ == "__main__":
-
-
-    initialize_stim_recording()
-    record_stimuli("countries_reversed")
+    initialize_setup()
+    test_speakers()
 
 
