@@ -358,17 +358,23 @@ def record_stimuli(stim_type, mgb_loudness=30):
             os.makedirs(recording_dir)
         for file in stim_dir.iterdir():
             sound = slab.Sound.read(file)
+            print(sound.samplerate)
+            print(sound.n_samples)
             if len(sound.data.shape) == 2 and sound.data.shape[1] == 2:
                 data = np.mean(sound.data, axis=1)
-                sound = slab.Sound(data)
-            print(sound.samplerate)
+                sound = slab.Sound(data, samplerate=sound.samplerate)
+                print(sound.samplerate)
+                print(sound.n_samples)
             basename = str(os.path.splitext(os.path.basename(file))[0])
             for speaker in freefield.SPEAKERS:
                 sound = apply_mgb_equalization(sound, speaker, 30, 0)
-                recording = freefield.play_and_record(speaker=speaker, sound=sound, equalize=False)
+                recording = freefield.play_and_record(speaker=speaker, sound=sound, compensate_delay=True, equalize=False)
+                print(recording.n_samples)
+                print(recording.samplerate)
                 recording_filename = f"sound-{basename}_mgb-level-{mgb_loudness}_distance-{speaker.distance}.wav"
                 recording_filepath = recording_dir / recording_filename
-                recording.write(recording_filepath)
+                recording.write(filename=recording_filepath, normalise=False)
+                time.sleep(1.0)
     except Exception as e:
         logging.error(f"An error occurred in record_stimuli: {e}")
         print(f"An error occurred: {e}")
