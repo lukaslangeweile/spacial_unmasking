@@ -34,6 +34,8 @@ freefield.flush_buffers(processor="RX81")
 
 input("Completed block 3/3. Ask participant questions of the questionnaire document. Press 'Enter' to continue.")
 
+localisation.plot_results(sub_id=sub_id)
+
 
 # Spatial unmasking
 input("Press 'Enter"' to start with spatial unmasking experiment.')
@@ -41,6 +43,8 @@ input("Press 'Enter"' to start with spatial unmasking experiment.')
 spacial_unmasking.start_experiment(sub_id=sub_id, masker_type="babble", stim_type="syllable")
 
 input("Spatial Unmasking finished. Ask remaining questionnaire questions...")
+
+spacial_unmasking.plot_target_ratio_vs_distance(sub_id=sub_id, masker_type="babble")
 
 
 # Numerosity judgement
@@ -54,6 +58,7 @@ numerosity_judgement.start_experiment(sub_id=sub_id, block_id=2, stim_type="coun
 
 input("Completed block 2/2. Ask participant questions of the questionnaire document. Press 'Enter' to continue.")
 
+numerosity_judgement.plot_results(sub_id=sub_id)
 
 print("Experiment done.")
 
