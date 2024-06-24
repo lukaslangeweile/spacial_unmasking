@@ -67,17 +67,16 @@ def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
                      f"Trial index = {trial_index}")
 
         util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, fluc=fluctuation, max_n_samples=max_n_samples)
-        time.sleep(0.2)
         freefield.play(kind=1, proc="RX81")
         util.start_timer()
-        time.sleep(max_n_samples / 24414)
-        """response = input("Enter number between 2 and 6")"""
-        response = None
+        """time.sleep(max_n_samples / 24414.0)"""
+        response = input("Enter number between 2 and 6")
+        """response = None
         while True:
             response = freefield.read("response", "RP2")
             time.sleep(0.05)
             if response in valid_responses:
-                break
+                break"""
         reaction_time = util.get_elapsed_time()
         if int(response) == int(n_simultaneous_sounds):
             is_correct = True

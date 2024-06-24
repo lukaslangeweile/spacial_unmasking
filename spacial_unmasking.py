@@ -191,7 +191,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
                                   played_number=util.get_correct_response_number(target_file),
                                   response_number=response, reaction_time=reaction_time)
                 trial_index += 1
-                time.sleep(2.5)
+                time.sleep(1.0)
 
             save_results(event_id=event_id, sub_id=sub_id, threshold=stairs.threshold(n=10),
                          distance_masker=masking_speaker.distance,
@@ -332,7 +332,7 @@ def save_per_response(event_id, sub_id, block_id, trial_index, step_number, leve
                    "headpose_offset_azi": 0,
                    "headpose_offset_ele": 0,
                    "target_number": target_number,
-                   "target_filename": target_filename,
+                   "target_filename": os.path.basename(target_filename),
                    "target_talker": target_talker,
                    "target_sex": target_sex,
                    "target_speaker_id": target_speaker.index,
@@ -345,7 +345,7 @@ def save_per_response(event_id, sub_id, block_id, trial_index, step_number, leve
                    "target_speaker_ele": target_speaker.elevation,
                    "target_speaker_dist": target_speaker.distance,
                    "target_stim_level": level_target,
-                   "masker_filename": masker_filename,
+                   "masker_filename": os.path.basename(masker_filename),
                    "masker_speaker_id": masking_speaker.index,
                    "masker_speaker_proc": masking_speaker.analog_proc,
                    "masker_speaker_chan": masking_speaker.analog_channel,

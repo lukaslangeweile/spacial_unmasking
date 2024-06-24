@@ -75,7 +75,7 @@ def save_results(event_id, sub_id, trial_index, block_id, stim_type, sound, resp
                    "stim_type": stim_type,
                    "headpose_offset_azi": None,
                    "headpose_offset_ele": None,
-                   "stim_filename": sound_filename,
+                   "stim_filename": os.path.basename(sound_filename),
                    "stim_level": sound.level, #TODO: mgb or level?
                    "speaker_id": speaker.index,
                    "speaker_proc": speaker.analog_proc,

@@ -219,11 +219,11 @@ def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc
                 data = np.mean(data, axis=1)
             freefield.write(tag=f"data{i}", value=data, processors="RX81")
             freefield.write(tag=f"chan{i}", value=speaker_chan, processors="RX81")
-        time.sleep(0.2)
+        time.sleep(0.1)
         for i in range(len(signals), 8):
             freefield.write(tag=f"chan{i}", value=99, processors="RX81")
-            time.sleep(0.2)
-        time.sleep(0.2)
+            time.sleep(0.1)
+        time.sleep(0.1)
     except Exception as e:
         logging.error(f"An error occurred in set_multiple_signals: {e}")
         print(f"An error occurred: {e}")
