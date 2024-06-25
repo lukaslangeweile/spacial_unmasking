@@ -40,7 +40,7 @@ def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=10, mgb_lev
             filename = filename[0]
             sound = sound[0]
             speaker = freefield.pick_speakers(trial)[0]
-            fluctuation = np.random.uniform(-1, 1)
+            fluctuation = np.random.uniform(-0.5, 0.5)
             util.set_multiple_signals(signals=[sound], speakers=[speaker], equalize=True, max_n_samples=max_n_samples, mgb_loudness=mgb_level, fluc=fluctuation)
             freefield.play(kind=1, proc="RX81")
             util.start_timer()

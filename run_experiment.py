@@ -16,7 +16,7 @@ util.initialize_setup()
 print(f"Beginning experiment with participant with subject id = {sub_id}.")
 
 
-"""# Localisation accuracy
+# Localisation accuracy
 input("Press 'Enter' to start with localisation accuracy experiment.")
 
 localisation.start_experiment(sub_id=sub_id, block_id=1, stim_type="pinknoise", n_reps=5)
@@ -40,7 +40,7 @@ freefield.flush_buffers(processor="RX81")
 input("Completed block 4/4. Ask participant questions of the questionnaire document. Press 'Enter' to continue.")
 
 localisation.plot_results(sub_id=sub_id)
-"""
+
 
 # Spatial unmasking
 input("Press 'Enter"' to start with spatial unmasking experiment.')
@@ -53,7 +53,7 @@ spacial_unmasking.plot_target_ratio_vs_distance(sub_id=sub_id, masker_type="babb
 
 
 
-"""# Numerosity judgement
+# Numerosity judgement
 input("Press 'Enter' to start with numerosity judgement experiment.")
 
 numerosity_judgement.start_experiment(sub_id=sub_id, block_id=1, stim_type="countries_forward", n_reps=10)
@@ -67,5 +67,5 @@ input("Completed block 2/2. Ask participant questions of the questionnaire docum
 numerosity_judgement.plot_results(sub_id=sub_id)
 
 print("Experiment done.")
-"""
+
 
