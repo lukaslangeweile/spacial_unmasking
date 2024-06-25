@@ -5,7 +5,7 @@ import localisation
 import util
 
 # Enter subject id here
-sub_id = 99
+sub_id = 2
 
 
 # Initializing the setup
@@ -40,7 +40,7 @@ freefield.flush_buffers(processor="RX81")
 input("Completed block 4/4. Ask participant questions of the questionnaire document. Press 'Enter' to continue.")
 
 localisation.plot_results(sub_id=sub_id)
-
+"""
 
 # Spatial unmasking
 input("Press 'Enter"' to start with spatial unmasking experiment.')
@@ -49,13 +49,11 @@ spacial_unmasking.start_experiment(sub_id=sub_id, masker_type="babble", stim_typ
 
 input("Spatial Unmasking finished. Ask remaining questionnaire questions...")
 
-"""
-
 spacial_unmasking.plot_target_ratio_vs_distance(sub_id=sub_id, masker_type="babble")
 
 
 
-# Numerosity judgement
+"""# Numerosity judgement
 input("Press 'Enter' to start with numerosity judgement experiment.")
 
 numerosity_judgement.start_experiment(sub_id=sub_id, block_id=1, stim_type="countries_forward", n_reps=10)
@@ -69,5 +67,5 @@ input("Completed block 2/2. Ask participant questions of the questionnaire docum
 numerosity_judgement.plot_results(sub_id=sub_id)
 
 print("Experiment done.")
-
+"""
 

@@ -350,7 +350,7 @@ def get_max_n_samples(stim_dirs):
         logging.error(f"An error occurred in get_max_n_samples: {e}")
         print(f"An error occurred: {e}")
 
-def record_stimuli(stim_type, mgb_loudness=30):
+def record_stimuli(stim_type, mgb_loudness=27.5):
     try:
         stim_dir = get_stim_dir(stim_type)
         recording_dir = DIR / "data" / "recordings" / stim_type
@@ -367,7 +367,7 @@ def record_stimuli(stim_type, mgb_loudness=30):
                 print(sound.n_samples)
             basename = str(os.path.splitext(os.path.basename(file))[0])
             for speaker in freefield.SPEAKERS:
-                sound = apply_mgb_equalization(sound, speaker, 30, 0)
+                sound = apply_mgb_equalization(sound, speaker, mgb_loudness, 0)
                 recording = freefield.play_and_record(speaker=speaker, sound=sound, compensate_delay=True, equalize=False)
                 print(recording.n_samples)
                 print(recording.samplerate)

@@ -27,7 +27,7 @@ def start_experiment(sub_id, masker_type, stim_type):
         train_talker(talker)
         input("Start Experiment by pressing Enter...")
 
-        spacial_unmask_within_range(speaker_indices=[0, 3, 5, 7, 10], target_speaker=target_speaker,
+        spacial_unmask_within_range(speaker_indices=[0, 2, 4, 5, 6, 8, 10], target_speaker=target_speaker,
                                     sub_id=sub_id, masker_type=masker_type, stim_type=stim_type,
                                     talker=talker,
                                     normalisation_method="mgb_normalisation")
@@ -134,7 +134,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
 
             logging.info(f"Beginnign spatial unmasking at speaker with index {i}.")
             masking_speaker = freefield.pick_speakers(i)[0]
-            stairs = slab.Staircase(start_val=-5, n_reversals=12, step_sizes=[7, 5, 3, 1])
+            stairs = slab.Staircase(start_val=2, n_reversals=16, step_sizes=[7, 5, 3, 1], n_down=1, n_up=1)
 
             for level in stairs:
                 logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")
@@ -196,14 +196,14 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
             save_results(event_id=event_id, sub_id=sub_id, threshold=stairs.threshold(n=10),
                          distance_masker=masking_speaker.distance,
                          distance_target=target_speaker.distance, level_masker=masker.level,
-                         level_target=target_speaker.level + stairs.threshold(n=10),
+                         level_target=get_speaker_normalisation_level(target_speaker) + stairs.threshold(n=0),
                          masker_type=masker_type, stim_type=stim_type, talker=talker,
                          normalisation_method=normalisation_method,
                          normalisation_level_masker=get_speaker_normalisation_level(masking_speaker),
                          normalisation_level_target=get_speaker_normalisation_level(target_speaker))
             block_id += 1
-            logging.info(f"Block {block_id} completed. Ask questionnaire questions.")
-            input("Press 'Enter' to continue with next experiment block.")
+            """logging.info(f"Block {block_id} completed. Ask questionnaire questions.")
+            input("Press 'Enter' to continue with next experiment block.")"""
     except Exception as e:
         logging.error(f"An error occurred in spacial_unmask_within_range: {e}")
         print(f"An error occurred: {e}")
@@ -452,3 +452,5 @@ def get_speaker_normalisation_level(speaker, mgb_loudness=30):
         logging.error(f"An error occurred in get_speaker_normalisation_level: {e}")
         print(f"An error occurred: {e}")
 
+if __name__ == "__main__":
+    plot_average_results([1, 2])
