@@ -93,7 +93,7 @@ def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
 
 def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, speaker_ids, n_sounds, response, is_correct, speakers, reaction_time, spectral_coverage):
     try:
-        file_name = DIR / "data" / "results" / f"results_numerosity_judgement_{stim_type}_{sub_id}.csv"
+        file_name = DIR / "data" / "results" / f"results_numerosity_judgement_{sub_id}.csv"
 
         mean_speaker_distance = statistics.mean([s.distance for s in speakers])
         if n_sounds == 1:
@@ -152,8 +152,8 @@ def start_experiment(sub_id, block_id, stim_type, n_reps=10):
     estimate_numerosity(sub_id, block_id, stim_type, n_reps)
 
 
-def plot_results(sub_id, sound_type):
-    data_file = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
+def plot_results(sub_id):
+    data_file = DIR / "data" / "results" / f"results_numerosity_judgement_{sub_id}.csv"
     try:
         with open(data_file, 'rb') as f:
             results = pd.read_csv(f)
