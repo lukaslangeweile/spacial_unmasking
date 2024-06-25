@@ -134,7 +134,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
 
             logging.info(f"Beginnign spatial unmasking at speaker with index {i}.")
             masking_speaker = freefield.pick_speakers(i)[0]
-            stairs = slab.Staircase(start_val=-5, n_reversals=16, step_sizes=[7, 5, 3, 1])
+            stairs = slab.Staircase(start_val=-5, n_reversals=12, step_sizes=[7, 5, 3, 1])
 
             for level in stairs:
                 logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")

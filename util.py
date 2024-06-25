@@ -475,5 +475,6 @@ def get_spectral_coverage(filenames, speaker_ids, stim_type, trial_dur=0.6):
 if __name__ == "__main__":
     initialize_stim_recording()
     record_stimuli(stim_type="countries_reversed")
+    record_stimuli(stim_type="countries_forward")
 
 

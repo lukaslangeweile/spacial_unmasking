@@ -24,7 +24,7 @@ except serial.SerialException as e:
 
 DIR = pathlib.Path(os.curdir)
 
-def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=3):
+def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=10):
     try:
         trial_index = 0
         sounds_dict = util.get_sounds_dict(stim_type=stim_type)

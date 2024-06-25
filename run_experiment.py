@@ -5,7 +5,7 @@ import localisation
 import util
 
 # Enter subject id here
-sub_id = 101
+sub_id = 99
 
 
 # Initializing the setup
@@ -16,23 +16,28 @@ util.initialize_setup()
 print(f"Beginning experiment with participant with subject id = {sub_id}.")
 
 
-# Localisation accuracy
+"""# Localisation accuracy
 input("Press 'Enter' to start with localisation accuracy experiment.")
 
-localisation.start_experiment(sub_id=sub_id, block_id=1, stim_type="pinknoise")
+localisation.start_experiment(sub_id=sub_id, block_id=1, stim_type="pinknoise", n_reps=5)
 freefield.flush_buffers(processor="RX81")
 
-input("Completed block 1/3. Press 'Enter' to continue with block 2 of localisation accuracy.")
+input("Completed block 1/4. Press 'Enter' to continue with block 2 of localisation accuracy.")
 
-localisation.start_experiment(sub_id=sub_id, block_id=2, stim_type="uso")
+localisation.start_experiment(sub_id=sub_id, block_id=2, stim_type="pinknoise", n_reps=5)
 freefield.flush_buffers(processor="RX81")
 
-input("Completed block 2/3. Press 'Enter' to continue with block 3 of localisation accuracy.")
+input("Completed block 2/4. Press 'Enter' to continue with block 3 of localisation accuracy.")
 
-localisation.start_experiment(sub_id=sub_id, block_id=3, stim_type="babble")
+localisation.start_experiment(sub_id=sub_id, block_id=3, stim_type="babble", n_reps=5)
 freefield.flush_buffers(processor="RX81")
 
-input("Completed block 3/3. Ask participant questions of the questionnaire document. Press 'Enter' to continue.")
+input("Completed block 3/4. Press 'Enter' to continue with block 4 of localisation accuracy.")
+
+localisation.start_experiment(sub_id=sub_id, block_id=4, stim_type="babble", n_reps=5)
+freefield.flush_buffers(processor="RX81")
+
+input("Completed block 4/4. Ask participant questions of the questionnaire document. Press 'Enter' to continue.")
 
 
 # Spatial unmasking
@@ -41,7 +46,7 @@ input("Press 'Enter"' to start with spatial unmasking experiment.')
 spacial_unmasking.start_experiment(sub_id=sub_id, masker_type="babble", stim_type="syllable")
 
 input("Spatial Unmasking finished. Ask remaining questionnaire questions...")
-
+"""
 
 # Numerosity judgement
 input("Press 'Enter' to start with numerosity judgement experiment.")
