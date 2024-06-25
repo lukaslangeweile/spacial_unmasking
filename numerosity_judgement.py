@@ -55,7 +55,7 @@ def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
         trial_index = seq.this_n
         stim_dir = util.get_stim_dir(stim_type=stim_type)
         sounds_dict = util.get_sounds_dict(stim_type=stim_type)
-        fluctuation = np.random.uniform(-1, 1)
+        fluctuation = np.random.uniform(-0.5, 0.5)
         n_simultaneous_sounds = trial # TODO: is this correct?
         max_n_samples = util.get_max_n_samples(stim_dir)
         """filenames, sounds = util.get_sounds_with_filenames(sounds_dict=sounds, n=n_simultaneous_sounds, randomize=True)
@@ -66,7 +66,7 @@ def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
         logging.info(f"Presenting {n_simultaneous_sounds} sounds at speakers with indices {speaker_indices}. "
                      f"Trial index = {trial_index}")
 
-        util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, fluc=fluctuation, max_n_samples=max_n_samples)
+        util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, mgb_loudness=27.5, fluc=fluctuation, max_n_samples=max_n_samples)
         freefield.play(kind=1, proc="RX81")
         util.start_timer()
         """time.sleep(max_n_samples / 24414.0)"""
