@@ -24,7 +24,7 @@ except serial.SerialException as e:
 
 DIR = pathlib.Path(os.curdir)
 
-def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=10):
+def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=10, mgb_level=30):
     try:
         trial_index = 0
         sounds_dict = util.get_sounds_dict(stim_type=stim_type)
@@ -39,17 +39,15 @@ def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=10):
             filename, sound = util.get_sounds_with_filenames(sounds_dict=sounds_dict, n=1, randomize=True)
             filename = filename[0]
             sound = sound[0]
-            print(trial)
             speaker = freefield.pick_speakers(trial)[0]
-            print(speaker)
-            util.set_multiple_signals(signals=[sound], speakers=[speaker], equalize=True, max_n_samples=max_n_samples)
+            fluctuation = np.random.uniform(-1, 1)
+            util.set_multiple_signals(signals=[sound], speakers=[speaker], equalize=True, max_n_samples=max_n_samples, mgb_loudness=mgb_level, fluc=fluctuation)
             freefield.play(kind=1, proc="RX81")
             util.start_timer()
             response = get_slider_value()
             reaction_time = util.get_elapsed_time()
-            print(response)
             logging.info(f"Got response = {response}. Actual distance = {speaker.distance}")
-            save_results(event_id=event_id, sub_id=sub_id, block_id=block_id, trial_index=trial_index, sound=sound, stim_type=stim_type, response=response,
+            save_results(event_id=event_id, sub_id=sub_id, block_id=block_id, trial_index=trial_index, sound=sound, mgb_level=mgb_level, fluc=fluctuation, stim_type=stim_type, response=response,
                          speaker=speaker, sound_filename=filename, reaction_time=reaction_time)
             trial_index += 1
     except Exception as e:
@@ -58,9 +56,14 @@ def start_experiment(sub_id, block_id, stim_type="pinknoise", n_reps=10):
 
 
 
-def save_results(event_id, sub_id, trial_index, block_id, stim_type, sound, response, speaker, sound_filename, reaction_time):
+def save_results(event_id, sub_id, trial_index, block_id, stim_type, sound, mgb_level, fluc, response, speaker, sound_filename, reaction_time):
     try:
         file_name = DIR / "data" / "results" / f"results_localisation_accuracy_{sub_id}.csv"
+
+        if len(sound.data.shape) == 2 and sound.data.shape[1] == 2:
+            sound_level = np.mean(sound.level)
+        else:
+            sound_level = sound.level
 
 
         results = {"event_id": None,
@@ -76,7 +79,9 @@ def save_results(event_id, sub_id, trial_index, block_id, stim_type, sound, resp
                    "headpose_offset_azi": None,
                    "headpose_offset_ele": None,
                    "stim_filename": os.path.basename(sound_filename),
-                   "stim_level": sound.level, #TODO: mgb or level?
+                   "stim_level": sound_level,
+                   "mgb_level": mgb_level,
+                   "fluctuation": fluc,
                    "speaker_id": speaker.index,
                    "speaker_proc": speaker.analog_proc,
                    "speaker_chan": speaker.analog_channel,
