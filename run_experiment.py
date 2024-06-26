@@ -5,9 +5,8 @@ import localisation
 import util
 
 # Enter subject id here
-sub_id = 2
-
-
+sub_id = input("Enter sub_id here...")
+sub_id = "sub_" + sub_id
 # Initializing the setup
 util.initialize_setup()
 

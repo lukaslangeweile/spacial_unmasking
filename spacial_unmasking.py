@@ -119,7 +119,7 @@ def get_target_number_file(sex=None, number=None, talker=None):
 def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_type, stim_type, talker,
                                 normalisation_method):
     global event_id
-    block_id = 0
+    block_id = 1
     try:
         print("Beginning spacial unmasking")
         iterator = speaker_indices

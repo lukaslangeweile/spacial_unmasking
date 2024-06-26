@@ -255,14 +255,14 @@ def get_pseudo_randomized_stimuli(condition, condition_dict, n_reps, stim_type):
 
 def parse_recording_filename(rec_filename, only_filename=True): #TODO: revisit pattern and filename if not working
     # Define the regex pattern
-    pattern = r"^sound-(.*?)_mgb-level-(\d+)_distance-([\d.]+)\.wav$"
+    pattern = r"^sound-(.*?)_mgb-level-([\d.]+)_distance-([\d.]+)\.wav$"
 
     # Match the pattern with the filename
     match = re.match(pattern, rec_filename)
 
     if match:
         filename = match.group(1) + ".wav"
-        mgb_level = int(match.group(2))
+        mgb_level = float(match.group(2))
         distance = float(match.group(3))
         if only_filename:
             return filename
