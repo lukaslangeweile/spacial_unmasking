@@ -202,8 +202,8 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
                          normalisation_level_masker=get_speaker_normalisation_level(masking_speaker),
                          normalisation_level_target=get_speaker_normalisation_level(target_speaker))
             block_id += 1
-            """logging.info(f"Block {block_id} completed. Ask questionnaire questions.")
-            input("Press 'Enter' to continue with next experiment block.")"""
+            logging.info(f"Block {block_id} completed. Ask questionnaire questions.")
+            input("Press 'Enter' to continue with next experiment block.")
     except Exception as e:
         logging.error(f"An error occurred in spacial_unmask_within_range: {e}")
         print(f"An error occurred: {e}")
@@ -233,7 +233,7 @@ def train_talker(talker_id):
             print(button_press_written)
             print(talker_num_dict.get(button_press_written))
             signal = slab.Sound.read(talker_num_dict.get(button_press_written))
-            signal = util.apply_mgb_equalization(signal=signal, speaker=freefield.pick_speakers(5)[0])
+            signal = util.apply_mgb_equalization(signal=signal, speaker=freefield.pick_speakers(5)[0], mgb_loudness=25)
             freefield.set_signal_and_speaker(signal=signal, speaker=freefield.pick_speakers(5)[0], equalize=False)
             freefield.play(kind=1, proc="RX81")
             time.sleep(0.5)
@@ -268,7 +268,7 @@ def save_results(event_id, sub_id, threshold, distance_masker, distance_target,
 
         event_id = int(event_id)
         threshold = float(threshold)
-        sub_id = int(sub_id)
+        sub_id = str(sub_id)
         level_masker = float(level_masker)
         level_target = float(level_target)
         distance_masker = float(distance_masker)

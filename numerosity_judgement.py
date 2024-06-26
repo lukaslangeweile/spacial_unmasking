@@ -148,9 +148,14 @@ def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, 
         print(f"An error occurred: {e}")
 
 def start_experiment(sub_id, block_id, stim_type, n_reps=10):
+    global condition_counter
     logging.info("Starting numerosity judgement experiment.")
     estimate_numerosity(sub_id, block_id, stim_type, n_reps)
-
+    condition_counter = {2: 0,
+                         3: 0,
+                         4: 0,
+                         5: 0,
+                         6: 0}
 
 def plot_results(sub_id):
     data_file = DIR / "data" / "results" / f"results_numerosity_judgement_{sub_id}.csv"
