@@ -46,7 +46,7 @@ n_sounds = [2, 3, 4, 5, 6]
 
 def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
     valid_responses = [2, 3, 4, 5, 6]
-    df = pd.read_csv(DIR / "data" / "spectral_coverage_data" / "tts_spectral_coverage.csv")
+    df = pd.read_csv(DIR / "data" / "spectral_coverage_data" / "tts_spectral_coverage_2024-06-25-16-24-36.csv")
     condition_dict = create_condition_bin_dict(df=df, stim_type=stim_type, reps=n_reps)
 
     global event_id
