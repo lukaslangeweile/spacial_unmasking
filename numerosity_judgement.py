@@ -174,7 +174,7 @@ def plot_averaged_responses(sub_ids, sound_type):
 
         # Loop through each subject ID and load the corresponding data
         for sub_id in sub_ids:
-            file_pattern = DIR / "data" / "results" / f"results_numerosity_judgement_{sound_type}_{sub_id}.csv"
+            file_pattern = DIR / "data" / "results" / f"results_numerosity_judgement_{sub_id}.csv"
             files = glob.glob(str(file_pattern))
 
             df_list = [pd.read_csv(file) for file in files if pd.read_csv(file).shape[0] > 0]  # Ensure non-empty files
@@ -191,7 +191,7 @@ def plot_averaged_responses(sub_ids, sound_type):
 
         # Plotting
         plt.figure(figsize=(10, 6))
-        plt.plot(mean_responses['n_sounds'], mean_responses['response'], marker='o')
+        plt.plot(mean_responses['stim_number'], mean_responses['response'], marker='o')
         plt.xlabel('Number of Sounds (n_sounds)')
         plt.ylabel('Average Response')
         plt.title(f'Average Responses vs. Number of Sounds for {sound_type}')
@@ -277,4 +277,4 @@ def parse_recording_filename(rec_filename, only_filename=True): #TODO: revisit p
         raise ValueError("Filename does not match the expected pattern")
 
 if __name__ == "__main__":
-    plot_averaged_responses([100, 9], "countries_forward")
+    plot_averaged_responses([105], "countries_forward")

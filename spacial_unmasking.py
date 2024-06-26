@@ -129,6 +129,8 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
         valid_responses = [1, 2, 3, 4, 5]
         stim_dir_list = [util.get_stim_dir(masker_type), util.get_stim_dir(stim_type)]
         max_n_samples = util.get_max_n_samples(stim_dir_list)
+        task_familiarisation(masking_speaker=freefield.pick_speakers(np.random.choice(speaker_indices))[0], target_speaker=target_speaker,
+                             masker_type=masker_type, stim_type=stim_type, talker=talker, max_n_samples=max_n_samples)
 
         for i in iterator:
 
@@ -201,8 +203,8 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
                          normalisation_method=normalisation_method,
                          normalisation_level_masker=get_speaker_normalisation_level(masking_speaker),
                          normalisation_level_target=get_speaker_normalisation_level(target_speaker))
-            block_id += 1
             logging.info(f"Block {block_id} completed. Ask questionnaire questions.")
+            block_id += 1
             input("Press 'Enter' to continue with next experiment block.")
     except Exception as e:
         logging.error(f"An error occurred in spacial_unmask_within_range: {e}")
@@ -451,6 +453,54 @@ def get_speaker_normalisation_level(speaker, mgb_loudness=30):
     except Exception as e:
         logging.error(f"An error occurred in get_speaker_normalisation_level: {e}")
         print(f"An error occurred: {e}")
+
+def task_familiarisation(masking_speaker, target_speaker, masker_type, stim_type, talker, max_n_samples):
+    stairs = slab.Staircase(start_val=2, n_reversals=16, step_sizes=[4, 2, 2, 1], n_down=1, n_up=1)
+
+    for level in stairs:
+        logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")
+        masker_file = get_non_syllable_masker_file(masker_type)
+        target_file = get_target_number_file(talker=talker, number=np.random.randint(1, 6))
+        masker = slab.Sound.read(masker_file)
+        masker = slab.Sound(masker.data[:, 0])
+        target = slab.Sound.read(target_file)
+        print(masker.samplerate)
+        print(target.samplerate)
+        masker = util.apply_mgb_equalization(signal=masker, speaker=masking_speaker)
+        target = util.apply_mgb_equalization(signal=target, speaker=target_speaker)
+        target.level += level  # TODO: think about which level needs to be adjusted
+
+        if masking_speaker == target_speaker:
+            max_length = max(len(masker.data), len(target.data))
+
+            # Pad both arrays with zeros to make them the same length
+            masker_padded = np.pad(masker.data, ((0, max_length - len(masker.data)), (0, 0)), 'constant')
+            target_padded = np.pad(target.data, ((0, max_length - len(target.data)), (0, 0)), 'constant')
+            to_play_data = np.array(masker_padded) + np.array(target_padded)
+            to_play = slab.Sound(data=to_play_data)
+            util.set_multiple_signals(signals=[to_play], speakers=[target_speaker], equalize=False,
+                                      max_n_samples=max_n_samples)
+        else:
+            util.set_multiple_signals(signals=[target, masker], speakers=[target_speaker, masking_speaker],
+                                      equalize=False, max_n_samples=max_n_samples)
+
+        freefield.play(kind=1, proc="RX81")
+        util.start_timer()
+
+        response = None
+        while True:
+            response = freefield.read("response", "RP2")
+            time.sleep(0.05)
+            if response in valid_responses:
+                break
+
+        reaction_time = util.get_elapsed_time()
+
+        if response == util.get_correct_response_number(target_file):
+            stairs.add_response(1)
+        else:
+            stairs.add_response(0)
+
 
 if __name__ == "__main__":
     plot_average_results([1, 2])

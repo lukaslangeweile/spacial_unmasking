@@ -103,7 +103,7 @@ def plot_results(sub_id):
     try:
         filepath = DIR / "data" / "results" / f"results_localisation_accuracy_{sub_id}.csv"
         df = pd.read_csv(filepath)
-        sns.pointplot(df, x="speaker_distance", y="response", hue="stim_type")
+        sns.pointplot(df, x="stim_dist", y="response", hue="stim_type")
         plt.xlabel("Speaker Distance in m")
         plt.ylabel("Estimated Distance in m")
         plt.title("Localisation Judgement")
@@ -143,4 +143,4 @@ def get_slider_value(serial_port=slider, in_metres=True):
         print(f"An error occured: {e}")
 
 if __name__ == "__main__":
-    plot_results(101)
+    plot_results(105)
