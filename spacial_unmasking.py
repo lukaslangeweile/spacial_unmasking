@@ -209,8 +209,9 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
                          normalisation_level_target=get_speaker_normalisation_level(target_speaker))
             logging.info(f"Block {block_id} completed. Ask questionnaire questions.")
             block_id += 1
+            stairs.save_json(DIR / "data" / "results" / f"staircase-speaker_index-{i}_sub_id-{sub_id}.json")
             input("Press 'Enter' to continue with next experiment block.")
-        stairs.save_json(DIR / "data" /"results" /f"staircase-speaker_index-{i}_sub_id-{sub_id}.json")
+
     except Exception as e:
         logging.error(f"An error occurred in spacial_unmask_within_range: {e}")
         print(f"An error occurred: {e}")

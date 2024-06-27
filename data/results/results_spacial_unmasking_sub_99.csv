@@ -1,0 +1,2 @@
+event_id,subject,threshold,distance_masker,distance_target,level_masker,level_target,masker_type,stim_type,talker,normalisation_method,normalisation_level_masker,normalisation_level_target
+0,sub_99,-13.2,8.0,7.0,91.58892582949886,77.54149293193902,babble,syllable,p248,mgb_normalisation,91.58892582949886,90.34149293193902
