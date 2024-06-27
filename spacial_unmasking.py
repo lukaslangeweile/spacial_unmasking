@@ -79,7 +79,7 @@ def get_possible_files(sex=None, number=None, talker=None, exclude=False):
     return possible_files
 
 
-def get_non_syllable_masker_file(masker_type):
+def get_non_syllable_masker_file(masker_type, talker=None):
     try:
         if masker_type == "pinknoise":
             pink_noise_DIR = DIR / "data" / "stim_files" / "pinknoise_resamp_24414"  # placeholder
@@ -87,7 +87,7 @@ def get_non_syllable_masker_file(masker_type):
             masker_file = os.path.join(DIR, get_random_file(contents))
         elif masker_type == "babble":
             babble_DIR = DIR / "data" / "stim_files" / "babble-numbers-reversed-n13-shifted_resamp_48828_resamp_24414"
-            contents = [file for file in babble_DIR.iterdir()]
+            contents = get_possible_files(talker=talker, exclude=True)
             masker_file = os.path.join(DIR, get_random_file(contents))
         else:
             masker_file = None
@@ -465,7 +465,7 @@ def task_familiarisation(masking_speaker, target_speaker, masker_type, stim_type
     valid_responses = [1, 2, 3, 4, 5]
     for level in stairs:
         logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")
-        masker_file = get_non_syllable_masker_file(masker_type)
+        masker_file = get_non_syllable_masker_file(masker_type, talker)
         target_file = get_target_number_file(talker=talker, number=np.random.randint(1, 6))
         masker = slab.Sound.read(masker_file)
         masker = slab.Sound(masker.data[:, 0])
