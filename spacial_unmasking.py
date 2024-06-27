@@ -25,12 +25,12 @@ def start_experiment(sub_id, masker_type, stim_type):
         target_speaker = freefield.pick_speakers(5)[0]
         talker = np.random.choice(talkers)
         train_talker(talker)
-        input("Start Experiment by pressing Enter...")
 
         spacial_unmask_within_range(speaker_indices=[0, 2, 4, 5, 6, 8, 10], target_speaker=target_speaker,
                                     sub_id=sub_id, masker_type=masker_type, stim_type=stim_type,
                                     talker=talker,
                                     normalisation_method="mgb_normalisation")
+
     except Exception as e:
         logging.error(f"An error occurred in start_experiment: {e}")
         print(f"An error occurred: {e}")
@@ -121,7 +121,6 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
     global event_id
     block_id = 1
     try:
-        print("Beginning spacial unmasking")
         iterator = speaker_indices
         np.random.shuffle(iterator)
         talker = talker
@@ -129,14 +128,19 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
         valid_responses = [1, 2, 3, 4, 5]
         stim_dir_list = [util.get_stim_dir(masker_type), util.get_stim_dir(stim_type)]
         max_n_samples = util.get_max_n_samples(stim_dir_list)
+        input("Press Enter to start task familiarisation.")
+
         task_familiarisation(masking_speaker=freefield.pick_speakers(np.random.choice(speaker_indices))[0], target_speaker=target_speaker,
                              masker_type=masker_type, stim_type=stim_type, talker=talker, max_n_samples=max_n_samples)
 
+        input("Start Experiment by pressing Enter...")
+
+        print("Beginning spacial unmasking")
         for i in iterator:
 
             logging.info(f"Beginnign spatial unmasking at speaker with index {i}.")
             masking_speaker = freefield.pick_speakers(i)[0]
-            stairs = slab.Staircase(start_val=2, n_reversals=16, step_sizes=[4, 2, 2, 1], n_down=1, n_up=1)
+            stairs = slab.Staircase(start_val=2, n_reversals=16, step_sizes=[4, 2, 2, 1], n_down=2, n_up=1)
 
             for level in stairs:
                 logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")
@@ -455,8 +459,8 @@ def get_speaker_normalisation_level(speaker, mgb_loudness=30):
         print(f"An error occurred: {e}")
 
 def task_familiarisation(masking_speaker, target_speaker, masker_type, stim_type, talker, max_n_samples):
-    stairs = slab.Staircase(start_val=2, n_reversals=16, step_sizes=[4, 2, 2, 1], n_down=1, n_up=1)
-
+    stairs = slab.Staircase(start_val=2, n_reversals=5, step_sizes=[5, 3, 1], n_down=2, n_up=1)
+    valid_responses = [1, 2, 3, 4, 5]
     for level in stairs:
         logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")
         masker_file = get_non_syllable_masker_file(masker_type)

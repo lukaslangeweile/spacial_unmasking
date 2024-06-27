@@ -130,7 +130,7 @@ def get_slider_value(serial_port=slider, in_metres=True):
                 if last_received:
                     last_received = int(last_received)
                     if in_metres:
-                        last_received = np.interp(last_received, xp=[0, 1023], fp=[0, 15]) - 1.5
+                        last_received = np.interp(last_received, xp=[0, 1023], fp=[0, 15]) - 2.0
                     return last_received
     except serial.SerialException as e:
         logging.error(f"Serial communication error: {e}")
