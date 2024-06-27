@@ -46,10 +46,13 @@ def get_correct_response(file):
         print(f"An error occurred: {e}")
 
 
-def get_possible_files(sex=None, number=None, talker=None, exclude=False):
+def get_possible_files(stim_type="syllable", sex=None, number=None, talker=None, exclude=False):
     possible_files = []
     try:
-        stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_24414"  # TODO: Add files and directory
+        if stim_type == "syllable":
+            stim_dir = DIR / "data" / "stim_files" / "tts-numbers_n13_resamp_24414"  # TODO: Add files and directory
+        else:
+            stim_dir = util.get_stim_dir(stim_type)
         if isinstance(number, int):
             for key, val in num_dict.items():
                 if val == number:
@@ -87,7 +90,7 @@ def get_non_syllable_masker_file(masker_type, talker=None):
             masker_file = os.path.join(DIR, get_random_file(contents))
         elif masker_type == "babble":
             babble_DIR = DIR / "data" / "stim_files" / "babble-numbers-reversed-n13-shifted_resamp_48828_resamp_24414"
-            contents = get_possible_files(talker=talker, exclude=True)
+            contents = get_possible_files(stim_type="babble", talker=talker, exclude=True)
             masker_file = os.path.join(DIR, get_random_file(contents))
         else:
             masker_file = None
