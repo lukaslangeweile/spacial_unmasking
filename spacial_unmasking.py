@@ -20,13 +20,21 @@ target_dict = {}
 talkers = ["p245", "p248", "p268", "p284"]
 
 
-def start_experiment(sub_id, masker_type, stim_type):
+def start_experiment(sub_id, masker_type, stim_type, randomize_target_speaker=False):
     try:
-        target_speaker = freefield.pick_speakers(5)[0]
+        speaker_config_dict = {5: [0, 2, 4, 5, 6, 8, 10],
+                                 4: [0, 1, 3, 4, 5, 7, 10],
+                                 6: [0, 3, 5, 6, 7, 9, 10]}
+        if randomize_target_speaker:
+            target_speaker_index = np.random.choice(speaker_config_dict.keys())
+        else:
+            target_speaker_index = 5
+        speaker_indices = speaker_config_dict.get(target_speaker_index)
+        target_speaker = freefield.pick_speakers(target_speaker_index)[0]
         talker = np.random.choice(talkers)
         train_talker(talker)
 
-        spacial_unmask_within_range(speaker_indices=[0, 2, 4, 5, 6, 8, 10], target_speaker=target_speaker,
+        spacial_unmask_within_range(speaker_indices=speaker_indices, target_speaker=target_speaker,
                                     sub_id=sub_id, masker_type=masker_type, stim_type=stim_type,
                                     talker=talker,
                                     normalisation_method="mgb_normalisation")
@@ -128,7 +136,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
         np.random.shuffle(iterator)
         talker = talker
         trial_index = 0
-        valid_responses = [1, 2, 3, 4, 5]
+        valid_responses = [1, 2, 3, 4, 5, 6, 8, 9]
         stim_dir_list = [util.get_stim_dir(masker_type), util.get_stim_dir(stim_type)]
         max_n_samples = util.get_max_n_samples(stim_dir_list)
         input("Press Enter to start task familiarisation.")
@@ -143,12 +151,12 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
 
             logging.info(f"Beginnign spatial unmasking at speaker with index {i}.")
             masking_speaker = freefield.pick_speakers(i)[0]
-            stairs = slab.Staircase(start_val=2, n_reversals=16, step_sizes=[4, 2, 2, 1], n_down=2, n_up=1)
+            stairs = slab.Staircase(start_val=2, n_reversals=12, step_sizes=[4, 2, 2, 1], n_down=2, n_up=1)
 
             for level in stairs:
                 logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")
                 masker_file = get_non_syllable_masker_file(masker_type)
-                target_file = get_target_number_file(talker=talker, number=np.random.randint(1, 6))
+                target_file = get_target_number_file(talker=talker, number=np.random.choice(valid_responses))
                 masker = slab.Sound.read(masker_file)
                 masker = slab.Sound(masker.data[:, 0])
                 target = slab.Sound.read(target_file)
@@ -202,10 +210,10 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
                 trial_index += 1
                 time.sleep(1.0)
 
-            save_results(event_id=event_id, sub_id=sub_id, threshold=stairs.threshold(n=10),
+            save_results(event_id=event_id, sub_id=sub_id, threshold=stairs.threshold(n=8),
                          distance_masker=masking_speaker.distance,
                          distance_target=target_speaker.distance, level_masker=masker.level,
-                         level_target=get_speaker_normalisation_level(target_speaker) + stairs.threshold(n=0),
+                         level_target=get_speaker_normalisation_level(target_speaker) + stairs.threshold(n=8),
                          masker_type=masker_type, stim_type=stim_type, talker=talker,
                          normalisation_method=normalisation_method,
                          normalisation_level_masker=get_speaker_normalisation_level(masking_speaker),
@@ -464,12 +472,12 @@ def get_speaker_normalisation_level(speaker, mgb_loudness=30):
         print(f"An error occurred: {e}")
 
 def task_familiarisation(masking_speaker, target_speaker, masker_type, stim_type, talker, max_n_samples):
-    stairs = slab.Staircase(start_val=2, n_reversals=5, step_sizes=[5, 3, 1], n_down=2, n_up=1)
-    valid_responses = [1, 2, 3, 4, 5]
+    stairs = slab.Staircase(start_val=2, n_reversals=4, step_sizes=[5, 3, 1], n_down=2, n_up=1)
+    valid_responses = [1, 2, 3, 4, 5, 6, 8, 9]
     for level in stairs:
         logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")
         masker_file = get_non_syllable_masker_file(masker_type, talker)
-        target_file = get_target_number_file(talker=talker, number=np.random.randint(1, 6))
+        target_file = get_target_number_file(talker=talker, number=np.random.choice(valid_responses))
         masker = slab.Sound.read(masker_file)
         masker = slab.Sound(masker.data[:, 0])
         target = slab.Sound.read(target_file)
