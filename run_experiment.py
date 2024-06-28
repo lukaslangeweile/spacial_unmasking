@@ -44,7 +44,7 @@ localisation.plot_results(sub_id=sub_id)
 # Spatial unmasking
 input("Press 'Enter"' to start with spatial unmasking experiment.')
 
-spacial_unmasking.start_experiment(sub_id=sub_id, masker_type="babble", stim_type="syllable")
+spacial_unmasking.start_experiment(sub_id=sub_id, masker_type="babble", stim_type="syllable", randomize_target_speaker=False)
 
 input("Spatial Unmasking finished. Ask remaining questionnaire questions...")
 

@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="87843eff-bfa5-4e8c-92c1-efd0b98aef3c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/numerosity_judgement.py" beforeDir="false" afterPath="$PROJECT_DIR$/numerosity_judgement.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_experiment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spacial_unmasking.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacial_unmasking.py" afterDir="false" />
     </list>
@@ -59,8 +58,8 @@
       <recent name="$PROJECT_DIR$/data/stim_files" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\results\failed" />
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\results\test_results (no participant data)" />
+      <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\results\failed" />
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\recordings\backup" />
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\old_results" />
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data" />
@@ -336,6 +335,11 @@
       <workItem from="1719324304864" duration="544000" />
       <workItem from="1719387012644" duration="254000" />
       <workItem from="1719387329475" duration="9365000" />
+      <workItem from="1719478536781" duration="5706000" />
+      <workItem from="1719485137386" duration="10276000" />
+      <workItem from="1719571951174" duration="328000" />
+      <workItem from="1719572495137" duration="926000" />
+      <workItem from="1719573480522" duration="79000" />
     </task>
     <servers />
   </component>
@@ -367,7 +371,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/spacial_unmasking.py</url>
-          <line>113</line>
+          <line>124</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
@@ -376,7 +380,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/spacial_unmasking$localisation.coverage" NAME="localisation Coverage Results" MODIFIED="1717575417139" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$plot_results.coverage" NAME="plot_results Coverage Results" MODIFIED="1717515174698" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/spacial_unmasking$run_experiment.coverage" NAME="run_experiment Coverage Results" MODIFIED="1719398168630" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spacial_unmasking$run_experiment.coverage" NAME="run_experiment Coverage Results" MODIFIED="1719573260583" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$plot_average_results.coverage" NAME="plot_average_results Coverage Results" MODIFIED="1717571534179" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$distance_anchoring.coverage" NAME="distance_anchoring Coverage Results" MODIFIED="1718107217862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../distance_anchoring" />
     <SUITE FILE_PATH="coverage/spacial_unmasking$distance_anchoring_experiment.coverage" NAME="distance_anchoring_experiment Coverage Results" MODIFIED="1718107283092" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../distance_anchoring" />

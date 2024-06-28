@@ -26,7 +26,7 @@ def start_experiment(sub_id, masker_type, stim_type, randomize_target_speaker=Fa
                                  4: [0, 1, 3, 4, 5, 7, 10],
                                  6: [0, 3, 5, 6, 7, 9, 10]}
         if randomize_target_speaker:
-            target_speaker_index = np.random.choice(speaker_config_dict.keys())
+            target_speaker_index = np.random.choice(list(speaker_config_dict.keys()))
         else:
             target_speaker_index = 5
         speaker_indices = speaker_config_dict.get(target_speaker_index)
@@ -141,8 +141,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
         max_n_samples = util.get_max_n_samples(stim_dir_list)
         input("Press Enter to start task familiarisation.")
 
-        task_familiarisation(masking_speaker=freefield.pick_speakers(np.random.choice(speaker_indices))[0], target_speaker=target_speaker,
-                             masker_type=masker_type, stim_type=stim_type, talker=talker, max_n_samples=max_n_samples)
+        task_familiarisation(masking_speaker=freefield.pick_speakers(np.random.choice(speaker_indices))[0], target_speaker=target_speaker, masker_type=masker_type, stim_type=stim_type, talker=talker, max_n_samples=max_n_samples)
 
         input("Start Experiment by pressing Enter...")
 
@@ -156,7 +155,7 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
             for level in stairs:
                 logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")
                 masker_file = get_non_syllable_masker_file(masker_type)
-                target_file = get_target_number_file(talker=talker, number=np.random.choice(valid_responses))
+                target_file = get_target_number_file(talker=talker, number=int(np.random.choice(valid_responses)))
                 masker = slab.Sound.read(masker_file)
                 masker = slab.Sound(masker.data[:, 0])
                 target = slab.Sound.read(target_file)
@@ -183,6 +182,8 @@ def spacial_unmask_within_range(speaker_indices, target_speaker, sub_id, masker_
                 freefield.play(kind=1, proc="RX81")
                 util.start_timer()
 
+
+                """response = int(input("input response"))"""
                 response = None
                 while True:
                     response = freefield.read("response", "RP2")
@@ -477,7 +478,7 @@ def task_familiarisation(masking_speaker, target_speaker, masker_type, stim_type
     for level in stairs:
         logging.info(f"Presenting stimuli. this_trial_n = {stairs.this_trial_n}.")
         masker_file = get_non_syllable_masker_file(masker_type, talker)
-        target_file = get_target_number_file(talker=talker, number=np.random.choice(valid_responses))
+        target_file = get_target_number_file(talker=talker, number=int(np.random.choice(valid_responses)))
         masker = slab.Sound.read(masker_file)
         masker = slab.Sound(masker.data[:, 0])
         target = slab.Sound.read(target_file)
