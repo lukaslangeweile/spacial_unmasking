@@ -15,7 +15,7 @@ logging.basicConfig(filename='spatial_unmasking.log', level=logging.ERROR)
 
 event_id = 0
 DIR = pathlib.Path(os.curdir)
-num_dict = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 7, "eight": 8, "nine": 9}
+num_dict = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "eight": 8, "nine": 9}
 target_dict = {}
 talkers = ["p245", "p248", "p268", "p284"]
 
@@ -32,7 +32,7 @@ def start_experiment(sub_id, masker_type, stim_type, randomize_target_speaker=Fa
         speaker_indices = speaker_config_dict.get(target_speaker_index)
         target_speaker = freefield.pick_speakers(target_speaker_index)[0]
         talker = np.random.choice(talkers)
-        train_talker(talker)
+        # train_talker(talker)
 
         spacial_unmask_within_range(speaker_indices=speaker_indices, target_speaker=target_speaker,
                                     sub_id=sub_id, masker_type=masker_type, stim_type=stim_type,
@@ -111,6 +111,7 @@ def get_non_syllable_masker_file(masker_type, talker=None):
 
 def get_random_file(files):
     try:
+        print(files)
         return np.random.choice(files)
     except Exception as e:
         logging.error(f"An error occurred in get_random_file: {e}")
@@ -254,6 +255,7 @@ def train_talker(talker_id):
             print(talker_num_dict.get(button_press_written))
             signal = slab.Sound.read(talker_num_dict.get(button_press_written))
             signal = util.apply_mgb_equalization(signal=signal, speaker=freefield.pick_speakers(5)[0], mgb_loudness=25)
+            freefield.write(tag="playbuflen", value=signal.n_samples, processors="RX81")
             freefield.set_signal_and_speaker(signal=signal, speaker=freefield.pick_speakers(5)[0], equalize=False)
             freefield.play(kind=1, proc="RX81")
             time.sleep(0.5)

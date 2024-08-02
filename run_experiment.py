@@ -14,7 +14,6 @@ util.initialize_setup()
 # Check for correct subject id
 print(f"Beginning experiment with participant with subject id = {sub_id}.")
 
-
 # Localisation accuracy
 input("Press 'Enter' to start with localisation accuracy experiment.")
 
@@ -50,24 +49,22 @@ input("Spatial Unmasking finished. Ask remaining questionnaire questions...")
 
 spacial_unmasking.plot_target_ratio_vs_distance(sub_id=sub_id, masker_type="babble")
 
-
-
 # Numerosity judgement
 input("Press 'Enter' to start with numerosity judgement experiment.")
 
-numerosity_judgement.start_experiment(sub_id=sub_id, block_id=1, stim_type="countries_forward", n_reps=15)
+numerosity_judgement.start_experiment(sub_id=sub_id, block_id=1, stim_type="countries_reversed", n_reps=15)
 
 input("Completed block 1/4. Press 'Enter' to continue with block 2 of numerosity judgement.")
 
-numerosity_judgement.start_experiment(sub_id=sub_id, block_id=2, stim_type="countries_forward", n_reps=15)
+numerosity_judgement.start_experiment(sub_id=sub_id, block_id=2, stim_type="countries_reversed", n_reps=15)
 
 input("Completed block 2/4. Press 'Enter' to continue with block 3 of numerosity judgement.")
 
-numerosity_judgement.start_experiment(sub_id=sub_id, block_id=3, stim_type="countries_reversed", n_reps=15)
+numerosity_judgement.start_experiment(sub_id=sub_id, block_id=3, stim_type="countries_forward", n_reps=15)
 
 input("Completed block 3/4. Press 'Enter' to continue with block 3 of numerosity judgement.")
 
-numerosity_judgement.start_experiment(sub_id=sub_id, block_id=4, stim_type="countries_reversed", n_reps=15)
+numerosity_judgement.start_experiment(sub_id=sub_id, block_id=4, stim_type="countries_forward", n_reps=15)
 
 input("Completed block 4/4. Ask participant questions of the questionnaire document. Press 'Enter' to continue.")
 
@@ -75,4 +72,4 @@ numerosity_judgement.plot_results(sub_id=sub_id)
 
 print("Experiment done.")
 
-
+freefield.flush_buffers(processor="RX81")
