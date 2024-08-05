@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="87843eff-bfa5-4e8c-92c1-efd0b98aef3c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/spacial_unmasking.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/spacial_unmasking.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacial_unmasking.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacial_unmasking.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/numerosity_judgement.py" beforeDir="false" afterPath="$PROJECT_DIR$/numerosity_judgement.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,14 +39,11 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../distance_anchoring" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;
+  }
+}</component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings>
@@ -65,7 +64,7 @@
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.run_experiment">
+  <component name="RunManager" selected="Python.util">
     <configuration name="distance_anchoring_experiment" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="spacial_unmasking" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -205,7 +204,8 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\User\anaconda3\envs\cathedral2\python.exe" />
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/env/cathedral" />
+      <option name="SDK_NAME" value="freefield (2)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -231,8 +231,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.run_experiment" />
         <item itemvalue="Python.util" />
+        <item itemvalue="Python.run_experiment" />
         <item itemvalue="Python.spacial_unmasking" />
         <item itemvalue="Python.numerosity_judgement" />
         <item itemvalue="Python.distance_anchoring_experiment" />
@@ -392,7 +392,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

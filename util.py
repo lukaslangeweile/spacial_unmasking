@@ -13,10 +13,10 @@ import re
 import logging
 import ast
 
-import localisation
+"""import localisation
 
 # Configure logging
-import util
+import util"""
 
 logging.basicConfig(filename='auditory_experiment.log', level=logging.ERROR)
 
@@ -48,9 +48,21 @@ def logarithmic_func(x, a, b, c):
         logging.error(f"An error occurred in logarithmic_func: {e}")
         print(f"An error occurred: {e}")
 
+
 def get_log_parameters(distance):
     try:
         parameters_file = DIR / "data" / "mgb_equalization_parameters" / "logarithmic_function_parameters.csv"
+        parameters_df = pd.read_csv(parameters_file)
+        params = parameters_df[parameters_df['speaker_distance'] == distance]
+        a, b, c = params.iloc[0][['a', 'b', 'c']]
+        return a, b, c
+    except Exception as e:
+        logging.error(f"An error occurred in get_log_parameters: {e}")
+        print(f"An error occurred: {e}")
+
+def get_quad_parameters(distance):
+    try:
+        parameters_file = DIR / "data" / "mgb_equalization_parameters" / "quadratic_function_parameters.csv"
         parameters_df = pd.read_csv(parameters_file)
         params = parameters_df[parameters_df['speaker_distance'] == distance]
         a, b, c = params.iloc[0][['a', 'b', 'c']]
@@ -63,6 +75,14 @@ def get_speaker_normalisation_level(speaker, mgb_loudness=30):
     try:
         a, b, c = get_log_parameters(speaker.distance)
         return logarithmic_func(x=mgb_loudness, a=a, b=b, c=c)
+    except Exception as e:
+        logging.error(f"An error occurred in get_speaker_normalisation_level: {e}")
+        print(f"An error occurred: {e}")
+
+def get_mgb_level_from_input_level(speaker, input_level):
+    try:
+        a, b, c = get_quad_parameters(speaker.distance)
+        return quadratic2_func(x=input_level, a=a, b=b, c=c)
     except Exception as e:
         logging.error(f"An error occurred in get_speaker_normalisation_level: {e}")
         print(f"An error occurred: {e}")
@@ -472,9 +492,83 @@ def get_spectral_coverage(filenames, speaker_ids, stim_type, trial_dur=0.6):
     percentage_filled = interval.shape[0] / power.flatten().shape[0]
     return percentage_filled
 
+def parse_staircases(filename, only_index=False):
+    # Define the regex pattern
+    pattern = r'speaker_index-(\d+)_sub_id-sub_(\d+)'
+
+    # Search for the pattern in the filename
+    match = re.search(pattern, filename)
+
+    # Check if the pattern was found
+    if match:
+        # Extract speaker_index and sub_id
+        speaker_index = int(match.group(1))
+        sub_id = int(match.group(2))
+        if only_index:
+            return speaker_index
+        else:
+            return speaker_index, sub_id
+    else:
+        raise ValueError(f"Filename '{filename}' does not match the expected pattern.")
+
+def get_speaker_index(filename):
+    # Use regex to find the speaker_index in the filename
+    match = re.search(r'speaker_index-(\d+)', filename)
+    if match:
+        return int(match.group(1))
+    else:
+        return float('inf')  # Return infinity if the pattern is not found to handle unexpected filenames
+
+def plot_subject_staircases(sub_id, draw=True):
+    directory_path = DIR / "data" / "results"
+    file_list = list()
+    fig, axes = plt.subplots(2, 4, figsize=(14, 10))
+    for file in directory_path.iterdir():
+        if file.is_file() and file.suffix == '.json' and str(sub_id) in str(file):
+            try:
+                file_list.append(str(file))
+            except Exception as e:
+                logging.error(f"Error reading file {file}: {e}")
+                print(f"Error reading file {file}: {e}")
+
+    file_list = sorted(file_list, key=get_speaker_index)
+
+    for i in range(len(file_list)):
+        with open(file_list[i], 'r') as file:
+            data = json.load(file)
+
+        # Extract the "intensities" array
+        intensities = data.get("intensities", [])
+        print(intensities)
+        print(len(intensities))
+        print(list(range(len(intensities))))
+
+        filename = str(file_list[i])
+        speaker_index, sub_id = parse_staircases(filename)
+
+        if i < 4:
+            sns.lineplot(x=list(range(len(intensities))), y=intensities, ax=axes[0, i])
+            axes[0, i].set_title(f'speaker_index = {speaker_index}')
+            axes[0, i].set_xlabel('trial_n')
+            axes[0, i].set_ylabel('threshold')
+        else:
+            sns.lineplot(x=list(range(len(intensities))), y=intensities, ax=axes[1, (i - 4)])
+            axes[1, (i - 4)].set_title(f'speaker_index = {speaker_index}')
+            axes[1, (i - 4)].set_xlabel('trial_n')
+            axes[1, (i - 4)].set_ylabel('threshold')
+
+    # Adjust the layout
+    plt.tight_layout()
+
+    plt.savefig(DIR / "data" / "results" / "figs" / f"fig_spatial_unmasking_staircases_sub_id-{sub_id}.jpeg")
+
+    # Display the plots
+    if draw:
+        plt.show()
+
 if __name__ == "__main__":
-    initialize_stim_recording()
-    record_stimuli(stim_type="countries_reversed")
-    record_stimuli(stim_type="countries_forward")
+    for i in range(100, 122):
+        sub_id = f"sub_{i}"
+        plot_subject_staircases(sub_id)
 
 
