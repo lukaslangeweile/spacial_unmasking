@@ -233,8 +233,13 @@ def set_multiple_signals(signals, speakers, equalize=True, mgb_loudness=30, fluc
         for i in range(len(signals)):
             if equalize:
                 signals[i] = apply_mgb_equalization(signals[i], speakers[i], mgb_loudness, fluc)
+            if not hasattr(speakers[i], 'index'):
+                raise AttributeError(f"Speaker object at index {i} does not have an 'index' attribute.")
             speaker_chan = speakers[i].index + 1
-            data = np.pad(signals[i].data, ((0, max_n_samples - len(signals[i].data)), (0, 0)), 'constant')
+            if len(signals[i].data.shape) == 1:
+                data = np.pad(signals[i].data, (0, max_n_samples - len(signals[i].data)), 'constant')
+            else:
+                data = np.pad(signals[i].data, ((0, max_n_samples - len(signals[i].data)), (0, 0)), 'constant')
             if len(data.shape) == 2 and data.shape[1] == 2:
                 data = np.mean(data, axis=1)
             freefield.write(tag=f"data{i}", value=data, processors="RX81")

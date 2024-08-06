@@ -40,15 +40,6 @@ input("Completed block 4/4. Ask participant questions of the questionnaire docum
 localisation.plot_results(sub_id=sub_id)
 
 
-# Spatial unmasking
-input("Press 'Enter"' to start with spatial unmasking experiment.')
-
-spacial_unmasking.start_experiment(sub_id=sub_id, masker_type="babble", stim_type="syllable", randomize_target_speaker=False)
-
-input("Spatial Unmasking finished. Ask remaining questionnaire questions...")
-
-spacial_unmasking.plot_target_ratio_vs_distance(sub_id=sub_id, masker_type="babble")
-
 # Numerosity judgement
 input("Press 'Enter' to start with numerosity judgement experiment.")
 
@@ -69,6 +60,26 @@ numerosity_judgement.start_experiment(sub_id=sub_id, block_id=4, stim_type="coun
 input("Completed block 4/4. Ask participant questions of the questionnaire document. Press 'Enter' to continue.")
 
 numerosity_judgement.plot_results(sub_id=sub_id)
+
+
+# Spatial unmasking
+input("Press 'Enter"' to start with spatial unmasking experiment.')
+
+spacial_unmasking.start_experiment(sub_id=sub_id, masker_type="babble", stim_type="syllable", randomize_target_speaker=False)
+
+input("Spatial Unmasking finished. Ask remaining questionnaire questions...")
+
+spacial_unmasking.plot_target_ratio_vs_distance(sub_id=sub_id, masker_type="babble")
+
+
+# Numerosity judgement - colocated
+input("Press 'Enter' to start with colocated numerosity judgement experiment.")
+
+numerosity_judgement.start_experiment(sub_id=sub_id, block_id=1, stim_type="countries_reversed", n_reps=15, colocated=True)
+
+input("Completed block 1/2. Press 'Enter' to continue with block 2 of colocated numerosity judgement.")
+
+numerosity_judgement.start_experiment(sub_id=sub_id, block_id=2, stim_type="countries_forward", n_reps=15, colocated=True)
 
 print("Experiment done.")
 
