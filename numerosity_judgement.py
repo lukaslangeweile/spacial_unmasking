@@ -44,9 +44,12 @@ num_dict = {"one": 1,
 n_sounds = [2, 3, 4, 5, 6]
 
 
-def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
+def estimate_numerosity(sub_id, block_id, stim_type, n_reps, colocated):
     valid_responses = [2, 3, 4, 5, 6]
-    df = pd.read_csv(DIR / "data" / "spectral_coverage_data" / "tts_spectral_coverage_2024-06-25-16-24-36.csv")
+    if colocated:
+        df = pd.read_csv(DIR / "data" / "spectral_coverage_data" / "colocated.csv")
+    else:
+        df = pd.read_csv(DIR / "data" / "spectral_coverage_data" / "tts_spectral_coverage_2024-06-25-16-24-36.csv")
     condition_dict = create_condition_bin_dict(df=df, stim_type=stim_type, reps=n_reps)
 
     global event_id
@@ -66,7 +69,11 @@ def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
         logging.info(f"Presenting {n_simultaneous_sounds} sounds at speakers with indices {speaker_indices}. "
                      f"Trial index = {trial_index}")
 
-        util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, mgb_loudness=27.5, fluc=fluctuation, max_n_samples=max_n_samples)
+        if colocated:
+            util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, mgb_loudness=22.5,
+                                      fluc=fluctuation, max_n_samples=max_n_samples)
+        else:
+            util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, mgb_loudness=27.5, fluc=fluctuation, max_n_samples=max_n_samples)
         freefield.play(kind=1, proc="RX81")
         util.start_timer()
         """time.sleep(max_n_samples / 24414.0)"""
@@ -90,8 +97,10 @@ def estimate_numerosity(sub_id, block_id, stim_type, n_reps):
         event_id += 1
         print(f"simulatneous_sounds = {n_simultaneous_sounds}")
 
-def estimate_colocated_numerosity(sub_id, block_id, stim_type, n_reps):
+"""def estimate_colocated_numerosity(sub_id, block_id, stim_type, n_reps):
     valid_responses = [2, 3, 4, 5, 6]
+    df = pd.read_csv(DIR / "data" / "spectral_coverage_data" / "colocated.csv")
+    condition_dict = create_condition_bin_dict(df=df, stim_type=stim_type, reps=n_reps)
 
     global event_id
     seq = slab.Trialsequence(conditions=[2, 3, 4, 5, 6], n_reps=n_reps)
@@ -105,9 +114,10 @@ def estimate_colocated_numerosity(sub_id, block_id, stim_type, n_reps):
         max_n_samples = util.get_max_n_samples(stim_dir)
         filenames, sounds = util.get_sounds_with_filenames(sounds_dict=sounds_dict, n=n_simultaneous_sounds, randomize=True)
         speaker = util.get_n_random_speakers(n=1)
+        
         to_play = None
         for sound in sounds:
-            util.apply_mgb_equalization(sound, speaker, mgb_loudness=30)
+            util.apply_mgb_equalization(sound, speaker, mgb_loudness=22.5)
             sound_padded = np.pad(sound.data, ((0, max_n_samples - len(sound.data)), (0, 0)), 'constant')
             to_play += np.array(sound_padded)
         sound = slab.Sound(data=to_play)
@@ -116,8 +126,8 @@ def estimate_colocated_numerosity(sub_id, block_id, stim_type, n_reps):
                                   max_n_samples=max_n_samples)
         freefield.play(kind=1, proc="RX81")
         util.start_timer()
-        """time.sleep(max_n_samples / 24414.0)"""
-        """response = input("Enter number between 2 and 6")"""
+        time.sleep(max_n_samples / 24414.0)
+        response = input("Enter number between 2 and 6")
         response = None
         while True:
             response = freefield.read("response", "RP2")
@@ -137,7 +147,7 @@ def estimate_colocated_numerosity(sub_id, block_id, stim_type, n_reps):
                      reaction_time=reaction_time, spectral_coverage=None)
 
         event_id += 1
-        print(f"simulatneous_sounds = {n_simultaneous_sounds}")
+        print(f"simulatneous_sounds = {n_simultaneous_sounds}")"""
 
 def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, speaker_ids, n_sounds, response, is_correct, speakers, reaction_time, spectral_coverage):
     try:
@@ -198,15 +208,12 @@ def save_results(event_id, sub_id, trial_index, block_id, stim_type, filenames, 
 def start_experiment(sub_id, block_id, stim_type, n_reps=10, colocated=False):
     global condition_counter
     logging.info("Starting numerosity judgement experiment.")
-    if colocated:
-     estimate_colocated_numerosity(sub_id, block_id, stim_type, n_reps)
-    else:
-        estimate_numerosity(sub_id, block_id, stim_type, n_reps)
-        condition_counter = {2: 0,
-                             3: 0,
-                             4: 0,
-                             5: 0,
-                             6: 0}
+    estimate_numerosity(sub_id, block_id, stim_type, n_reps, colocated)
+    condition_counter = {2: 0,
+                         3: 0,
+                         4: 0,
+                         5: 0,
+                         6: 0}
 
 def plot_results(sub_id):
     data_file = DIR / "data" / "results" / f"results_numerosity_judgement_{sub_id}.csv"
