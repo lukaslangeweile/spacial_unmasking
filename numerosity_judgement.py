@@ -47,7 +47,7 @@ n_sounds = [2, 3, 4, 5, 6]
 def estimate_numerosity(sub_id, block_id, stim_type, n_reps, colocated):
     valid_responses = [2, 3, 4, 5, 6]
     if colocated:
-        df = pd.read_csv(DIR / "data" / "spectral_coverage_data" / "tts_spectral_coverage_collocated_2024-08-06-11-27-36.csv.csv")
+        df = pd.read_csv(DIR / "data" / "spectral_coverage_data" / "tts_spectral_coverage_collocated_2024-08-06-11-27-36.csv")
     else:
         df = pd.read_csv(DIR / "data" / "spectral_coverage_data" / "tts_spectral_coverage_2024-06-25-16-24-36.csv")
     condition_dict = create_condition_bin_dict(df=df, stim_type=stim_type, reps=n_reps)
@@ -64,14 +64,21 @@ def estimate_numerosity(sub_id, block_id, stim_type, n_reps, colocated):
         """filenames, sounds = util.get_sounds_with_filenames(sounds_dict=sounds, n=n_simultaneous_sounds, randomize=True)
         speakers, speaker_indices = util.get_n_random_speakers(n_simultaneous_sounds)"""
         sounds, filenames, speaker_indices, spectral_coverage = get_pseudo_randomized_stimuli(trial, condition_dict, n_reps, stim_type)
-
+        print(speaker_indices)
         speakers = freefield.pick_speakers(speaker_indices)
         logging.info(f"Presenting {n_simultaneous_sounds} sounds at speakers with indices {speaker_indices}. "
                      f"Trial index = {trial_index}")
 
         if colocated:
-            util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, mgb_loudness=22.5,
-                                      fluc=fluctuation, max_n_samples=max_n_samples)
+            print(speakers)
+            to_play = np.zeros((max_n_samples, 1))
+            for sound in sounds:
+                sound = util.apply_mgb_equalization(sound, speakers[0], mgb_loudness=22.5, fluc=fluctuation)
+                sound_padded = np.pad(sound.data, ((0, max_n_samples - len(sound.data)), (0, 0)), 'constant')
+                to_play = to_play + np.array(sound_padded)
+            sound = slab.Sound(data=to_play)
+            util.set_multiple_signals(signals=[sound], speakers=[speakers[0]], equalize=False,
+                                        max_n_samples=max_n_samples)
         else:
             util.set_multiple_signals(signals=sounds, speakers=speakers, equalize=True, mgb_loudness=27.5, fluc=fluctuation, max_n_samples=max_n_samples)
         freefield.play(kind=1, proc="RX81")
