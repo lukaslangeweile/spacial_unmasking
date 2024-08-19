@@ -126,7 +126,7 @@ def record_stimuli_and_create_csv(stim_type="countries_forward"):
                 sound = apply_mgb_equalization(signal=sound, speaker=speaker, mgb_loudness=30)
                 rec_sound = freefield.play_and_record(speaker=speaker, sound=sound, compensate_delay=True, equalize=False)
                 sound_name = os.path.splitext(filenames_list[i])[0]
-                filepath = DIR / "data" / "recordings" / "countries_forward" / f"sound-{sound_name}_distance-{speaker.distance}.wav"
+                filepath = DIR / "data" / "recordings" / f"{stim_type}" / f"sound-{sound_name}_distance-{speaker.distance}.wav"
                 filepath = pathlib.Path(filepath)
                 rec_sound.write(filename=filepath, normalise=False)
                 time.sleep(2.7)
@@ -522,16 +522,21 @@ def get_speaker_index(filename):
 def plot_subject_staircases(sub_id, draw=True):
     directory_path = DIR / "data" / "results"
     file_list = list()
+    df_path = DIR / "data" / "results" / f"results_spacial_unmasking_{sub_id}.csv"
+    df = pd.read_csv(df_path)
+    index_order = df["distance_masker"].tolist()
+    index_order = [int(distance - 2.0) for distance in index_order]
     fig, axes = plt.subplots(2, 4, figsize=(14, 10))
     for file in directory_path.iterdir():
-        if file.is_file() and file.suffix == '.json' and str(sub_id) in str(file):
-            try:
-                file_list.append(str(file))
-            except Exception as e:
-                logging.error(f"Error reading file {file}: {e}")
-                print(f"Error reading file {file}: {e}")
+        for index in index_order:
+            if file.is_file() and file.suffix == '.json' and str(sub_id) in str(file) and f"index-{index}" in str(file):
+                try:
+                    file_list.append(str(file))
+                except Exception as e:
+                    logging.error(f"Error reading file {file}: {e}")
+                    print(f"Error reading file {file}: {e}")
 
-    file_list = sorted(file_list, key=get_speaker_index)
+    """file_list = sorted(file_list, key=get_speaker_index)"""
 
     for i in range(len(file_list)):
         with open(file_list[i], 'r') as file:
@@ -539,6 +544,8 @@ def plot_subject_staircases(sub_id, draw=True):
 
         # Extract the "intensities" array
         intensities = data.get("intensities", [])
+        reversal_intensities = data.get("reversal_intensities", [])
+        threshold = sum(reversal_intensities[-8:]) / 8
         print(intensities)
         print(len(intensities))
         print(list(range(len(intensities))))
@@ -548,14 +555,18 @@ def plot_subject_staircases(sub_id, draw=True):
 
         if i < 4:
             sns.lineplot(x=list(range(len(intensities))), y=intensities, ax=axes[0, i])
+            axes[0, i].axhline(y=threshold, color='red', linestyle='--', label='threshold')
             axes[0, i].set_title(f'speaker_index = {speaker_index}')
             axes[0, i].set_xlabel('trial_n')
             axes[0, i].set_ylabel('threshold')
+            axes[0, i].set_ylim(-25, 5)
         else:
             sns.lineplot(x=list(range(len(intensities))), y=intensities, ax=axes[1, (i - 4)])
+            axes[1, (i - 4)].axhline(y=threshold, color='red', linestyle='--', label='threshold')
             axes[1, (i - 4)].set_title(f'speaker_index = {speaker_index}')
             axes[1, (i - 4)].set_xlabel('trial_n')
             axes[1, (i - 4)].set_ylabel('threshold')
+            axes[1, (i - 4)].set_ylim(-25, 5)
 
     # Adjust the layout
     plt.tight_layout()
@@ -566,9 +577,186 @@ def plot_subject_staircases(sub_id, draw=True):
     if draw:
         plt.show()
 
+def plot_learning_effect_per_trial(task="numerosity_judgement"):
+    directory_path = DIR / "data" / "results"
+    fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+    axes = axes.flatten()
+    df = pd.DataFrame()
+
+    for file in directory_path.iterdir():
+        if task == "numerosity_judgement":
+            if file.is_file() and "results_numerosity_judgement" in str(file) and file.suffix == ".csv":
+                this_df = pd.read_csv(file)
+                df = pd.concat([df, this_df], ignore_index=True)
+        if task == "localisation_accuracy":
+            if file.is_file() and "results_localisation_accuracy" in str(file) and file.suffix == ".csv":
+                this_df = pd.read_csv(file)
+                df = pd.concat([df, this_df], ignore_index=True)
+
+    if task == "localisation_accuracy":
+        df["abs_error"] = abs(df["stim_dist"] - df["resp_dist"])
+    elif task == "numerosity_judgement":
+        df["abs_error"] = abs(df["stim_number"] - df["resp_number"])
+
+    df_blocks = [df[df["block"] == i] for i in range(1,5)]
+
+    for i, ax in enumerate(axes):
+        if i < len(df_blocks):  # Ensure we have enough blocks to plot
+            grouped_by_trial_index = df_blocks[i].groupby("trial_index")
+            """if task == "numerosity_judgement":
+                hit_rates = grouped_by_trial_index["is_correct"].mean().reset_index()
+                sns.scatterplot(x='trial_index', y='is_correct', data=hit_rates, ax=ax)
+                sns.regplot(x='trial_index', y='is_correct', data=hit_rates, ax=ax, scatter=False, ci=None, color='r')
+                ax.set_title(f'Block {i + 1}')
+                ax.set_xlabel('Trial Index')
+                ax.set_ylabel('Mean Hit Rate')
+                ax.set_ylim(0, 1)  # Assuming hit rate is between 0 and 1"""
+            average_abs_error = grouped_by_trial_index["abs_error"].mean().reset_index()
+            sns.scatterplot(x='trial_index', y='abs_error', data=average_abs_error, ax=ax)
+            sns.regplot(x='trial_index', y='abs_error', data=average_abs_error, ax=ax, scatter=False, ci=None, color='r')
+            ax.set_title(f'Block {i + 1}')
+            ax.set_xlabel('Trial Index')
+            ax.set_ylabel('Mean Absolute Error')
+            ax.set_ylim(0, 5)
+        else:
+            fig.delaxes(ax)  # Remove any unused axes
+
+    plt.tight_layout()
+    plt.savefig(DIR / "data" / "results" / "figs" / f"fig_learning_effect_by_trial_{task}.jpeg")
+    plt.show()
+
+def plot_numerosity_judgement_distance_dependencies(dependency, num_bins=30):
+    directory_path = DIR / "data" / "results"
+    df = pd.DataFrame()
+    for file in directory_path.iterdir():
+        if file.is_file() and "results_numerosity_judgement" in str(file) and file.suffix == ".csv":
+            this_df = pd.read_csv(file)
+            df = pd.concat([df, this_df], ignore_index=True)
+    df["abs_error"] = abs(df["stim_number"] - df["resp_number"])
+    df['binned_dependency'] = pd.cut(df[dependency], bins=num_bins)
+    grouped_df = df.groupby(['binned_dependency', 'stim_number']).agg({
+        'resp_number': 'mean',
+        dependency: 'mean'
+    }).reset_index()
+
+    """sns.scatterplot(grouped_df, x=dependency, y="abs_error")
+    sns.regplot(x=dependency, y="abs_error", data=grouped_df, scatter=False, ci=None, color='r')"""
+    sns.scatterplot(data=grouped_df, x=dependency, y='resp_number', hue='stim_number', palette='viridis')
+
+    for stim_num in grouped_df['stim_number'].unique():
+        sns.regplot(
+            x=grouped_df[grouped_df['stim_number'] == stim_num][dependency],
+            y=grouped_df[grouped_df['stim_number'] == stim_num]['resp_number'],
+            scatter=False, ci=None, color='r', label=f'Trend (stim {stim_num})'
+        )
+    plt.tight_layout()
+    plt.savefig(DIR / "data" / "results" / "figs" / f"fig_numerosity_judgement_{dependency}_effect.jpeg")
+    plt.show()
+    return
+
+def get_experiment_order(sub_id):
+    directory_path = DIR / "data" / "results"
+    df_spatial_unmasking = pd.read_csv(pathlib.Path(directory_path / f"results_per_step_spacial_unmasking_{sub_id}.csv"))
+    df_numerosity_judgement = pd.read_csv(pathlib.Path(directory_path / f"results_numerosity_judgement_{sub_id}.csv"))
+    df_localisation_accuracy = pd.read_csv(pathlib.Path(directory_path / f"results_localisation_accuracy_{sub_id}.csv"))
+
+    result_df_dict = {"spatial_unmasking": df_spatial_unmasking, "numerosity_judgement": df_numerosity_judgement, "localisation_accuracy": df_localisation_accuracy}
+    for key in result_df_dict.keys():
+        df = result_df_dict.get(key)
+        timestamp = df.iloc[0]["timestamp"]
+        result_df_dict.update({key: timestamp})
+
+    sorted_experiment_list = dict(sorted(result_df_dict.items(), key=lambda item: item[1])).keys()
+    return sorted_experiment_list
+
+def get_stimulus_order(sub_id, task):
+    directory_path = DIR / "data" / "results"
+    if task == "localisation_accuracy":
+        df = pd.read_csv(pathlib.Path(directory_path / f"results_localisation_accuracy_{sub_id}.csv"))
+    elif task == "numerosity_judgement":
+        df = pd.read_csv(pathlib.Path(directory_path / f"results_numerosity_judgement{sub_id}.csv"))
+
+    stim_types = df["stim_type"].unique().tolist()
+    stim_types_dict = {}
+    for stim_type in stim_types:
+        filtered_df =df[df["stim_type"] == stim_type]
+        stim_types_dict.update({stim_type: min(filtered_df["timestamp"].tolist())})
+
+    sorted_stim_type_list = dict(sorted(stim_types_dict.items(), key=lambda item: item[1])).keys()
+    return sorted_stim_type_list
+
+def plot_task_order_effects(task):
+    directory_path = DIR / "data" / "results"
+    df_list = list()
+    for file in directory_path.iterdir():
+        if task == "numerosity_judgement":
+            if file.is_file() and "results_numerosity_judgement" in str(file) and file.suffix == ".csv":
+                this_df = pd.read_csv(file)
+                df_list.append(this_df)
+
+        elif task == "localisation_accuracy":
+            if file.is_file() and "results_localisation_accuracy" in str(file) and file.suffix == ".csv":
+                this_df = pd.read_csv(file)
+                df_list.append(this_df)
+
+    """df_first_pos = pd.DataFrame()
+    df_second_pos = pd.DataFrame()
+    df_third_pos = pd.DataFrame()"""
+    complete_df = pd.DataFrame()
+
+    for df in df_list:
+        sub_id = df["subject_id"].unique().tolist()[0]
+        print(sub_id)
+        sorted_experiment_list = list(get_experiment_order(sub_id))
+        if task == sorted_experiment_list[0]:
+            df["experiment_order"] = 0
+        elif task == sorted_experiment_list[1]:
+            df["experiment_order"] = 2
+        elif task == sorted_experiment_list[2]:
+            df["experiment_order"] = 3
+        complete_df = pd.concat([complete_df, df])
+
+    if task == "localisation_accuracy":
+        complete_df["error"] = complete_df["stim_dist"] - complete_df["resp_dist"]
+    elif task == "numerosity_judgement":
+        complete_df["error"] = complete_df["stim_number"] - complete_df["resp_number"]
+
+    sns.boxplot(complete_df, x="experiment_order", y="error")
+
+    plt.tight_layout()
+    plt.savefig(DIR / "data" / "results" / "figs" / f"fig_{task}_task_order_effect.jpeg")
+    plt.show()
+
+    return
+
+def plot_stimulus_effects(task):
+    directory_path = DIR / "data" / "results"
+    df = pd.DataFrame()
+    for file in directory_path.iterdir():
+        if file.is_file() and f"results_{task}" in str(file) and file.suffix == ".csv":
+            this_df = pd.read_csv(file)
+            df = pd.concat([df, this_df], ignore_index=True)
+
+    if task == "localisation_accuracy":
+        df["error"] = df["stim_dist"] - df["resp_dist"]
+        sns.boxplot(df, x="stim_dist", y="error", hue="stim_type")
+    elif task == "numerosity_judgement":
+        df["error"] = df["stim_number"] - df["resp_number"]
+        sns.boxplot(df, x="stim_number", y="error", hue="stim_type")
+    """sns.boxplot(df, x="stim_type", y="error")"""
+
+    plt.tight_layout()
+    plt.savefig(DIR / "data" / "results" / "figs" / f"fig_{task}_stim_type_effect.jpeg")
+    plt.show()
+    return
+
+def get_spatial_unmasking_performance(sub_id):
+    return
+
+def get_localisation_accuracy_performance(sub_id):
+    return
+
 if __name__ == "__main__":
-    for i in range(100, 122):
-        sub_id = f"sub_{i}"
-        plot_subject_staircases(sub_id)
+    plot_task_order_effects(task="localisation_accuracy")
 
 

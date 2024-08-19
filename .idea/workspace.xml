@@ -6,7 +6,27 @@
   <component name="ChangeListManager">
     <list default="true" id="87843eff-bfa5-4e8c-92c1-efd0b98aef3c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/numerosity_judgement.py" beforeDir="false" afterPath="$PROJECT_DIR$/numerosity_judgement.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-101.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-101.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-102.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-102.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-104.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-104.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-106.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-106.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-107.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-107.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-108.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-108.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-109.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-109.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-110.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-110.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-111.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-111.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-112.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-112.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-113.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-113.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-114.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-114.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-115.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-115.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-116.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-116.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-117.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-117.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-118.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-118.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-119.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-119.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-120.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-120.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-121.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/figs/fig_spatial_unmasking_staircases_sub_id-121.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/results_localisation_accuracy_sub_test.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/test_results (no participant data)/results_localisation_accuracy_sub_test.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,11 +74,11 @@
       <recent name="$PROJECT_DIR$/data/stim_files" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data/results/test_results (no participant data)" />
+      <recent name="$PROJECT_DIR$/data/spectral_coverage_data" />
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\results\test_results (no participant data)" />
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\results\failed" />
       <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\recordings\backup" />
-      <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data\old_results" />
-      <recent name="C:\Users\User\Documents\GitHub\spacial_unmasking\data" />
     </key>
   </component>
   <component name="RunManager" selected="Python.util">
