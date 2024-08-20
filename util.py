@@ -12,6 +12,7 @@ from datetime import datetime
 import re
 import logging
 import ast
+import statistics
 
 """import localisation
 
@@ -761,7 +762,60 @@ def get_spatial_unmasking_performance(sub_id):
 def get_localisation_accuracy_performance(sub_id):
     return
 
+def create_summed_result_file(task):
+    dir = DIR / "data" / "results"
+    df = pd.DataFrame()
+    filename = DIR / "data" / "results" / "added_result_files" / f"{task}_summed.csv"
+    for file in dir.iterdir():
+        if file.is_file() and f"results_{task}" in str(file) and file.suffix == ".csv":
+            sub_df = pd.read_csv(file)
+            df = pd.concat([sub_df, df], ignore_index=True)
+
+
+    df.to_csv(filename, mode='w', header=True, index=False)
+def get_su_slope_closest_speakers(subject_id):
+    file = DIR / "data" / "results" / "added_result_files" / "spacial_unmasking_summed_and_processed.csv"
+    df = pd.read_csv(file)
+    df_filtered = df[df["subject"] == subject_id]
+
+    filtered_row_colocated = df_filtered[df_filtered["abs_spatial_separation"] == 0.0]
+    filtered_rows_neighbors = df_filtered[df_filtered["abs_spatial_separation"] == 1.0]
+    print(filtered_rows_neighbors["threshold"].values)
+    x_colocated = 0
+    y_colocated = filtered_row_colocated["threshold"]
+    x_neighbors = 1
+    y_neighbors = statistics.mean(filtered_rows_neighbors["threshold"].values)
+    slope = (y_neighbors - y_colocated) / (x_neighbors - x_colocated)
+    return slope
+
+def process_nj_data():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/numerosity_judgement_round_2_covariates.csv"
+    df = pd.read_csv(file)
+    df_filtered = df[df["plane"] == "distance"]
+    target_filename = DIR / "data" / "results" / "added_result_files" / f"numerosity_judgement_round_2_covariates_processed.csv"
+    # Initialize an empty column for the slopes
+    df_filtered["su_slope_closest_speaker"] = None
+
+    # Iterate over each unique subject_id
+    for subject_id in df_filtered["subject_id"].unique():
+        if subject_id != "sub_103":
+            # Calculate the slope for the current subject_id
+            slope = get_su_slope_closest_speakers(subject_id)
+
+            # Assign the slope to the respective rows in the new column
+            df_filtered.loc[df_filtered["subject_id"] == subject_id, "su_slope_closest_speaker"] = slope
+
+    df_filtered.to_csv(target_filename, mode='w', header=True, index=False)
+
+def process_spatial_unmasking_data():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/spacial_unmasking_summed.csv"
+    df = pd.read_csv(file)
+    df["abs_spatial_separation"] = abs(df["distance_target"] - df["distance_masker"])
+    df['relative_threshold'] = df.groupby('subject')['threshold'].transform(lambda x: x - x[df['distance_masker'] == 7].iloc[0])
+    filename = DIR / "data" / "results" / "added_result_files" / f"spacial_unmasking_summed_and_processed.csv"
+    df.to_csv(filename, mode='w', header=True, index=False)
+
 if __name__ == "__main__":
-    plot_task_order_effects(task="localisation_accuracy")
+    process_nj_data()
 
 
