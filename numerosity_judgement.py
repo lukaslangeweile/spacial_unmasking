@@ -342,4 +342,4 @@ def parse_recording_filename(rec_filename, only_filename=True): #TODO: revisit p
         raise ValueError("Filename does not match the expected pattern")
 
 if __name__ == "__main__":
-    plot_averaged_responses([105], "countries_forward")
+    plot_averaged_responses([105], "countries_forward_without_reverb")

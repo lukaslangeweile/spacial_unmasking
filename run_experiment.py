@@ -50,11 +50,11 @@ numerosity_judgement.start_experiment(sub_id=sub_id, block_id=2, stim_type="coun
 
 input("Completed block 2/4. Press 'Enter' to continue with block 3 of numerosity judgement.")
 
-numerosity_judgement.start_experiment(sub_id=sub_id, block_id=3, stim_type="countries_forward", n_reps=15)
+numerosity_judgement.start_experiment(sub_id=sub_id, block_id=3, stim_type="countries_forward_without_reverb", n_reps=15)
 
 input("Completed block 3/4. Press 'Enter' to continue with block 3 of numerosity judgement.")
 
-numerosity_judgement.start_experiment(sub_id=sub_id, block_id=4, stim_type="countries_forward", n_reps=15)
+numerosity_judgement.start_experiment(sub_id=sub_id, block_id=4, stim_type="countries_forward_without_reverb", n_reps=15)
 
 input("Completed block 4/4. Ask participant questions of the questionnaire document. Press 'Enter' to continue.")
 
@@ -78,7 +78,7 @@ numerosity_judgement.start_experiment(sub_id=sub_id, block_id=1, stim_type="coun
 
 input("Completed block 1/2. Press 'Enter' to continue with block 2 of colocated numerosity judgement.")
 
-numerosity_judgement.start_experiment(sub_id=sub_id, block_id=2, stim_type="countries_forward", n_reps=15, colocated=True)
+numerosity_judgement.start_experiment(sub_id=sub_id, block_id=2, stim_type="countries_forward_without_reverb", n_reps=15, colocated=True)
 
 print("Experiment done.")
 
