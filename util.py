@@ -399,24 +399,27 @@ def record_stimuli(stim_type, mgb_loudness=27.5):
         if not os.path.exists(recording_dir):
             os.makedirs(recording_dir)
         for file in stim_dir.iterdir():
-            sound = slab.Sound.read(file)
-            print(sound.samplerate)
-            print(sound.n_samples)
-            if len(sound.data.shape) == 2 and sound.data.shape[1] == 2:
-                data = np.mean(sound.data, axis=1)
-                sound = slab.Sound(data, samplerate=sound.samplerate)
+            if file.is_file() and file.suffix == ".wav":
+                sound = slab.Sound.read(file)
                 print(sound.samplerate)
                 print(sound.n_samples)
-            basename = str(os.path.splitext(os.path.basename(file))[0])
-            for speaker in freefield.SPEAKERS:
-                sound = apply_mgb_equalization(sound, speaker, mgb_loudness, 0)
-                recording = freefield.play_and_record(speaker=speaker, sound=sound, compensate_delay=True, equalize=False)
-                print(recording.n_samples)
-                print(recording.samplerate)
-                recording_filename = f"sound-{basename}_mgb-level-{mgb_loudness}_distance-{speaker.distance}.wav"
-                recording_filepath = recording_dir / recording_filename
-                recording.write(filename=recording_filepath, normalise=False)
-                time.sleep(1.0)
+                if len(sound.data.shape) == 2 and sound.data.shape[1] == 2:
+                    data = np.mean(sound.data, axis=1)
+                    sound = slab.Sound(data, samplerate=sound.samplerate)
+                    print(sound.samplerate)
+                    print(sound.n_samples)
+                basename = str(os.path.splitext(os.path.basename(file))[0])
+                for speaker in freefield.SPEAKERS:
+                    sound = apply_mgb_equalization(sound, speaker, mgb_loudness, 0)
+                    silence = slab.Sound.silence(duration=2.0, samplerate=24414)
+                    seq = slab.Sound.sequence(sound, silence)
+                    recording = freefield.play_and_record(speaker=speaker, sound=seq, compensate_delay=True, equalize=False)
+                    print(recording.n_samples)
+                    print(recording.samplerate)
+                    recording_filename = f"sound-{basename}_mgb-level-{mgb_loudness}_distance-{speaker.distance}.wav"
+                    recording_filepath = recording_dir / recording_filename
+                    recording.write(filename=recording_filepath, normalise=False)
+                    time.sleep(1.0)
     except Exception as e:
         logging.error(f"An error occurred in record_stimuli: {e}")
         print(f"An error occurred: {e}")
@@ -1434,3 +1437,7 @@ def plot_la_and_sc_effects():
 
 if __name__ == "__main__":
     process_nj_data()
+
+    initialize_stim_recording()
+    record_stimuli("countries_reversed")
+
