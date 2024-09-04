@@ -5,8 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="09b87277-b40e-4572-97ca-82a3933ef596" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/data/results/added_result_files/numerosity_judgement_round_2_covariates.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/results/results_numerosity_judgement_sub_000.csv" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/results/added_result_files/numerosity_judgement.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/added_result_files/numerosity_judgement_round_2_covariates_processed.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/added_result_files/numerosity_judgement_round_2_covariates_processed.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/added_result_files/spacial_unmasking_summed.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/added_result_files/spacial_unmasking_summed.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/added_result_files/spacial_unmasking_summed_and_processed.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/added_result_files/spacial_unmasking_summed_and_processed.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/results_localisation_accuracy_sub_103_collocated.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/results_localisation_accuracy_sub_103.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/results_numerosity_judgement_sub_103_collocated.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/results_numerosity_judgement_sub_103.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/results_per_step_spacial_unmasking_sub_103_collocated.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/results_per_step_spacial_unmasking_sub_103.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/results/results_spacial_unmasking_sub_103_collocated.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/results/results_spacial_unmasking_sub_103.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -22,13 +29,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/data/results/added_result_files" />
@@ -42,9 +49,10 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/env/cathedral" />
+      <option name="SDK_NAME" value="freefield (2)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/util.py" />
@@ -83,5 +91,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/util.py</url>
+          <line>1434</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

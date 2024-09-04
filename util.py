@@ -13,6 +13,8 @@ import re
 import logging
 import ast
 import statistics
+import scipy
+from scipy.stats import ttest_ind
 
 """import localisation
 
@@ -83,10 +85,24 @@ def get_speaker_normalisation_level(speaker, mgb_loudness=30):
 def get_mgb_level_from_input_level(speaker, input_level):
     try:
         a, b, c = get_quad_parameters(speaker.distance)
-        return quadratic2_func(x=input_level, a=a, b=b, c=c)
+        return quadratic_func(x=input_level, a=a, b=b, c=c)
     except Exception as e:
         logging.error(f"An error occurred in get_speaker_normalisation_level: {e}")
         print(f"An error occurred: {e}")
+
+def get_mgb_level_from_input_level_and_distance(distance, input_level):
+    try:
+        a, b, c = get_quad_parameters(distance)
+        return quadratic_func(x=input_level, a=a, b=b, c=c)
+    except Exception as e:
+        logging.error(f"An error occurred in get_mgb_level_from_input_level_and_distance: {e}")
+        print(f"An error occurred: {e}")
+def calculate_mgb_level_per_row(row):
+    # Applies the calculation function to each row's target and masker distances and levels
+    row['mgb_level_target'] = get_mgb_level_from_input_level_and_distance(row['distance_target'], row['level_target'])
+    row['mgb_level_masker'] = get_mgb_level_from_input_level_and_distance(row['distance_masker'], row['level_masker'])
+    return row
+
 
 def get_stim_dir(stim_type):
     try:
@@ -780,31 +796,59 @@ def get_su_slope_closest_speakers(subject_id):
 
     filtered_row_colocated = df_filtered[df_filtered["abs_spatial_separation"] == 0.0]
     filtered_rows_neighbors = df_filtered[df_filtered["abs_spatial_separation"] == 1.0]
+    print(subject_id)
+    print(filtered_rows_neighbors)
     print(filtered_rows_neighbors["threshold"].values)
     x_colocated = 0
     y_colocated = filtered_row_colocated["threshold"]
     x_neighbors = 1
     y_neighbors = statistics.mean(filtered_rows_neighbors["threshold"].values)
-    slope = (y_neighbors - y_colocated) / (x_neighbors - x_colocated)
+    slope = float(y_neighbors - y_colocated) / (x_neighbors - x_colocated)
     return slope
 
+def get_su_tmr_slope(subject_id):
+    file = DIR / "data" / "results" / "added_result_files" / "spacial_unmasking_summed_and_processed.csv"
+    df = pd.read_csv(file)
+
+    subject_data = df[df['subject'] == subject_id]
+    X = subject_data['abs_spatial_separation'].values
+    y = subject_data['relative_tmr'].values
+
+    # Fit linear regression using numpy's polyfit (degree 1 for linear)
+    slope_tmr, intercept = np.polyfit(X, y, 1)
+    return slope_tmr
 def process_nj_data():
-    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/numerosity_judgement_round_2_covariates.csv"
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/numerosity_judgement.csv"
     df = pd.read_csv(file)
     df_filtered = df[df["plane"] == "distance"]
-    target_filename = DIR / "data" / "results" / "added_result_files" / f"numerosity_judgement_round_2_covariates_processed.csv"
+    target_filename = DIR / "data" / "results" / "added_result_files" / f"numerosity_judgement_processed.csv"
     # Initialize an empty column for the slopes
     df_filtered["su_slope_closest_speaker"] = None
+    df_filtered["su_tmr_slope"] = None
+    df_filtered["la_rmse_pinknoise"] = None
+    df_filtered["la_rmse_babble"] = None
+    df_filtered["la_mae_pinknoise"] = None
+    df_filtered["la_mae_babble"] = None
+    df_filtered["la_r2"] = None
 
     # Iterate over each unique subject_id
     for subject_id in df_filtered["subject_id"].unique():
-        if subject_id != "sub_103":
-            # Calculate the slope for the current subject_id
-            slope = get_su_slope_closest_speakers(subject_id)
-
-            # Assign the slope to the respective rows in the new column
-            df_filtered.loc[df_filtered["subject_id"] == subject_id, "su_slope_closest_speaker"] = slope
-
+        # Calculate the slope for the current subject_id
+        slope = get_su_slope_closest_speakers(subject_id)
+        slope_tmr = get_su_tmr_slope(subject_id)
+        la_rmse_pinknoise, la_rmse_babble = get_la_rmse_per_stimtype(subject_id)
+        la_mae_pinknoise, la_mae_babble = get_la_mae_per_stimtype(subject_id)
+        la_r2 = get_r2_from_rsme(subject_id)
+        print(la_r2)
+        # Assign the slope to the respective rows in the new column
+        df_filtered.loc[df_filtered["subject_id"] == subject_id, "su_slope_closest_speaker"] = slope
+        df_filtered.loc[df_filtered["subject_id"] == subject_id, "su_parameter"] = (df_filtered.loc[df_filtered["subject_id"] == subject_id, "su_slope"] + slope) / 2
+        df_filtered.loc[df_filtered["subject_id"] == subject_id, "la_rmse_pinknoise"] = la_rmse_pinknoise
+        df_filtered.loc[df_filtered["subject_id"] == subject_id, "la_rmse_babble"] = la_rmse_babble
+        df_filtered.loc[df_filtered["subject_id"] == subject_id, "la_mae_pinknoise"] = la_mae_pinknoise
+        df_filtered.loc[df_filtered["subject_id"] == subject_id, "la_mae_babble"] = la_mae_babble
+        df_filtered.loc[df_filtered["subject_id"] == subject_id, "la_r2"] = la_r2
+        df_filtered.loc[df_filtered["subject_id"] == subject_id, "su_slope_closest_speaker"] = slope_tmr
     df_filtered.to_csv(target_filename, mode='w', header=True, index=False)
 
 def process_spatial_unmasking_data():
@@ -812,10 +856,581 @@ def process_spatial_unmasking_data():
     df = pd.read_csv(file)
     df["abs_spatial_separation"] = abs(df["distance_target"] - df["distance_masker"])
     df['relative_threshold'] = df.groupby('subject')['threshold'].transform(lambda x: x - x[df['distance_masker'] == 7].iloc[0])
+    df = df.apply(calculate_mgb_level_per_row, axis=1)
+    df['tmr'] = (df["mgb_level_target"] / df["mgb_level_masker"])
+    df['relative_tmr'] = df.groupby('subject')['tmr'].transform(lambda x: x - x[df['distance_masker'] == 7].iloc[0])
     filename = DIR / "data" / "results" / "added_result_files" / f"spacial_unmasking_summed_and_processed.csv"
     df.to_csv(filename, mode='w', header=True, index=False)
 
+def plot_spatial_unmasking_individual_data():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/spacial_unmasking_summed_and_processed.csv"
+    df = pd.read_csv(file)
+
+    plt.figure(figsize=(8, 6))
+
+    sns.lineplot(df, x="distance_masker", y="relative_threshold", hue="subject")
+
+    # Place the legend to the right of the plot
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), title="Subjects")
+
+    plt.xlabel("distance of masking speaker in m")
+    plt.ylabel("relative threshold in dB")
+
+    plt.tight_layout()
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_spatial_unmasking_individual_data.jpeg")
+
+def plot_spatial_unmasking_data():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/spacial_unmasking_summed_and_processed.csv"
+    df = pd.read_csv(file)
+
+    # Perform t-tests comparing distance_masker = 7 with 6 and 8
+    df_2 = df[df["distance_masker"] == 2]["relative_tmr"]
+    df_4 = df[df["distance_masker"] == 4]["relative_tmr"]
+    df_6 = df[df["distance_masker"] == 6]["relative_tmr"]
+    df_7 = df[df["distance_masker"] == 7]["relative_tmr"]
+    df_8 = df[df["distance_masker"] == 8]["relative_tmr"]
+    df_10 = df[df["distance_masker"] == 10]["relative_tmr"]
+    df_12 = df[df["distance_masker"] == 12]["relative_tmr"]
+
+    t_stat_4_vs_7, p_val_4_vs_7 = ttest_ind(df_4, df_7)
+    t_stat_6_vs_7, p_val_6_vs_7 = ttest_ind(df_6, df_7)
+    t_stat_8_vs_7, p_val_8_vs_7 = ttest_ind(df_8, df_7)
+    t_stat_10_vs_12, p_val_10_vs_12 = ttest_ind(df_10, df_12)
+    t_stat_2_vs_7, p_val_2_vs_7 = ttest_ind(df_2, df_7)
+    t_stat_7_vs_10, p_val_7_vs_10 = ttest_ind(df_7, df_10)
+    t_stat_7_vs_12, p_val_7_vs_12 = ttest_ind(df_7, df_12)
+
+    plt.figure(figsize=(8, 6))
+
+    grouped_df = df.groupby("distance_masker").agg(
+        mean_relative_tmr=("relative_tmr", "mean"),
+        std_relative_tmr=("relative_tmr", "std")
+    ).reset_index()
+
+    # Plot the mean points
+    sns.lineplot(data=grouped_df, x="distance_masker", y="mean_relative_tmr",
+                 marker="o")
+
+    # Add error bars
+    plt.errorbar(grouped_df["distance_masker"], grouped_df["mean_relative_tmr"],
+                yerr=grouped_df["std_relative_tmr"], fmt='o', color='blue', capsize=5)
+
+    for i in range(len(grouped_df)):
+        x_value = grouped_df.loc[i, "distance_masker"]
+        mean_value = grouped_df.loc[i, "mean_relative_tmr"]
+        sem_value = grouped_df.loc[i, "std_relative_tmr"]
+        print(str(x_value) + ", " + str(mean_value) + ", " + str(sem_value))
+
+    # Add annotations for significance
+    if p_val_4_vs_7 < 0.05:
+        plt.text(4.1, df_4.mean(), '*', ha='center', va='bottom', color='black', fontsize=20)
+    if p_val_6_vs_7 < 0.05:
+        plt.text(6.1, df_6.mean(), '*', ha='center', va='bottom', color='black', fontsize=20)
+    if p_val_8_vs_7 < 0.05:
+        plt.text(8.1, df_8.mean(), '*', ha='center', va='bottom', color='black', fontsize=20)
+    if p_val_10_vs_12 < 0.05:
+        plt.text(11.1, -2.25 , '*', ha='center', va='bottom', color='black', fontsize=20)
+    if p_val_2_vs_7 < 0.05:
+        plt.text(2.1, -1.9 , '*', ha='center', va='bottom', color='black', fontsize=20)
+    if p_val_7_vs_12 < 0.05:
+        plt.text(12.1, df_12.mean(), '*', ha='center', va='bottom', color='black', fontsize=20)
+    if p_val_7_vs_10 < 0.05:
+        plt.text(10.1, df_10.mean(), '*', ha='center', va='bottom', color='black', fontsize=20)
+
+
+    plt.xlabel("distance of masking speaker in m")
+    plt.ylabel("relative TMR")
+    plt.tight_layout()
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_spatial_unmasking_data_tmr.pdf")
+    plt.show()
+def plot_localisation_individual_data():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/localisation_accuracy_summed.csv"
+    df = pd.read_csv(file)
+    plt.figure(figsize=(8, 6))
+
+    sns.lineplot(df, x="stim_dist", y="resp_dist", hue="subject_id", errorbar = None)
+
+    # Add a black line with slope = 1 and intercept = 0
+    x_vals = np.array(plt.gca().get_xlim())  # Get current x-axis limits
+    y_vals = x_vals  # Since slope = 1 and intercept = 0, y = x
+    plt.plot(x_vals, y_vals, '--', color='black')
+
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), title="Subjects")
+    plt.gca().set_aspect('equal', adjustable='box')
+
+    plt.xlabel("stimulus distance in m")
+    plt.ylabel("estimated distance in m")
+
+    plt.tight_layout()
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_localisation_individual_data.jpeg")
+    plt.show()
+
+
+def plot_localisation_slopes():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/localisation_accuracy_summed.csv"
+    df = pd.read_csv(file)
+    plt.figure(figsize=(9, 6))
+
+    """sns.scatterplot(df, x="stim_dist", y="resp_dist", hue="subject_id")"""
+
+    # Fit and plot a regression line for each subject
+    subjects = df['subject_id'].unique()
+
+    for subject in subjects:
+        subject_data = df[df['subject_id'] == subject]
+        X = subject_data['stim_dist'].values
+        y = subject_data['resp_dist'].values
+
+        # Fit linear regression using numpy's polyfit (degree 1 for linear)
+        slope, intercept = np.polyfit(X, y, 1)
+        print("slope = " + str(slope))
+        print("intercept = " + str(intercept))
+
+        # Calculate the regression line only within the range of the data
+        x_vals = np.linspace(X.min(), X.max(), 100)
+        y_vals = slope * x_vals + intercept
+
+        # Plot regression line without adding to the legend
+        plt.plot(x_vals, y_vals, linestyle='-', linewidth=2, color='gray', alpha=0.7)
+
+        # Plot regression line
+        plt.plot(x_vals, y_vals, label=f'Regression: Subject {subject}', linestyle='-', linewidth=2)
+    # Add a black line with slope = 1 and intercept = 0
+
+    x_vals = np.array(plt.gca().get_xlim())  # Get current x-axis limits
+    y_vals = x_vals  # Since slope = 1 and intercept = 0, y = x
+    plt.plot(x_vals, y_vals, '--', color='black')
+
+    # Legend only for the subjects (not the regression lines)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), title="Subjects")
+
+    plt.gca().set_aspect('equal', adjustable='box')
+
+    plt.xlabel("stimulus distance in m")
+    plt.ylabel("estimated distance in m")
+
+    plt.tight_layout()
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_localisation_individual_data_slopes.jpeg")
+    plt.show()
+def plot_localisation_data():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/localisation_accuracy_summed.csv"
+    df_full = pd.read_csv(file)
+    df_list = [df_full[df_full["stim_type"] == "pinknoise"], df_full[df_full["stim_type"] == "babble"]]
+    fig, axes = plt.subplots(1, 2, figsize=(10, 6))
+    axes = axes.flatten()
+
+    for i, ax in enumerate(axes):
+        df = df_list[i]
+        # Calculate mean and standard deviation
+        grouped_df = df.groupby("stim_dist").agg(
+            mean_resp_dist=("resp_dist", "mean"),
+            std_resp_dist=("resp_dist", "std")
+        ).reset_index()
+
+        # Plot the mean points
+        sns.lineplot(data=grouped_df, x="stim_dist", y="mean_resp_dist",
+                     marker="o", ax=ax)
+
+        # Add error bars
+        ax.errorbar(grouped_df["stim_dist"], grouped_df["mean_resp_dist"],
+                    yerr=grouped_df["std_resp_dist"], fmt='o', color='blue', capsize=5)
+        ax.set_title(f'stimulus type: {str(df["stim_type"].unique()[0])}')
+        ax.set_xlabel('stimulus distance in m')
+        ax.set_ylabel('estimated distance in m')
+        # Add a black line with slope = 1 and intercept = 0
+        x_vals = np.array(ax.get_xlim())  # Get current x-axis limits
+        y_vals = x_vals  # Since slope = 1 and intercept = 0, y = x
+        ax.plot(x_vals, y_vals, '--', color='black', label='y = x (slope = 1)')
+        ax.set_aspect('equal', adjustable='box')
+
+
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_localisation_data.pdf")
+
+def plot_numerosity_judgement_individual_data():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/numerosity_judgement_round_2_covariates_processed.csv"
+    df = pd.read_csv(file)
+    plt.figure(figsize=(6, 6))
+    sns.lineplot(df, x="stim_number", y="resp_number", errorbar = None, hue="subject_id")
+    # Add a black line with slope = 1 and intercept = 0
+    x_vals = np.array(plt.gca().get_xlim())  # Get current x-axis limits
+    y_vals = x_vals  # Since slope = 1 and intercept = 0, y = x
+    plt.plot(x_vals, y_vals, '--', color='black')
+
+    # Place the legend to the right of the plot
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), title="Subjects")
+
+    plt.gca().set_aspect('equal', adjustable='box')
+
+    plt.xlabel("stimulus number")
+    plt.ylabel("response number")
+
+    plt.tight_layout()
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_numerosity_judgement_individual_data.jpeg")
+
+def plot_numerosity_judgement_data_per_stim_type():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/numerosity_judgement_round_2_covariates_processed.csv"
+    df = pd.read_csv(file)
+    df_full = pd.read_csv(file)
+    df_list = [df_full[df_full["stim_type"] == "forward"], df_full[df_full["stim_type"] == "reversed"]]
+    fig, axes = plt.subplots(1, 2, figsize=(10, 6))
+    axes = axes.flatten()
+
+    for i, ax in enumerate(axes):
+        df = df_list[i]
+        # Calculate mean and standard deviation
+        grouped_df = df.groupby("stim_number").agg(
+            mean_resp_number=("resp_number", "mean"),
+            std_resp_number=("resp_number", "std")
+        ).reset_index()
+
+        # Plot the mean points
+        sns.lineplot(data=grouped_df, x="stim_number", y="mean_resp_number",
+                     marker="o", ax=ax)
+
+        # Add error bars
+        ax.errorbar(grouped_df["stim_number"], grouped_df["mean_resp_number"],
+                    yerr=grouped_df["std_resp_number"], fmt='o', color='blue', capsize=5)
+        ax.set_title(f'stimulus type: {str(df["stim_type"].unique()[0])}')
+        ax.set_xlabel('stimulus number')
+        ax.set_ylabel('response number')
+
+        # Add a black line with slope = 1 and intercept = 0
+        x_vals = np.array(ax.get_xlim())  # Get current x-axis limits
+        y_vals = x_vals  # Since slope = 1 and intercept = 0, y = x
+        ax.plot(x_vals, y_vals, '--', color='black', label='y = x (slope = 1)')
+        ax.set_aspect('equal', adjustable='box')
+
+
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_numerosity_judgement_data_per_stim_type.pdf")
+
+def plot_numerosity_judgement_data():
+
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/numerosity_judgement_round_2_covariates_processed.csv"
+    df = pd.read_csv(file)
+
+    # Calculate mean and standard deviation
+    grouped_df = df.groupby("stim_number").agg(
+        mean_resp_number=("resp_number", "mean"),
+        std_resp_number=("resp_number", "std")
+    ).reset_index()
+
+    # Plot the mean points
+    sns.lineplot(data=grouped_df, x="stim_number", y="mean_resp_number",
+                 marker="o")
+    plt.errorbar(grouped_df["stim_number"], grouped_df["mean_resp_number"],
+                    yerr=grouped_df["std_resp_number"], fmt='o', color='blue', capsize=5)
+
+    # Add a black line with slope = 1 and intercept = 0
+    x_vals = np.array(plt.xlim())  # Get current x-axis limits
+    y_vals = x_vals  # Since slope = 1 and intercept = 0, y = x
+    plt.plot(x_vals, y_vals, '--', color='black', label='y = x (slope = 1)')
+    plt.gca().set_aspect('equal', adjustable='box')
+
+    plt.xlabel('stimulus number')
+    plt.ylabel('response number')
+
+    for i in range(len(grouped_df)):
+        x_value = grouped_df.loc[i, "stim_number"]
+        mean_value = grouped_df.loc[i, "mean_resp_number"]
+        sem_value = grouped_df.loc[i, "std_resp_number"]
+        print(str(x_value) + ", " + str(mean_value) + ", " + str(sem_value))
+
+
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_numerosity_judgement_data.pdf")
+
+def plot_spatial_unmasking_slopes():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/spacial_unmasking_summed_and_processed.csv"
+    df = pd.read_csv(file)
+
+    """sns.scatterplot(data=df, x="abs_spatial_separation", y="relative_threshold", hue="subject")"""
+    # Fit and plot a regression line for each subject
+    subjects = df['subject'].unique()
+
+    for subject in subjects:
+        subject_data = df[df['subject'] == subject]
+        X = subject_data['abs_spatial_separation'].values
+        y = subject_data['relative_threshold'].values
+
+        # Fit linear regression using numpy's polyfit (degree 1 for linear)
+        slope, intercept = np.polyfit(X, y, 1)
+        print("slope = " + str(slope))
+        print("intercept = " + str(intercept))
+        # Calculate the regression line only within the range of the data
+        x_vals = np.linspace(X.min(), X.max(), 100)
+        y_vals = slope * x_vals + intercept
+
+        # Plot regression line without adding to the legend
+        plt.plot(x_vals, y_vals, linestyle='-', linewidth=2, color='gray', alpha=0.7)
+
+        # Plot regression line
+        plt.plot(x_vals, y_vals, label=f'Regression: Subject {subject}', linestyle='-', linewidth=2)
+    # Add a black line with slope = 1 and intercept = 0
+
+    # plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), title="Subjects")
+
+    plt.xlabel("absolute spatial separation in m")
+    plt.ylabel("relative threshold in dB")
+
+    plt.tight_layout()
+    # plt.savefig(DIR / "data" / "results" / "figs" / "fig_localisation_individual_data_slopes.jpeg")
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_spatial_unmasking_slopes.pdf")
+    plt.show()
+
+
+def get_la_rmse_variance():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/numerosity_judgement_processed.csv"
+    df = pd.read_csv(file)
+    rmse_list = list()
+    subjects = df['subject_id'].unique()
+
+    for subject in subjects:
+        subject_data = df[df['subject_id'] == subject]
+        rmse = subject_data["la_rmse"].values[0]
+        rmse_list.append(rmse)
+
+    variance = np.var(rmse_list, ddof=1)
+    standard_deviation = np.std(rmse_list)
+    mean = np.mean(rmse_list)
+    coefficient_of_variation = standard_deviation / mean
+    print(standard_deviation)
+    print(variance)
+    print(mean)
+    print(coefficient_of_variation)
+    return variance
+
+def get_new_su_parameters():
+    file = "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/numerosity_judgement_processed.csv"
+    df = pd.read_csv(file)
+    df["su_parameter"] = (df["su_slope"] + df["su_slope_closest_speaker"]) / 2
+    print(df["su_parameter"].unique())
+
+def get_la_rmse_per_stimtype(subject_id):
+    file = f"/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/results_localisation_accuracy_{subject_id}.csv"
+    df = pd.read_csv(file)
+
+    df_pinknoise = df[df["stim_type"] == "pinknoise"]
+    df_babble = df[df["stim_type"] == "babble"]
+
+    la_rmse_pinknoise = np.sqrt(np.mean(abs(df_pinknoise["stim_dist"] - df_pinknoise["resp_dist"])))
+    la_rmse_babble = np.sqrt(np.mean(abs(df_babble["stim_dist"] - df_babble["resp_dist"])))
+
+    return la_rmse_pinknoise, la_rmse_babble
+
+def get_la_mae_per_stimtype(subject_id):
+    file = f"/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/results_localisation_accuracy_{subject_id}.csv"
+    df = pd.read_csv(file)
+
+    df_pinknoise = df[df["stim_type"] == "pinknoise"]
+    df_babble = df[df["stim_type"] == "babble"]
+
+    la_mae_pinknoise = np.mean(abs(df_pinknoise["stim_dist"] - df_pinknoise["resp_dist"]))
+    la_mae_babble = np.mean(abs(df_babble["stim_dist"] - df_babble["resp_dist"]))
+
+    return la_mae_pinknoise, la_mae_babble
+
+def get_r2_from_rsme(subject_id):
+    file = f"/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/results_localisation_accuracy_{subject_id}.csv"
+    df = pd.read_csv(file)
+    # Observed and predicted values
+    observed = df["resp_dist"]
+    predicted = df["stim_dist"]
+
+    # Calculate RMSE correctly
+    rmse = np.sqrt(np.mean((observed - predicted) ** 2))
+
+    # Number of observations
+    n = len(observed)
+
+    # Total Sum of Squares (TSS)
+    tss = np.sum((observed - np.mean(observed)) ** 2)
+
+    # Residual Sum of Squares (RSS) calculated directly from residuals
+    rss = np.sum((observed - predicted) ** 2)
+
+    # Calculate R-squared
+    r_squared = 1 - (rss / tss)
+    return r_squared
+
+
+def plot_spectral_coverage_effects():
+    # Prepare the data for plotting
+    data = {
+        'stim_number_f': ['2', '3', '4', '5', '6'],
+        'estimate': [0.65915, 0.71827, 0.68672, 0.48267, 0.21441],
+        'std_error': [0.23088, 0.16080, 0.15219, 0.19980, 0.27549],
+        'p_value': [0.00432, 8.08e-06, 6.53e-06, 0.01573, 0.43643]
+    }
+
+    df = pd.DataFrame(data)
+
+    # Determine significance levels for the asterisks
+    df['significance'] = df['p_value'].apply(
+        lambda x: '***' if x < 0.001 else '**' if x < 0.01 else '*' if x < 0.05 else '')
+
+    # Plot the data
+    plt.figure(figsize=(8, 6))
+    sns.barplot(data=df, x='stim_number_f', y='estimate', ci=None, palette="Blues", width=0.5)
+
+    # Add error bars manually
+    plt.errorbar(x=df['stim_number_f'], y=df['estimate'], yerr=df['std_error'], fmt='none', color='black', capsize=5)
+
+    # Add significance asterisks
+    for i, row in df.iterrows():
+        plt.text(i, row['estimate'] + row['std_error'] + 0.05, row['significance'], ha='center', va='bottom',
+                 color='black', fontsize=12)
+
+    plt.ylim(-0.1,1)
+
+    # Label the axes
+    plt.xlabel('stimulus number')
+    plt.ylabel('effect of spectral coverage')
+
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_spectral_coverage_effect.pdf")
+    plt.show()
+
+def plot_la_rmse_effects():
+    # Prepare the data for plotting
+    data = {
+        'stim_number_f': ['2', '3', '4', '5', '6'],
+        'estimate': [0.65600, 0.50081, 0.34562, 0.19043, 0.03524]
+    }
+
+    df = pd.DataFrame(data)
+
+
+    # Plot the data
+    plt.figure(figsize=(8, 6))
+    sns.barplot(data=df, x='stim_number_f', y='estimate', ci=None, palette="Blues", width=0.5)
+
+
+    plt.ylim(-0.1, 1)
+
+    # Label the axes
+    plt.xlabel('stimulus number')
+    plt.ylabel('effect of la_rmse')
+
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_la_rmse_effect.pdf")
+    plt.show()
+
+def plot_stim_type_effects():
+    # Prepare the data for plotting
+    data = {
+        'stim_number_f': ['2', '3', '4', '5', '6'],
+        'estimate': [0.29106, 0.25461, 0.21816, 0.18171, 0.14526]
+    }
+
+    df = pd.DataFrame(data)
+
+
+    # Plot the data
+    plt.figure(figsize=(8, 6))
+    sns.barplot(data=df, x='stim_number_f', y='estimate', ci=None, palette="Blues", width=0.5)
+
+
+    plt.ylim(0, 0.3)
+
+    # Label the axes
+    plt.xlabel('stimulus number')
+    plt.ylabel('effect of stimulus type (reversed)')
+
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_la_rmse_effect.pdf")
+    plt.show()
+
+def plot_la_power_function():
+    file= "/Users/lukaslange/PycharmProjects/spacial_unmasking/data/results/added_result_files/localisation_accuracy_summed.csv"
+    df = pd.read_csv(file)
+    # df = df[df["stim_type"] == "pinknoise"]
+
+    grouped_df = df.groupby("stim_dist").agg(
+        mean_resp_dist=("resp_dist", "mean"),
+        std_resp_dist=("resp_dist", "std")
+    ).reset_index()
+
+    log_distance = np.log(df["stim_dist"])
+    log_response = np.log(df["resp_dist"])
+
+    # Perform linear regression on the transformed data
+    slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(log_distance, log_response)
+
+    # Extract parameters
+    a = slope
+    k = np.exp(intercept)
+
+    print(f"Estimated a: {a}")
+    print(f"Estimated k: {k}")
+    print(f"Estimated r: {r_value}")
+    print(f"Estimated p: {p_value}")
+    print(f"Estimated intercept: {intercept}")
+
+    # Generate fitted response values using the power function
+    fitted_response = k * df["stim_dist"] ** a
+
+    # Plotting the data and the fitted line
+    plt.figure(figsize=(8, 6))
+
+    # Scatter plot of original data points
+    plt.scatter(grouped_df["stim_dist"], grouped_df["mean_resp_dist"], color='blue', label='Mean Participant Responses')
+
+    # Plot the fitted power function line
+    plt.plot(df["stim_dist"], fitted_response, color='red', label=f'Fitted Line: response = {k:.2f} * distance^{a:.2f}')
+
+
+    # Set both axes to logarithmic scale
+    plt.xscale('log')
+    plt.yscale('log')
+
+    # Set limits for x and y axes
+    plt.xlim(1.5, 15)  # adjust according to your data range
+    plt.ylim(1.5, 15)  # adjust according to your data range
+
+    plt.gca().set_aspect('equal', adjustable='box')
+
+    # Labels and title
+    plt.xlabel('Stimulus Distance in m (log scale)')
+    plt.ylabel('Response Distance in m (log scale)')
+    plt.legend()
+
+    # Show grid for better readability on log scale
+    plt.grid(True, which="both", ls="--", linewidth=0.5)
+
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_la_power_function_fit.pdf")
+    # Display the plot
+    plt.show()
+
+
+def plot_la_and_sc_effects():
+    data_sc = {
+        'effect': ['sc', 'sc', 'sc', 'sc', 'sc'],
+        'stim_number_f': ['2', '3', '4', '5', '6'],
+        'estimate': [0.63682, 0.73396, 0.76158 , 0.41841, 0.22277]
+    }
+
+    data_la = {
+        'effect': ['la', 'la', 'la', 'la', 'la'],
+        'stim_number_f': ['2', '3', '4', '5', '6'],
+        'estimate': [-0.61952, -0.45789, -0.33765, 0.14106, 0.23374]
+    }
+
+    df_sc = pd.DataFrame(data_sc)
+    df_la = pd.DataFrame(data_la)
+    df = pd.concat([df_sc, df_la])
+
+    plt.figure(figsize=(8, 6))
+    sns.barplot(data=df, x='stim_number_f', y='estimate', ci=None, hue='effect', width=0.5)
+
+    plt.ylim(-1, 1)
+
+    # Label the axes
+    plt.xlabel('stimulus number')
+    plt.ylabel('effect')
+    plt.savefig(DIR / "data" / "results" / "figs" / "fig_la_r2_sc_effects.pdf")
+    plt.show()
+
 if __name__ == "__main__":
     process_nj_data()
-
-
